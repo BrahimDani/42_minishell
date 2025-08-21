@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/21 11:52:04 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/08/21 13:12:21 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,14 @@
 int main(int argc, char **envp)
 {
     (void)argc;
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
+    
+    // Désactive l'affichage de ^C
+    disable_ctrl_echo();
+    
+    // Configure les signaux
+    signal(SIGINT, sigint_handler);
+    signal(SIGQUIT, SIG_IGN);
+    
     t_env *env_list = NULL;
     init_env(&env_list, envp);
     while (1)
