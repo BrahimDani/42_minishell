@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/21 10:30:47 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/08/21 11:50:39 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
 
-
-void init_env(t_env **env_list, char **envp);
 #endif

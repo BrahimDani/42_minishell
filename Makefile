@@ -6,12 +6,12 @@
 #    By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/21 10:30:00 by kadrouin          #+#    #+#              #
-#    Updated: 2025/08/21 10:37:48 by kadrouin         ###   ########.fr        #
+#    Updated: 2025/08/21 11:13:06 by kadrouin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -lreadline
 
