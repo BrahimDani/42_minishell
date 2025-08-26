@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/26 13:59:30 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:38:12 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,12 @@
 # define MINISHELL_H
 
 #include "../includes/struct.h"
+#include "../includes/exec.h"
+#include "../includes/parsing.h"
 #include "../libft/libft.h"
 
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
