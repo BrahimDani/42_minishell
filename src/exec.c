@@ -16,31 +16,35 @@ int	execute_command(char **args, char **env_list)
 {
 	pid_t	pid;
 	int		status;
+	char	*full_path;
 
-	pid = fork();
-	char *full_path = find_command_path(args[0]);
-	if (full_path)
+	full_path = find_command_path(args[0]);
+	if (!full_path)
 	{
-		if (pid == 0)
-		{
-			// Child process
-			execve(full_path, args, env_list);
-			printf("args[0] = %s\n", args[0]);
-			ft_putstr_fd("minishell: execve failed\n", 2);
-			exit(EXIT_FAILURE);
-		}
-		else if (pid < 0)
-		{
-			ft_putstr_fd("minishell: fork failed\n", 2);
-			return (-1);
-		}
-		else
-		{
-			// Parent process
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				return (WEXITSTATUS(status));
-		}
+		ft_putstr_fd("minishell: command not found: ", 2);
+		ft_putstr_fd(args[0], 2);
+		ft_putstr_fd("\n", 2);
+		return (127);
+	}
+	pid = fork();
+	if (pid == 0)
+	{
+		execve(full_path, args, env_list);
+		ft_putstr_fd("minishell: execve failed\n", 2);
+		exit(EXIT_FAILURE);
+	}
+	else if (pid < 0)
+	{
+		ft_putstr_fd("minishell: fork failed\n", 2);
+		free(full_path);
+		return (-1);
+	}
+	else
+	{
+		free(full_path);
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
 	}
 	return (-1);
 }
