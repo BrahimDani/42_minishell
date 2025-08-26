@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/21 13:12:21 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:04:07 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int main(int argc, char **envp)
         if (line)
         {
             add_history(line);
-            printf("You entered: %s\n", line);
+            
             free(line);
         }
         else

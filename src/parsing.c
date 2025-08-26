@@ -1,8 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
+/*   Updated: 2025/08/26 14:03:52 by kadrouin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 void    print_tokens(char **tokens)
 {
@@ -11,23 +19,12 @@ void    print_tokens(char **tokens)
     i = 0;
     while(tokens[i])
     {
-        printf("token[%d] = %s\n", i, tokens);
+        printf("token[%d] = %s\n", i, tokens[i]);
         i++;
     }
 }
 
-char    *parse_line(char *line)
+char    **parse_line(char *line)
 {
     return (ft_split(line, ' '));
-}
-
-int main(int ac, char **av)
-{
-    char    *line;
-    char    **tokens;
-
-    line = "ls -l /home";
-    tokens = parse_line(line);
-    print_tokens(tokens);
-    return (0);
 }

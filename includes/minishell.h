@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/21 13:12:21 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:59:30 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MINISHELL_H
 
 #include "../includes/struct.h"
+#include "../libft/libft.h"
 
 #include <stdio.h>
 #include <stdlib.h>

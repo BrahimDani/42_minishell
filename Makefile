@@ -3,16 +3,13 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: brdany <brdany@student.42.fr>              +#+  +:+       +#+         #
+#    By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/21 10:30:00 by kadrouin          #+#    #+#              #
-<<<<<<< HEAD
-#    Updated: 2025/08/21 13:18:02 by brdany           ###   ########.fr        #
-=======
-#    Updated: 2025/08/21 11:13:06 by kadrouin         ###   ########.fr        #
->>>>>>> 318c0928e3f3b3d3192d549663a0639c8f3bb7d2
+#    Updated: 2025/08/26 13:57:08 by kadrouin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
 
 NAME = minishell
 CC = cc
