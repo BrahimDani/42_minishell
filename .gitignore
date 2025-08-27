@@ -1,0 +1,26 @@
+# Fichiers binaires et objets
+minishell
+*.o
+
+# Bibliothèques compilées
+libft/libft.a
+
+# Fichiers temporaires et sauvegardes
+*~
+*.swp
+*.tmp
+
+# Dossiers de build
+build/
+
+# Fichiers générés par l'éditeur
+.vscode/
+
+# Fichiers de logs
+*.log
+
+# Fichiers MacOS
+.DS_Store
+
+# Fichiers Windows
+Thumbs.db
