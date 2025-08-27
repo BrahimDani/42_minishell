@@ -6,28 +6,36 @@
 
 void    print_tokens(char **tokens)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while(tokens[i])
-    {
-        printf("token[%d] = %s\n", i, tokens);
-        i++;
-    }
+	i = 0;
+	if (!tokens)
+		return ;
+	while(tokens[i])
+	{
+		printf("token[%d] = %s\n", i, tokens[i]);
+		i++;
+	}
 }
 
-char    *parse_line(char *line)
+char **parse_line(char *line)
 {
-    return (ft_split(line, ' '));
+	if (!line | !*line)
+		return (NULL);
+	return (ft_split(line, ' '));
 }
 
-int main(int ac, char **av)
+void	free_token(char **tokens)
 {
-    char    *line;
-    char    **tokens;
+	int i;
 
-    line = "ls -l /home";
-    tokens = parse_line(line);
-    print_tokens(tokens);
-    return (0);
+	i = 0;
+	if (!tokens)
+		return ;
+	while (tokens[i])
+	{
+		free(tokens[i]);
+		i++;
+	}
+	free(tokens);
 }
