@@ -11,9 +11,11 @@
 /* ************************************************************************** */
 
 #ifndef EXEC_H
-#define EXEC_H
+# define EXEC_H
 
-void convert_env(t_env *env_list, char ***envp);
-int	execute_command(char **args, char **env_list);
+# include "../includes/minishell.h"
+
+int		execute_command(char **args, char **env_list);
+char	*find_command_path(char *command);
 
 #endif

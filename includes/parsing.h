@@ -11,16 +11,12 @@
 /* ************************************************************************** */
 
 #ifndef PARSING_H
-#define PARSING_H
+# define PARSING_H
 
-#include "../includes/minishell.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+# include "../includes/minishell.h"
 
 void	print_tokens(char **tokens);
 char	**parse_line(char *line);
-char	*find_command_path(char *command);
+void	free_token(char **tokens);
 
 #endif

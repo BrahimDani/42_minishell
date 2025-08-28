@@ -3,40 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/27 18:40:24 by brdany           ###   ########.fr       */
+/*   Updated: 2025/08/28 08:08:39 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include "../includes/struct.h"
-#include "../libft/libft.h"
+# include "../includes/struct.h"
+# include "../includes/exec.h"
+# include "../includes/parsing.h"
+# include "../includes/utils.h"
+# include "../libft/libft.h"
 
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
-#include <termios.h>
-#include <unistd.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
+# include <termios.h>
+# include <unistd.h>
 
-// KOKO
-void sigint_handler(int signum);
-void init_env(t_env **env_list, char **envp);
-void call_eof_handler(void);
-void disable_ctrl_echo(void);
-void enable_ctrl_echo(void);
+// GENERAL
+void	sigint_handler(int signum);
+void	init_env(t_env **env_list, char **envp);
+void	call_eof_handler(void);
+void	disable_ctrl_echo(void);
+void	enable_ctrl_echo(void);
 
-// BRAMS
-void	free_token(char **tokens);
-char    **parse_line(char *line);
-void    print_tokens(char **tokens);
+// J'ai créer un parsing.h mets tes fonctions dans les .h correspondantes stp
+// void	free_token(char **tokens);
+// char    **parse_line(char *line);
+// void    print_tokens(char **tokens);
 
 #endif

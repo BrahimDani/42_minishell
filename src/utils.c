@@ -1,50 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/28 08:11:43 by kadrouin         ###   ########.fr       */
+/*   Created: 2025/08/28 08:05:01 by kadrouin          #+#    #+#             */
+/*   Updated: 2025/08/28 08:13:04 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/parsing.h"
+#include "../includes/utils.h"
 
-void	print_tokens(char **tokens)
+char	**get_path_env(char *name)
 {
-	int	i;
+	char	*value;
+	char	**paths;
 
-	i = 0;
-	if (!tokens)
-		return ;
-	while (tokens[i])
-	{
-		printf("token[%d] = %s\n", i, tokens[i]);
-		i++;
-	}
-}
-
-char	**parse_line(char *line)
-{
-	if (!line || !*line)
+	value = getenv(name);
+	if (!value)
 		return (NULL);
-	return (ft_split(line, ' '));
+	paths = ft_split(value, ':');
+	return (paths);
 }
 
-void	free_token(char **tokens)
+void	free_split(char **split)
 {
 	int	i;
 
-	i = 0;
-	if (!tokens)
+	if (!split)
 		return ;
-	while (tokens[i])
+	i = 0;
+	while (split[i])
 	{
-		free(tokens[i]);
+		free(split[i]);
 		i++;
 	}
-	free(tokens);
+	free(split);
 }
-
