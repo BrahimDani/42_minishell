@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/28 08:08:39 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/09/05 03:43:07 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "../includes/parsing.h"
 # include "../includes/utils.h"
 # include "../libft/libft.h"
+# include "../includes/builtins.h"
 
 # include <sys/types.h>
 # include <sys/wait.h>
@@ -36,10 +37,5 @@ void	init_env(t_env **env_list, char **envp);
 void	call_eof_handler(void);
 void	disable_ctrl_echo(void);
 void	enable_ctrl_echo(void);
-
-// J'ai créer un parsing.h mets tes fonctions dans les .h correspondantes stp
-// void	free_token(char **tokens);
-// char    **parse_line(char *line);
-// void    print_tokens(char **tokens);
 
 #endif
