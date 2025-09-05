@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdani <brdani@student.42.fr>              +#+  +:+       +#+        */
+/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:25:32 by brdani            #+#    #+#             */
-/*   Updated: 2024/10/18 18:31:09 by brdani           ###   ########.fr       */
+/*   Updated: 2025/09/05 05:15:28 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ char			*ft_strchr(const char *s, int c);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
 int				ft_atoi(const char *str);
 char			**ft_split(char const *s, char c);
+int				ft_strcmp(char *s1, char *s2);
 char			*ft_strdup(const char *src);
 char			*ft_strjoin(char const *s1, char const *s2);
 unsigned int	ft_strlcpy(char *dest, const char *src, unsigned int size);

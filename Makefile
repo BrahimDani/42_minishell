@@ -6,7 +6,7 @@
 #    By: brdany <brdany@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/21 10:30:00 by kadrouin          #+#    #+#              #
-#    Updated: 2025/08/27 18:40:36 by brdany           ###   ########.fr        #
+#    Updated: 2025/09/05 05:39:30 by brdany           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -lreadline
 
 SRCDIR = src
-BUILTINSDIR = builtins
+BUILTINSDIR = $(SRCDIR)/builtins
 EXECDIR = exec
 PARSINGDIR = parsing
 INCDIR = includes

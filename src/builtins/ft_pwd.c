@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 03:37:14 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/05 05:34:51 by brdany           ###   ########.fr       */
+/*   Created: 2025/09/05 05:08:08 by brdany            #+#    #+#             */
+/*   Updated: 2025/09/05 05:11:08 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#include "../../includes/minishell.h"
 
-# include "../includes/minishell.h"
+int	ft_pwd(void)
+{
+	char	*cwd;
 
-// BUILTINS UTILS
-int		is_builtin(char *cmd);
-int		exec_builtin(char **tokens, t_env **env_list);
-// PWD
-int		ft_pwd(void);
-// CD
-char	*get_env_value(t_env *env_list, char *key);
-void	set_end_value(t_env *env_list, char *key, char *value);
-int		ft_cd(char **tokens, t_env **env_list);
-
-#endif
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		perror("pwd");
+		return (1);
+	}
+	printf("%s\n", cwd);
+	free(cwd);
+	return (0);
+}
