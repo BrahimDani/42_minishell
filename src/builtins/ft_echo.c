@@ -1,39 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   terminal.c                                         :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/21 13:15:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/06 18:09:49 by brdany           ###   ########.fr       */
+/*   Created: 2025/09/06 21:12:56 by brdany            #+#    #+#             */
+/*   Updated: 2025/09/08 01:35:30 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-#ifndef ECHOCTL
-# define ECHOCTL 0001000
-#endif
-
-void	disable_ctrl_echo(void)
+int ft_echo(char **tokens)
 {
-	struct termios term;
+	int i;
+	int new_line;
 	
-	if (tcgetattr(STDIN_FILENO, &term) == 0)
-	{
-		term.c_lflag &= ~ECHOCTL;
-		tcsetattr(STDIN_FILENO, TCSANOW, &term);
-	}
-}
-
-void	enable_ctrl_echo(void)
-{
-	struct termios term;
+	new_line = 1;
+	i = 1;
 	
-	if (tcgetattr(STDIN_FILENO, &term) == 0)
+	if (tokens[1] && ft_strcmp(tokens[1], "-n") == 0)
 	{
-		term.c_lflag |= ECHOCTL;
-		tcsetattr(STDIN_FILENO, TCSANOW, &term);
+		new_line = 0;
+		i++;
 	}
+	while (tokens[i])
+	{
+		write (1, tokens[i], ft_strlen(tokens[i]));
+		if (tokens[i + 1])
+			write (1, " ", 1);
+		i++;
+	}
+	if(new_line)
+		write (1, "\n", 1);
+	return (0);
 }
