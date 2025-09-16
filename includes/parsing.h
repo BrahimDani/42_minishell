@@ -15,7 +15,6 @@
 
 # include "../includes/minishell.h"
 
-void	print_tokens(char **tokens);
 char	**parse_line(char *line);
 void	free_token(char **tokens);
 

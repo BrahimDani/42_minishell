@@ -6,7 +6,7 @@
 #    By: brdany <brdany@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/21 10:30:00 by kadrouin          #+#    #+#              #
-#    Updated: 2025/09/05 05:39:30 by brdany           ###   ########.fr        #
+#    Updated: 2025/09/14 18:50:35 by brdany           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ LDFLAGS = -lreadline
 SRCDIR = src
 BUILTINSDIR = $(SRCDIR)/builtins
 EXECDIR = exec
-PARSINGDIR = parsing
+PARSINGDIR = $(SRCDIR)/parsing
 INCDIR = includes
 LIBFTDIR = libft
 LIBFT = $(LIBFTDIR)/libft.a

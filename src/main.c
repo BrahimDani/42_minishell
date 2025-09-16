@@ -6,13 +6,12 @@
 /*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/05 03:42:45 by brdany           ###   ########.fr       */
+/*   Updated: 2025/09/14 18:49:07 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/parsing.h"
-#include "../includes/builtins.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,6 +21,7 @@
 int	main(int argc, char **envp)
 {
 	(void)argc;
+	char	*line;
 	
 	// Désactive l'affichage de ^C
 	disable_ctrl_echo();
@@ -34,12 +34,11 @@ int	main(int argc, char **envp)
 	init_env(&env_list, envp);
 	while (1)
 	{
-		char	*line = readline("minishell> ");
+		line = readline("minishell> ");
 		if (line)
 		{
 			add_history(line);
 			char	**tokens = parse_line(line);
-			// print_tokens(tokens);
 			if (is_builtin(tokens[0]))
 				exec_builtin(tokens, &env_list);
 			else

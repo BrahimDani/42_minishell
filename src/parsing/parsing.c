@@ -3,33 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/28 08:11:43 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:56:00 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/parsing.h"
+#include "../../includes/parsing.h"
 
-void	print_tokens(char **tokens)
-{
-	int	i;
+// int	empty_line(char *line)
+// {
+// 	int	i;
 
-	i = 0;
-	if (!tokens)
-		return ;
-	while (tokens[i])
-	{
-		printf("token[%d] = %s\n", i, tokens[i]);
-		i++;
-	}
-}
+// 	i = 0;
+// 	while(line[i])
+// 	{
+// 		if (line[i] == ' ' 
+// 			&& line[i] == '\t'
+// 			&& line[i] == '\n'
+// 			&& line[i] == '\v'
+// 			&& line[i] == '\f'
+// 			&& line[i] == '\r')
+// 			return (0);
+// 		i++;
+// 	}
+// 	return (1);
+// }
+
+// int	valid_line(char *line)
+// {
+// 	if (empty_line(line))
+// 	{
+// 		free(line);
+// 		return (1);
+// 	}
+// 	if (open_quote(line) || syntax_error(line))
+// 	{
+// 		free(line);
+// 		return (1);
+// 	}
+// 	return (0);
+// }
 
 char	**parse_line(char *line)
 {
+
 	if (!line || !*line)
+	{
+		free(line);
 		return (NULL);
+	}
+	//valid_line(line);
+	// free(line);	
 	return (ft_split(line, ' '));
 }
 
