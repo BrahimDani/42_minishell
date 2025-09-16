@@ -6,56 +6,51 @@
 /*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/16 17:56:00 by brdany           ###   ########.fr       */
+/*   Updated: 2025/09/16 22:10:56 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/parsing.h"
 
-// int	empty_line(char *line)
-// {
-// 	int	i;
+//Check if closed quote and if their is ("|\) in the beginning
+static int  open_quote(char *line)
+{
+	int i;
+	int quote;
 
-// 	i = 0;
-// 	while(line[i])
-// 	{
-// 		if (line[i] == ' ' 
-// 			&& line[i] == '\t'
-// 			&& line[i] == '\n'
-// 			&& line[i] == '\v'
-// 			&& line[i] == '\f'
-// 			&& line[i] == '\r')
-// 			return (0);
-// 		i++;
-// 	}
-// 	return (1);
-// }
-
-// int	valid_line(char *line)
-// {
-// 	if (empty_line(line))
-// 	{
-// 		free(line);
-// 		return (1);
-// 	}
-// 	if (open_quote(line) || syntax_error(line))
-// 	{
-// 		free(line);
-// 		return (1);
-// 	}
-// 	return (0);
-// }
+	i = 0;
+	while(line[i])
+	{
+		if (line[i] == '|')
+		{
+			ft_putendl_fd("minishell: syntax error near pipe", 0);
+			return (0);
+		}
+		if (line[i] == '\'' || line[i] == '"')
+		{
+			quote = line[i];
+			i++;
+			while (line[i] && line[i] != quote)
+				i++;
+			if (!line[i])
+			{
+				ft_putendl_fd("minishell: syntax error near quote", STDERR_FILENO);
+				return (0);
+			}
+		}
+		i++;
+	}
+	return (1);
+}
 
 char	**parse_line(char *line)
 {
-
 	if (!line || !*line)
-	{
-		free(line);
 		return (NULL);
-	}
-	//valid_line(line);
-	// free(line);	
+	if (empty_line(line))
+		return (NULL);
+	if (!open_quote(line))
+		return (NULL);
 	return (ft_split(line, ' '));
 }
 

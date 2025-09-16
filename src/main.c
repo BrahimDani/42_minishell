@@ -6,7 +6,7 @@
 /*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/14 18:49:07 by brdany           ###   ########.fr       */
+/*   Updated: 2025/09/16 20:10:45 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	main(int argc, char **envp)
 {
 	(void)argc;
 	char	*line;
+	char	**tokens;
 	
 	// Désactive l'affichage de ^C
 	disable_ctrl_echo();
@@ -38,7 +39,12 @@ int	main(int argc, char **envp)
 		if (line)
 		{
 			add_history(line);
-			char	**tokens = parse_line(line);
+			tokens = parse_line(line);
+			if (!tokens)
+			{
+				free(line);
+				continue;
+			}
 			if (is_builtin(tokens[0]))
 				exec_builtin(tokens, &env_list);
 			else
