@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:08:14 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/14 17:10:28 by brdany           ###   ########.fr       */
+/*   Updated: 2025/09/28 13:43:33 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int is_builtin(char *cmd)
 
 int exec_builtin(char **tokens, t_env **env_list)
 {
+	printf("Executing builtin: %s\n", tokens[0]);
 	if (ft_strcmp(tokens[0], "echo") == 0)
 		return (ft_echo(tokens));
 	if (ft_strcmp(tokens[0], "cd") == 0)
@@ -42,12 +43,12 @@ int exec_builtin(char **tokens, t_env **env_list)
 	else if (ft_strcmp(tokens[0], "pwd") == 0)
 		return (ft_pwd());
 	else if (ft_strcmp(tokens[0], "export") == 0)
-		return(ft_export(tokens, env_list));
+		return (ft_export(tokens, env_list));
+	else if (ft_strcmp(tokens[0], "env") == 0)
+		return (ft_env(env_list));
 	// else if (ft_strcmp(tokens[0], "unset") == 0)
-	// 	return(ft_unset());
-	// else if (ft_strcmp(tokens[0], "env") == 0)
-	// 	return(ft_env());
+	// 	return (ft_unset());
 	// else if (ft_strcmp(tokens[0], "exit") == 0)
-	// 	return(ft_exit());
+	// 	return (ft_exit());
 	return (1);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/16 20:10:45 by brdany           ###   ########.fr       */
+/*   Updated: 2025/09/28 14:11:08 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,17 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-int	main(int argc, char **envp)
+int main(int argc, char **argv, char **envp)
 {
-	(void)argc;
 	char	*line;
 	char	**tokens;
-	
-	// Désactive l'affichage de ^C
+	t_env	*env_list = NULL;
+
+	(void)argc;
+	(void)argv;
 	disable_ctrl_echo();
-	
-	// Configure les signaux
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
-	
-	t_env	*env_list = NULL;
 	init_env(&env_list, envp);
 	while (1)
 	{

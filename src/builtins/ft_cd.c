@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:11:34 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/05 05:40:42 by brdany           ###   ########.fr       */
+/*   Updated: 2025/09/28 14:10:58 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,43 @@ void	set_end_value(t_env *env_list, char *key, char *value)
 	}
 }
 
+int	arg_count(char **tokens)
+{
+	int count = 0;
+	
+	while (tokens[count])
+		count++;
+	return (count);
+}
+
 int	ft_cd(char **tokens, t_env **env_list)
 {
 	char	*path;
 	char	*oldpwd;
 	char	*cwd;
 
+	if (arg_count(tokens) > 2)
+	{
+		write (2, "cd: too many arguments\n", 23);
+		return (1);
+	}
 	oldpwd = getcwd(NULL, 0);
-	if (!tokens[1])
+	if (!tokens[1] && ft_strcmp(tokens[1], "-") == 1)
 	{
 		path = get_env_value(*env_list, "HOME");
 		if (!path)
 		{
 			write (2, "cd: HOME not set\n", 17);
+			free(oldpwd);
+			return (1);
+		}
+	}
+	else if (tokens[1] && ft_strcmp(tokens[1], "-") == 0)
+	{
+		path = get_env_value(*env_list, "OLDPWD");
+		if (!path)
+		{
+			write(2, "cd: OLDPWD not set\n", 19);
 			free(oldpwd);
 			return (1);
 		}

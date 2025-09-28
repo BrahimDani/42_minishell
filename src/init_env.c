@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:15:58 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/26 14:48:39 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/09/28 13:50:43 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void convert_env(t_env *env_list, char ***envp)
 {
 	t_env	*current = env_list;
 	int		count = 0;
+	char *tmp;
 
 	while (current)
 	{
@@ -74,7 +75,11 @@ void convert_env(t_env *env_list, char ***envp)
 	while (i < count)
 	{
 		if (current->value)
-			(*envp)[i] = ft_strjoin(current->key, "=");
+		{
+			tmp = ft_strjoin(current->key, "=");
+			(*envp)[i] = ft_strjoin(tmp, current->value);
+			free(tmp);
+		}
 		else
 			(*envp)[i] = ft_strdup(current->key);
 		current = current->next;
