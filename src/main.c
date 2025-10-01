@@ -47,7 +47,7 @@ int main(int argc, char **argv, char **envp)
 			if (is_builtin(tokens[0]))
 			{
 				if (strcmp(tokens[0], "exit") == 0)
-					ft_exit(tokens); // quitte directement
+					ft_exit(tokens);
 				else
 					exec_builtin(tokens, &env_list);
 			}
