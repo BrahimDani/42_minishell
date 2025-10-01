@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/10/01 16:23:16 by brdany           ###   ########.fr       */
+/*   Updated: 2025/10/01 22:06:25 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
+int g_last_status = 0;
 
 int main(int argc, char **argv, char **envp)
 {
@@ -43,7 +45,12 @@ int main(int argc, char **argv, char **envp)
 				continue;
 			}
 			if (is_builtin(tokens[0]))
-				exec_builtin(tokens, &env_list);
+			{
+				if (strcmp(tokens[0], "exit") == 0)
+					ft_exit(tokens); // quitte directement
+				else
+					exec_builtin(tokens, &env_list);
+			}
 			else
 				execute_command(tokens, envp);
 			// free_token(tokens);

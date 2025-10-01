@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 08:07:47 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/28 08:10:13 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/10/01 21:37:24 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,7 @@
 
 char	**get_path_env(char *name);
 void	free_split(char **split);
+
+extern int g_last_status;
 
 #endif
