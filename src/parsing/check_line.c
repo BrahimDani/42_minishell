@@ -6,12 +6,11 @@
 /*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:53:53 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/16 21:51:06 by brdany           ###   ########.fr       */
+/*   Updated: 2025/10/01 15:27:38 by brdany           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 //check if line is empty
 int	empty_line(char *line)
