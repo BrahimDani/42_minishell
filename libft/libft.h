@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:25:32 by brdani            #+#    #+#             */
-/*   Updated: 2025/09/05 05:15:28 by brdany           ###   ########.fr       */
+/*   Updated: 2025/10/01 20:59:48 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void			*ft_calloc(size_t num, size_t size);
 char			*ft_strchr(const char *s, int c);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
 int				ft_atoi(const char *str);
+long			ft_atol(const char *str);
 char			**ft_split(char const *s, char c);
 int				ft_strcmp(char *s1, char *s2);
 char			*ft_strdup(const char *src);

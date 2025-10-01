@@ -1,5 +1,6 @@
 # Fichiers binaires et objets
 minishell
+test.sh
 *.o
 
 # Bibliothèques compilées

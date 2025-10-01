@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:11:34 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/29 16:26:03 by brdany           ###   ########.fr       */
+/*   Updated: 2025/10/01 21:30:11 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ void	set_end_value(t_env *env_list, char *key, char *value)
 
 int	arg_count(char **tokens)
 {
-	int count = 0;
-	
+	int	count;
+
+	count = 0;
 	while (tokens[count])
 		count++;
 	return (count);
