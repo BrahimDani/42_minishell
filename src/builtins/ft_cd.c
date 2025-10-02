@@ -59,7 +59,7 @@ int	ft_cd(char **tokens, t_env **env_list)
 		return (1);
 	}
 	oldpwd = getcwd(NULL, 0);
-	if (!tokens[1] && ft_strcmp(tokens[1], "-") == 1)
+	if (!tokens[1])
 	{
 		path = get_env_value(*env_list, "HOME");
 		if (!path)
