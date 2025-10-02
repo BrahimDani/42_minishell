@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 02:09:22 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/10 02:16:23 by brdany           ###   ########.fr       */
+/*   Updated: 2025/10/02 20:34:01 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	is_valid_identifier(const char *str)
 	int	i;
 
 	i = 0;
-	if (!str || (!isalpha(str[0]) && str[0] != ' '))
+	if (!str || (!isalpha(str[0]) && str[0] != '_'))
 		return (0);
 	i = 1;
 	while (str[i] && str[i] != '=')
@@ -81,6 +81,7 @@ int	ft_export(char **tokens, t_env **env_list)
 		}
 		return (0);
 	}
+	i = 1;
 	while (tokens[i])
 	{
 		if (!is_valid_identifier(tokens[i]))
@@ -99,7 +100,7 @@ int	ft_export(char **tokens, t_env **env_list)
 			set_env_value(env_list, key, value);
 		}
 		else
-			set_end_value(*env_list, tokens[i], NULL);
+			set_env_value(env_list, tokens[i], NULL);
 		i++;
 	}
 	return (0);
