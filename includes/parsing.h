@@ -19,5 +19,6 @@ char	    **parse_line(char *line);
 // void	    free_token(char **tokens);
 int	        empty_line(char *line);
 int	        valid_line(char *line);
+int	        check_ampersand(char *line);
 
 #endif
