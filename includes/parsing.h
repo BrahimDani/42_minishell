@@ -20,5 +20,10 @@ char	    **parse_line(char *line);
 int	        empty_line(char *line);
 int	        valid_line(char *line);
 int	        check_ampersand(char *line);
+int			check_redir(char *line);
+int			check_pipe(char *line);
+int  		check_quote(char *line);
+
+
 
 #endif

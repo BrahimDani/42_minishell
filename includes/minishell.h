@@ -30,6 +30,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <unistd.h>
+# include <stdbool.h>
 
 // GENERAL
 void	sigint_handler(int signum);
