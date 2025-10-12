@@ -15,15 +15,31 @@
 
 # include "../includes/minishell.h"
 
-char	    **parse_line(char *line);
-// void	    free_token(char **tokens);
-int	        empty_line(char *line);
-int	        valid_line(char *line);
-int	        check_ampersand(char *line);
-int			check_redir(char *line);
-int			check_pipe(char *line);
-int  		check_quote(char *line);
+typedef enum	e_token_type
+{
+	T_WORD,			// mot nrml
+	T_PIPE,			// |
+	T_REDIR_IN,		// <
+	T_REDIR_OUT,	// >
+	T_APPEND,		// >>
+	T_HEREDOC,		// <<
+}	t_token_type;
 
+typedef struct	s_token
+{
+	char			*value;
+	t_token_type	type;
+	struct s_token	*next;
+}	t_token;
 
+void	free_tokens(t_token *tokens);
+char	**parse_line(char *line);
+int		empty_line(char *line);
+int		valid_line(char *line);
+int		check_ampersand(char *line);
+int		check_redir(char *line);
+int		check_pipe(char *line);
+int		check_quote(char *line);
+t_token	*tokenize_line(char *line);
 
 #endif

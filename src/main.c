@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/10/01 22:06:25 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/10/12 14:26:31 by vboxuser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ int main(int argc, char **argv, char **envp)
 			}
 			else
 				execute_command(tokens, envp);
-			// free_token(tokens);
 			free(line);
 		}
 		else
