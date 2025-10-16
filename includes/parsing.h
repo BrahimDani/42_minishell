@@ -33,7 +33,7 @@ typedef struct	s_token
 }	t_token;
 
 void	free_tokens(t_token *tokens);
-char	**parse_line(char *line);
+t_token	*parse_line(char *line);
 int		empty_line(char *line);
 int		valid_line(char *line);
 int		check_ampersand(char *line);
@@ -41,5 +41,6 @@ int		check_redir(char *line);
 int		check_pipe(char *line);
 int		check_quote(char *line);
 t_token	*tokenize_line(char *line);
+char	**tokens_to_array(t_token *list);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/10/12 14:26:31 by vboxuser         ###   ########.fr       */
+/*   Updated: 2025/10/16 14:04:59 by vboxuser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,16 @@ int main(int argc, char **argv, char **envp)
 		if (line)
 		{
 			add_history(line);
-			tokens = parse_line(line);
-			if (!tokens)
+			t_token	*token_list = parse_line(line);
+			if (!token_list)
 			{
+				free(line);
+				continue;
+			}
+			tokens = tokens_to_array(token_list);
+			if(!tokens)
+			{
+				free_tokens(token_list);
 				free(line);
 				continue;
 			}
