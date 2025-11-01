@@ -52,6 +52,7 @@ int		check_pipe(char *line);
 int		check_quote(char *line);
 t_token	*tokenize_line(char *line);
 char	**tokens_to_array(t_token *list);
+void    expand_token(t_cmd *cmd_list, t_env *env_list);
 
 //test
 void	print_cmds(t_cmd *cmd);

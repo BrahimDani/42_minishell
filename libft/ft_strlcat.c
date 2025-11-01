@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdani <brdani@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 21:18:33 by brdani            #+#    #+#             */
-/*   Updated: 2024/10/17 21:39:13 by brdani           ###   ########.fr       */
+/*   Updated: 2025/11/01 10:53:12 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,34 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	if (j < size)
 		dst[i] = '\0';
 	return (j + ft_strlen(src));
+}
+
+char	*ft_strncat_free(char *s1, char c, int free_s1)
+{
+	char	*result;
+	size_t	len;
+	size_t	i;
+
+	if (!s1)
+	{
+		result = ft_calloc(2, 1);
+		if (!result)
+			return (NULL);
+		result[0] = c;
+		return (result);
+	}
+	len = ft_strlen(s1);
+	result = ft_calloc(len + 2, 1);
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		result[i] = s1[i];
+		i++;
+	}
+	result[i] = c;
+	if (free_s1)
+		free(s1);
+	return (result);
 }

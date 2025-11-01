@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/01 10:41:06 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/01 10:51:01 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		/* === 3️⃣ EXPANSION : Variables ($VAR, $?) === */
-		// TODO: expand_variables(cmd_list, env_list);
+		expand_token(cmd_list, env_list);
 
 		/* === 4️⃣ EXPANSION : Suppression des quotes === */
 		// TODO: remove_quotes(cmd_list);

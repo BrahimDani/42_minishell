@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:25:32 by brdani            #+#    #+#             */
-/*   Updated: 2025/10/01 20:59:48 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/01 10:52:54 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ char			**ft_split(char const *s, char c);
 int				ft_strcmp(char *s1, char *s2);
 char			*ft_strdup(const char *src);
 char			*ft_strjoin(char const *s1, char const *s2);
+char			*ft_strjoin_free(char *s1, char *s2, int free_flags);
+char			*ft_strncat_free(char *s1, char c, int free_s1);
 unsigned int	ft_strlcpy(char *dest, const char *src, unsigned int size);
 char			*ft_strnstr(const char *hystk, const char *ndl, size_t len);
 char			*ft_strrchr(const char *s, int c);
