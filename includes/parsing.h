@@ -29,6 +29,7 @@ typedef struct	s_token
 {
 	char			*value;	// mots
 	t_token_type	type;	// type de token (T_WORD , T_PIPE , ect...)
+	int				no_expand;	// 1 si entre single quotes (pas d'expansion)
 	struct s_token	*next;
 }	t_token;
 
@@ -53,6 +54,7 @@ int		check_quote(char *line);
 t_token	*tokenize_line(char *line);
 char	**tokens_to_array(t_token *list);
 void    expand_token(t_cmd *cmd_list, t_env *env_list);
+void    expand_tokens(t_token *tokens, t_env *env_list);
 
 //test
 void	print_cmds(t_cmd *cmd);

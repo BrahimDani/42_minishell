@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:44:43 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/01 10:55:36 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/04 10:24:31 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,36 @@ static char *expand_variable(const char *str, t_env *env_list)
     return (result);
 }
 
+/**
+ * expand_tokens - Expand les variables dans les tokens
+ * Respecte le flag no_expand (single quotes)
+ */
+void    expand_tokens(t_token *tokens, t_env *env_list)
+{
+    t_token *current;
+    char    *expanded_value;
+
+    current = tokens;
+    while (current)
+    {
+        /* === Ne pas expandre les tokens entre single quotes === */
+        if (current->type == T_WORD && !current->no_expand)
+        {
+            expanded_value = expand_variable(current->value, env_list);
+            if (expanded_value)
+            {
+                free(current->value);
+                current->value = expanded_value;
+            }
+        }
+        current = current->next;
+    }
+}
+
+/**
+ * expand_token - Expand les variables dans les commandes (ancienne version)
+ * Pour compatibilité
+ */
 void    expand_token(t_cmd *cmd_list, t_env *env_list)
 {
     t_cmd   *current_cmd = cmd_list;

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/01 10:51:01 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/04 10:29:16 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,33 +123,30 @@ int main(int argc, char **argv, char **envp)
 		/* === Ajout à l'historique === */
 		add_history(line);
 
-		/* === 1️⃣ PARSING : Tokenization === */
-		token_list = parse_line(line);
-		if (!token_list)
-		{
-			free(line);
-			continue ;
-		}
+	/* === 1️⃣ PARSING : Tokenization === */
+	token_list = parse_line(line);
+	if (!token_list)
+	{
+		free(line);
+		continue ;
+	}
 
-		/* === 2️⃣ PARSING : Conversion en commandes === */
-		cmd_list = parse_tokens(token_list);
-		if (!cmd_list)
-		{
-			free_tokens(token_list);
-			free(line);
-			continue ;
-		}
+	/* === 2️⃣ EXPANSION : Variables ($VAR, $?) === */
+	expand_tokens(token_list, env_list);
 
-		/* === 3️⃣ EXPANSION : Variables ($VAR, $?) === */
-		expand_token(cmd_list, env_list);
+	/* === 3️⃣ PARSING : Conversion en commandes === */
+	cmd_list = parse_tokens(token_list);
+	if (!cmd_list)
+	{
+		free_tokens(token_list);
+		free(line);
+		continue ;
+	}
 
-		/* === 4️⃣ EXPANSION : Suppression des quotes === */
-		// TODO: remove_quotes(cmd_list);
+	/* === 4️⃣ EXÉCUTION === */
+	execute_cmds(cmd_list, &env_list, envp);
 
-		/* === 5️⃣ EXÉCUTION === */
-		execute_cmds(cmd_list, &env_list, envp);
-
-		/* === 6️⃣ Nettoyage === */
+	/* === 6️⃣ Nettoyage === */
 		free_tokens(token_list);
 		free_cmds(cmd_list);
 		free(line);
