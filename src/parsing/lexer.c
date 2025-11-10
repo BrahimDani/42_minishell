@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 12:16:44 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/11/04 10:24:32 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/04 10:31:28 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static t_token	*new_token(char *value, t_token_type type)
 		return (NULL);
 	new->value = ft_strdup(value);
 	new->type = type;
-	new->no_expand = 0;  // Par défaut, on expand
+	new->no_expand = 0;
 	new->next = NULL;
 	return (new);
 }

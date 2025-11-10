@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/05 03:43:07 by brdany           ###   ########.fr       */
+/*   Updated: 2025/11/10 12:45:48 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
