@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/04 10:24:34 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/22 14:31:25 by vboxuser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ char	**tokens_to_array(t_token *list)
 
 t_token	*parse_line(char *line)
 {
+	t_token *tokens;
+
 	if (!line || !*line)
 		return (NULL);
 	if (empty_line(line))
@@ -48,6 +50,14 @@ t_token	*parse_line(char *line)
 		g_last_status = 2;
 		return (NULL);
 	}
-	return (tokenize_line(line));
+	tokens = tokenize_line(line);
+	if (!tokens)
+		return (NULL);
+	if (!check_pipe_tokens(tokens))
+	{
+		free_tokens(tokens);
+		return (NULL);
+	}
+	return (tokens);
 }
 

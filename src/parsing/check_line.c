@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_line.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:53:53 by brdany            #+#    #+#             */
-/*   Updated: 2025/10/01 15:27:38 by brdany           ###   ########.fr       */
+/*   Updated: 2025/11/22 14:39:33 by vboxuser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,30 +32,6 @@ int  check_quote(char *line)
 				ft_putendl_fd("minishell: syntax error near quote", STDERR_FILENO);
 				return (0);
 			}
-		}
-		i++;
-	}
-	return (1);
-}
-
-int	check_pipe(char *line)
-{
-	int	i;
-
-	i = 0;
-	while (line[i])
-	{
-		if (i == 0 && line[i] == '|' && line[i + 1] == '|')
-		{
-			ft_putendl_fd("minishell: syntax error near `||'", STDERR_FILENO);
-			g_last_status = 2;
-			return (0);
-		}
-		if (i == 0 && line[i] == '|')
-		{
-			ft_putendl_fd("minishell: sytnax error near `|'", STDERR_FILENO);
-			g_last_status = 2;
-			return (0);
 		}
 		i++;
 	}
@@ -116,11 +92,8 @@ int	check_redir(char *line)
 		}
 		i++;
 	}
-	if (!check_pipe(line))
-		return (0);
 	return (1);
 }
-
 
 //check if line is empty
 int	empty_line(char *line)
@@ -141,4 +114,42 @@ int	empty_line(char *line)
 	}
 	return (1);
 }
+int	check_pipe_tokens(t_token *tokens)
+{
+	t_token	*current;
+	t_token	*last;
 
+	if (!tokens)
+		return (1);
+	if (tokens->type == T_PIPE)
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'", STDERR_FILENO);
+		g_last_status = 2;
+		return (0);
+	}
+	current = tokens;
+	last = tokens;
+	while (current)
+	{
+		last = current;
+		current = current->next;
+	}
+	if (last->type == T_PIPE)
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'", STDERR_FILENO);
+		g_last_status = 2;
+		return (0);
+	}
+	current = tokens;
+	while (current)
+	{
+		if (current->type == T_PIPE && current->next && current->next->type == T_PIPE)
+		{
+			ft_putendl_fd("minishell: syntax error near unexpected token `|'", STDERR_FILENO);
+			g_last_status = 2;
+			return (0);
+		}
+		current = current->next;
+	}
+	return (1);
+}
