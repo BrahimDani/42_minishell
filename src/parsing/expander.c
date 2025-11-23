@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:44:43 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/04 10:24:31 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/23 22:36:52 by vboxuser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/parsing.h"
 
-static char *expand_variable(const char *str, t_env *env_list)
+char *expand_variable(const char *str, t_env *env_list)
 {
     char    *result;
     char    *var_start;
