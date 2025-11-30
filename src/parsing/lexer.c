@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 12:16:44 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/11/04 10:31:28 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:24:39 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ static	t_token_type get_type(char *word)
 {
 	if (!ft_strncmp(word, "|", 2))
 		return (T_PIPE);
+	if (!ft_strncmp(word, ";", 2))
+		return (T_SEMICOLON);
 	if (!ft_strncmp(word, "<", 2))
 		return (T_REDIR_IN);
 	if (!ft_strncmp(word, ">", 2))
@@ -119,7 +121,7 @@ static char	*handle_word(char *line, int *i)
 
 	start = *i;
 	while (line[*i] && line[*i] != ' ' && line[*i] != '\'' 
-		&& line[*i] != '"' && !ft_strchr("|<>", line[*i]))
+		&& line[*i] != '"' && !ft_strchr("|<>;", line[*i]))
 		(*i)++;
 	word = ft_substr(line, start, *i - start);
 	return (word);
@@ -137,7 +139,7 @@ t_token	*tokenize_line(char *line)
 		while (line[i] == ' ')
 			i++;
 		if (!line[i])
-			break;
+			break ;
 		if ((line[i] == '>' || line[i] == '<') && line[i + 1] == line[i])
 		{
 			token_value = ft_substr(line, i, 2);
@@ -145,7 +147,7 @@ t_token	*tokenize_line(char *line)
 			free(token_value);
 			i += 2;
 		}
-		else if (ft_strchr("|<>", line[i]))
+		else if (ft_strchr("|<>;", line[i]))
 		{
 			token_value = ft_substr(line, i, 1);
 			add_token_back(&token, new_token(token_value, get_type(token_value)));

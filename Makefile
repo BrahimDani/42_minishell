@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: brdany <brdany@student.42.fr>              +#+  +:+       +#+         #
+#    By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/21 10:30:00 by kadrouin          #+#    #+#              #
-#    Updated: 2025/09/14 18:50:35 by brdany           ###   ########.fr        #
+#    Updated: 2025/11/30 18:43:34 by kadrouin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ LDFLAGS = -lreadline
 
 SRCDIR = src
 BUILTINSDIR = $(SRCDIR)/builtins
-EXECDIR = exec
+EXECDIR = $(SRCDIR)/exec
 PARSINGDIR = $(SRCDIR)/parsing
 INCDIR = includes
 LIBFTDIR = libft

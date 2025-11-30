@@ -15,7 +15,16 @@
 
 # include "../includes/minishell.h"
 
-int		execute_command(char **args, char **env_list);
+int		exec_external(char **argv, char **envp);
+
 char	*find_command_path(char *command);
+
+int		run_command(t_cmd *cmd, t_env **env_list, char **envp);
+
+void	exec_cmd_list(t_cmd *cmd_list, t_env **env_list, char **envp);
+
+int     create_pipes(int pipes[][2], int n_cmds);
+
+void    close_pipes(int pipes[][2], int count);
 
 #endif

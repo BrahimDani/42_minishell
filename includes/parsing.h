@@ -19,6 +19,7 @@ typedef enum	e_token_type
 {
 	T_WORD,			// mot nrml
 	T_PIPE,			// |
+	T_SEMICOLON,	// ;
 	T_REDIR_IN,		// <
 	T_REDIR_OUT,	// >
 	T_APPEND,		// >>
@@ -57,6 +58,8 @@ void    expand_token(t_cmd *cmd_list, t_env *env_list);
 void    expand_tokens(t_token *tokens, t_env *env_list);
 int     read_heredoc(char *delimiter, t_env *env_list);
 char 	*expand_variable(const char *str, t_env *env_list);
+
+void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp);
 
 //test
 void	print_cmds(t_cmd *cmd);

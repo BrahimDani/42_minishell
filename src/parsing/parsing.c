@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/22 14:31:25 by vboxuser         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:19:14 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,53 @@ t_token	*parse_line(char *line)
 		return (NULL);
 	}
 	return (tokens);
+}
+
+static t_token	*extract_until_semicolon(t_token **tokens)
+{
+	t_token	*start;
+	t_token	*cur;
+	t_token	*prev;
+
+	if (!tokens || !*tokens)
+		return (NULL);
+	start = *tokens;
+	cur = *tokens;
+	prev = NULL;
+	while (cur && cur->type != T_SEMICOLON)
+	{
+		prev = cur;
+		cur = cur->next;
+	}
+	if (cur && cur->type == T_SEMICOLON)
+	{
+		if (prev)
+			prev->next = NULL;
+		*tokens = cur->next;
+		free(cur->value);
+		free(cur);
+	}
+	else
+		*tokens = NULL;
+	return (start);
+}
+
+void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
+{
+	t_token	*current_block;
+	t_cmd	*cmd_list;
+
+	while (tokens)
+	{
+		current_block = extract_until_semicolon(&tokens);
+		if (!current_block)
+			continue ;
+		cmd_list = parse_tokens(current_block);
+		free_tokens(current_block);
+		if (!cmd_list)
+			continue ;
+		exec_cmd_list(cmd_list, env_list, envp);
+		free_cmds(cmd_list);
+	}
 }
 
