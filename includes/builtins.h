@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 03:37:14 by brdany            #+#    #+#             */
-/*   Updated: 2025/10/01 21:40:31 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:19:19 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ int	ft_exit(char **args);
 // ECHO
 int		ft_echo(char **tokens);
 // EXPORT
-int		ft_export(char **tokens, t_env **env_list);
+int	ft_export(char **tokens, t_env **env_list);
+int	ft_unset(char **tokens, t_env **env_list);
 void	set_env_value(t_env **env_list, char *key, char *value);
 int		is_valid_identifier(const char *str);
 // ENV

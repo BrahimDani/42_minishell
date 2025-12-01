@@ -45,12 +45,24 @@ int		exec_external(char **argv, char **envp)
 	char	*full_path;
 	int		ret;
 
+	// Si c'est un chemin absolu ou relatif (contient /), l'utiliser directement
+	if (ft_strchr(argv[0], '/'))
+	{
+		if (access(argv[0], X_OK) == 0)
+			return (spawn_external(argv[0], argv, envp));
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(argv[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+		return (127);
+	}
+	
+	// Sinon chercher dans PATH
 	full_path = find_command_path(argv[0]);
 	if (!full_path)
 	{
-		ft_putstr_fd("minishell: command not found: ", 2);
+		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(argv[0], 2);
-		ft_putstr_fd("\n", 2);
+		ft_putstr_fd(": command not found\n", 2);
 		return (127);
 	}
 	ret = spawn_external(full_path, argv, envp);
@@ -80,20 +92,32 @@ int	run_command(t_cmd *cmd, t_env **env_list, char **envp)
  * (moved from main.c to centralize exec logic)
  */
 
-static int	handle_input_redir(t_cmd *cmd)
+static int	handle_input_redir(t_cmd *cmd, t_env **env_list)
 {
 	int	fd_in;
 	int	saved_stdin;
 
-	if (!cmd->infile || cmd->heredoc)
+	if (!cmd->infile && !cmd->heredoc)
 		return (-1);
-	fd_in = open(cmd->infile, O_RDONLY);
-	if (fd_in < 0)
+	if (cmd->heredoc)
 	{
-		ft_putstr_fd("minishell: ", 2);
-		perror(cmd->infile);
-		g_last_status = 1;
-		return (-2);
+		fd_in = read_heredoc(cmd->infile, *env_list);
+		if (fd_in < 0)
+		{
+			g_last_status = 1;
+			return (-2);
+		}
+	}
+	else
+	{
+		fd_in = open(cmd->infile, O_RDONLY);
+		if (fd_in < 0)
+		{
+			ft_putstr_fd("minishell: ", 2);
+			perror(cmd->infile);
+			g_last_status = 1;
+			return (-2);
+		}
 	}
 	saved_stdin = dup(STDIN_FILENO);
 	dup2(fd_in, STDIN_FILENO);
@@ -144,7 +168,7 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 	int	saved_stdin;
 	int	saved_stdout;
 
-	saved_stdin = handle_input_redir(cmd);
+	saved_stdin = handle_input_redir(cmd, env_list);
 	if (saved_stdin == -2)
 		return ;
 	saved_stdout = handle_output_redir(cmd);
@@ -259,7 +283,7 @@ static void	execute_pipeline(t_cmd *cmd_list,
 			if (i < n_cmds - 1)
 				dup2(pipes[i][1], STDOUT_FILENO);
 			close_pipes(pipes, n_cmds - 1);
-			saved_in = handle_input_redir(cmd);
+			saved_in = handle_input_redir(cmd, env_list);
 			if (saved_in == -2)
 				exit(1);
 			saved_out = handle_output_redir(cmd);

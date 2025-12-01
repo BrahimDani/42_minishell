@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/30 19:21:19 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:18:23 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ int main(int argc, char **argv, char **envp)
 		token_list = parse_line(line);
 		if (token_list)
 		{
-			expand_tokens(token_list, env_list);
 			exec_from_tokens(token_list, &env_list, envp);
 		}
 		free_env_list(env_list);
@@ -66,7 +65,6 @@ int main(int argc, char **argv, char **envp)
 			free(line);
 			continue ;
 		}
-		expand_tokens(token_list, env_list);
 		exec_from_tokens(token_list, &env_list, envp);
 		free(line);
 	}

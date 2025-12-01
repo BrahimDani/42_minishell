@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 02:09:22 by brdany            #+#    #+#             */
-/*   Updated: 2025/11/30 19:04:53 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:16:49 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,6 @@ int	ft_export(char **tokens, t_env **env_list)
 		cur = *env_list;
 		while(cur)
 		{
-		if (tokens[i][0] == '\0')
-		{
-			i++;
-			continue ;
-		}
 			write (1, "declare -x ", 11);
 			write (1, cur->key, ft_strlen(cur->key));
 			if (cur->value)

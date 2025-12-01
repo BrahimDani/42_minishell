@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:08:14 by brdany            #+#    #+#             */
-/*   Updated: 2025/10/12 17:08:57 by vboxuser         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:19:19 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ int exec_builtin(char **tokens, t_env **env_list)
 		return (ft_export(tokens, env_list));
 	else if (ft_strcmp(tokens[0], "env") == 0)
 		return (ft_env(env_list));
-	// else if (ft_strcmp(tokens[0], "unset") == 0)
-	// 	return (ft_unset());
+	else if (ft_strcmp(tokens[0], "unset") == 0)
+		return (ft_unset(tokens, env_list));
 	else if (ft_strcmp(tokens[0], "exit") == 0)
 		return (ft_exit(tokens));
 	return (1);

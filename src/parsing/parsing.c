@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/30 19:19:14 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:18:14 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
 		current_block = extract_until_semicolon(&tokens);
 		if (!current_block)
 			continue ;
+		// Expand variables AFTER splitting by ; so each block has current env state
+		expand_tokens(current_block, *env_list);
 		cmd_list = parse_tokens(current_block);
 		free_tokens(current_block);
 		if (!cmd_list)

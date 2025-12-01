@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:42:22 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/10/23 22:20:00 by vboxuser         ###   ########.fr       */
+/*   Updated: 2025/12/01 17:32:35 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ t_cmd   *parse_tokens(t_token *tokens)
 		else if (tokens->type == T_REDIR_IN || tokens->type == T_REDIR_OUT
 			|| tokens->type == T_APPEND || tokens->type == T_HEREDOC)
 			handle_redirection(current, &tokens);
-		else if (tokens->type == T_PIPE)
+			else if (tokens->type == T_PIPE)
 			current = create_new_cmd(&head);
 		tokens = tokens->next;
 	}
