@@ -285,6 +285,13 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 		g_last_status = 1;
 		return ;
 	}
+	if (cmd->has_out_redir_error && cmd->out_redir_first_error)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		perror(cmd->out_redir_first_error);
+		g_last_status = 1;
+		return ;
+	}
 	saved_stdin = handle_input_redir(cmd, env_list);
 	if (saved_stdin == -2)
 		return ;
@@ -430,6 +437,12 @@ static void	execute_pipeline(t_cmd *cmd_list,
 			{
 				ft_putstr_fd("minishell: ", 2);
 				perror(cmd->in_redir_first_error);
+				exit(1);
+			}
+			if (cmd->has_out_redir_error && cmd->out_redir_first_error)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				perror(cmd->out_redir_first_error);
 				exit(1);
 			}
 			saved_in = handle_input_redir(cmd, env_list);

@@ -48,6 +48,8 @@ typedef struct s_cmd
 	int				redirect_stderr_to_out; // 1 si pattern "2>" detecte
 	int				has_in_redir_error; // 1 si une redirection d'entree invalide a ete detectee
 	char			*in_redir_first_error; // premier fichier d'entree en erreur
+	int				has_out_redir_error; // 1 si une redirection de sortie invalide a ete detectee (ordre gauche->droite)
+	char			*out_redir_first_error; // premier fichier de sortie en erreur (ordre gauche->droite)
 	struct s_cmd	*next;
 } 	t_cmd;
 void	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list);

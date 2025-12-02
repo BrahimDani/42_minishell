@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:42:22 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/12/02 04:45:39 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:01:48 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ static t_cmd	*create_new_cmd(t_cmd **head)
 	new->redirect_stderr_to_out = 0;
 	new->has_in_redir_error = 0;
 	new->in_redir_first_error = NULL;
+	new->has_out_redir_error = 0;
+	new->out_redir_first_error = NULL;
 	if (!*head)
 		*head = new;
 	else
@@ -139,7 +141,7 @@ static int	handle_redirection(t_cmd *cmd, t_token **token)
 		heredoc_quoted_any = aggregate_quoted(t);
 	joined = join_adjacent_words(&t);
 	// Conserve les anciens champs pour compatibilite (dernier prend effet)
-	if ((*token)->type == T_REDIR_IN)
+    if ((*token)->type == T_REDIR_IN)
 	{
 		// Enregistre la premiere erreur d'ouverture pour respecter l'ordre gauche->droite
 		if (!cmd->has_in_redir_error)
@@ -153,9 +155,11 @@ static int	handle_redirection(t_cmd *cmd, t_token **token)
 			else
 				close(fd_test);
 		}
+		if (cmd->infile)
+			free(cmd->infile);
 		cmd->infile = ft_strdup(joined);
 	}
-	else if ((*token)->type == T_REDIR_OUT || (*token)->type == T_APPEND)
+    else if ((*token)->type == T_REDIR_OUT || (*token)->type == T_APPEND)
 	{
 		/* If an earlier output redirection existed, emulate bash side-effect by creating it */
 		if (cmd->outfile)
@@ -165,15 +169,22 @@ static int	handle_redirection(t_cmd *cmd, t_token **token)
 				fd_prev = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
 			else
 				fd_prev = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (fd_prev >= 0)
+			if (fd_prev < 0 && !cmd->has_out_redir_error)
+			{
+				cmd->has_out_redir_error = 1;
+				cmd->out_redir_first_error = ft_strdup(cmd->outfile);
+			}
+			else if (fd_prev >= 0)
 				close(fd_prev);
 			free(cmd->outfile);
 		}
 		cmd->outfile = ft_strdup(joined);
 		cmd->append = ((*token)->type == T_APPEND);
 	}
-	else if ((*token)->type == T_HEREDOC)
+    else if ((*token)->type == T_HEREDOC)
 	{
+		if (cmd->infile)
+			free(cmd->infile);
 		cmd->infile = ft_strdup(joined);
 		cmd->heredoc = 1;
 		cmd->heredoc_quoted = heredoc_quoted_any;

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 22:11:33 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/12/02 04:27:14 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/02 17:50:07 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ void	free_cmds(t_cmd *cmd)
 		// Libère l'indicateur d'erreur de redirection d'entree
 		if (cmd->in_redir_first_error)
 			free(cmd->in_redir_first_error);
+
+		// Libère l'indicateur d'erreur de redirection de sortie
+		if (cmd->out_redir_first_error)
+			free(cmd->out_redir_first_error);
 
 		// Libère la structure
 		free(cmd);

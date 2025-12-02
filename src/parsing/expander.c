@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:44:43 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/12/02 04:01:04 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:03:52 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,6 +299,17 @@ t_token *expand_tokens(t_token *tokens, t_env *env_list)
                                 tokens = next;
                             if (had_space_before && next && next->space_before == 0)
                                 next->space_before = 1;
+                            /* Free split_words before continue */
+                            if (split_words)
+                            {
+                                int j = 0;
+                                while (split_words[j])
+                                {
+                                    free(split_words[j]);
+                                    j++;
+                                }
+                                free(split_words);
+                            }
                             free(current->value);
                             free(current);
                             current = (prev) ? prev->next : tokens;
@@ -311,6 +322,17 @@ t_token *expand_tokens(t_token *tokens, t_env *env_list)
                             prev->next = current->next;
                         else
                             tokens = current->next;
+                        /* Free split_words before continue */
+                        if (split_words)
+                        {
+                            int j = 0;
+                            while (split_words[j])
+                            {
+                                free(split_words[j]);
+                                j++;
+                            }
+                            free(split_words);
+                        }
                         free(current->value);
                         free(current);
                         current = (prev) ? prev->next : tokens;
