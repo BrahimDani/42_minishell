@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/12/01 18:18:14 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/02 03:06:15 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ t_token	*parse_line(char *line)
 		free_tokens(tokens);
 		return (NULL);
 	}
+	if (!validate_tokens_syntax(tokens))
+	{
+		free_tokens(tokens);
+		return (NULL);
+	}
 	return (tokens);
 }
 
@@ -92,6 +97,7 @@ static t_token	*extract_until_semicolon(t_token **tokens)
 
 void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
 {
+	// Execute commands from the token list
 	t_token	*current_block;
 	t_cmd	*cmd_list;
 
@@ -101,13 +107,37 @@ void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
 		if (!current_block)
 			continue ;
 		// Expand variables AFTER splitting by ; so each block has current env state
-		expand_tokens(current_block, *env_list);
+		current_block = expand_tokens(current_block, *env_list);
 		cmd_list = parse_tokens(current_block);
 		free_tokens(current_block);
 		if (!cmd_list)
 			continue ;
+		/* Pre-read heredoc bodies (non-interactive scripts) so their lines
+		 * are consumed here instead of being interpreted as later commands. */
+		pre_read_heredocs(cmd_list, *env_list);
 		exec_cmd_list(cmd_list, env_list, envp);
 		free_cmds(cmd_list);
+	}
+}
+
+static void	pre_read_one(t_cmd *cmd, t_env *env_list)
+{
+	int fd;
+	if (cmd->heredoc && cmd->heredoc_fd < 0)
+	{
+		fd = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted);
+		if (fd >= 0)
+			cmd->heredoc_fd = fd;
+	}
+}
+
+void	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list)
+{
+	t_cmd *c = cmd_list;
+	while (c)
+	{
+		pre_read_one(c, env_list);
+		c = c->next;
 	}
 }
 

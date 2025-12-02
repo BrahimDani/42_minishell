@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:08:08 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/05 05:11:08 by brdany           ###   ########.fr       */
+/*   Updated: 2025/12/01 22:11:23 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ int	ft_pwd(void)
 		perror("pwd");
 		return (1);
 	}
-	printf("%s\n", cwd);
+	write(1, cwd, ft_strlen(cwd));
+	write(1, "\n", 1);
 	free(cwd);
 	return (0);
 }

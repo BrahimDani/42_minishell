@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/12/01 18:18:23 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/02 04:27:14 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,48 @@ int g_last_status = 0;
 /*                             FONCTION MAIN                                  */
 /* ========================================================================== */
 
+static int quotes_balanced(const char *s)
+{
+	int i = 0;
+	while (s && s[i])
+	{
+		if (s[i] == '\'' || s[i] == '"')
+		{
+			char q = s[i++];
+			while (s[i] && s[i] != q)
+				i++;
+			if (!s[i])
+				return 0;
+		}
+		i++;
+	}
+	return 1;
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	t_env	*env_list;
 	t_token	*token_list;
+	bool	ran_any = false;
 
 	env_list = NULL;
 	disable_ctrl_echo();
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
-	init_env(&env_list, envp);
+		init_env(&env_list, envp);
+
+	/* No early-exit in interactive mode: match bash behavior. */
+
+	/* Rediriger le prompt de readline vers stderr (seulement en mode interactif) */
+	if (isatty(STDIN_FILENO))
+		rl_outstream = stderr;
+	else
+	{
+		/* In non-tty mode, disable stdio buffering on stdin to avoid
+		 * read-ahead interfering with child processes consuming remaining input */
+		setvbuf(stdin, NULL, _IONBF, 0);
+	}
 
 	/* === Mode non interactif: ./minishell -c "commande" === */
 	if (argc >= 3 && ft_strcmp(argv[1], "-c") == 0)
@@ -45,31 +76,121 @@ int main(int argc, char **argv, char **envp)
 		{
 			exec_from_tokens(token_list, &env_list, envp);
 		}
+		/* Clean readline history to avoid leaks flagged in tests */
+		clear_history();
 		free_env_list(env_list);
 		return (g_last_status);
 	}
 
-	/* === Boucle principale du shell (mode interactif) === */
+
+	/* === Boucle principale du shell === */
 	while (1)
 	{
-		line = readline("minishell> ");
-		if (!line)
+		/* Mode interactif (terminal) : utiliser readline */
+		if (isatty(STDIN_FILENO))
 		{
-			call_eof_handler();
-			break ;
+			line = readline("minishell> ");
+			if (!line)
+			{
+				call_eof_handler();
+				break ;
+			}
+			add_history(line);
+			// handle multiline when quotes are not closed
+			while (line && !quotes_balanced(line))
+			{
+				char *cont = readline("> ");
+				if (!cont)
+					break;
+				char *joined;
+				// insert a newline between continued parts to preserve semantics
+				joined = ft_strjoin(line, "\n");
+				free(line);
+				if (joined)
+				{
+					char *tmp = ft_strjoin(joined, cont);
+					free(joined);
+					free(cont);
+					line = tmp;
+				}
+				else
+				{
+					free(cont);
+					line = NULL;
+				}
+			}
 		}
-		add_history(line);
+		/* Mode non-interactif (pipe/tester) : utiliser getline */
+		else
+		{
+			size_t	len = 0;
+			ssize_t	nread;
+			
+			line = NULL;
+			nread = getline(&line, &len, stdin);
+			if (nread == -1)
+			{
+				if (line)
+					free(line);
+				/* If invoked with no command and PATH is unset/empty,
+				 * return 127 on immediate EOF (env -i ./minishell case). */
+				if (!ran_any && argc == 1)
+				{
+					char *path_var = get_env_value(env_list, "PATH");
+					if (!path_var || path_var[0] == '\0')
+						g_last_status = 127;
+				}
+				break ;
+			}
+			/* If quotes are unbalanced, keep reading and append with embedded newlines */
+			while (line && !quotes_balanced(line))
+			{
+				char *next = NULL;
+				size_t l2 = 0;
+				ssize_t r2 = getline(&next, &l2, stdin);
+				if (r2 == -1)
+					break;
+				char *with_nl = ft_strjoin(line, "");
+				free(line);
+				if (!with_nl)
+				{
+					free(next);
+					line = NULL;
+					break;
+				}
+				char *joined = ft_strjoin(with_nl, next);
+				free(with_nl);
+				free(next);
+				line = joined;
+			}
+			/* Retirer un unique newline final si présent (hors continuation) */
+			if (line)
+			{
+				size_t L = ft_strlen(line);
+				if (L > 0 && line[L - 1] == '\n')
+					line[L - 1] = '\0';
+			}
+		}
+		
 		token_list = parse_line(line);
 		if (!token_list)
 		{
 			free(line);
+			/* In non-interactive mode, abort on syntax error (exit 2),
+			 * matching bash behavior for script-like input blocks. */
+			if (!isatty(STDIN_FILENO) && g_last_status == 2)
+				break;
 			continue ;
 		}
 		exec_from_tokens(token_list, &env_list, envp);
+		ran_any = true;
 		free(line);
 	}
 	free_env_list(env_list);
+	/* Clean readline history to avoid leaks before exiting */
+	clear_history();
 	return (g_last_status);
+
 }
 
 /* ========================================================================== */

@@ -1,27 +1,45 @@
-# Fichiers binaires et objets
+# Binaries & objects
 minishell
-test/
 *.o
+*.a
+*.so
+*.out
 
-# Bibliothèques compilées
+# Libft build outputs
+libft/*.o
 libft/libft.a
 
-# Fichiers temporaires et sauvegardes
-*~
-*.swp
-*.tmp
+# Tester outputs & temp
+42_minishell_tester/**/vgcore.*
+42_minishell_tester/**/.valgrind*
+42_minishell_tester/**/tmp*
+tmp_*
+tmp-*
+tmp.*
 
-# Dossiers de build
+# Test output files
+outfiles/**
+echo
+
+# Accidental files present in tester
+42_minishell_tester/lol.c'
+42_minishell_tester/lol.c"
+
+# Build dirs
 build/
 
-# Fichiers générés par l'éditeur
+# Editor/OS files
 .vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+*.tmp
 
-# Fichiers de logs
+# Logs
 *.log
 
-# Fichiers MacOS
-.DS_Store
-
-# Fichiers Windows
-Thumbs.db
+# Readline history
+.history

@@ -3,34 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 18:18:50 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/11/23 22:55:49 by vboxuser         ###   ########.fr       */
+/*   Updated: 2025/12/02 04:01:04 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char	*process_delimiter(char *delimiter, int *should_expand)
+static char	*process_delimiter(char *delimiter, int *should_expand, int quoted, t_env *env_list)
 {
-	int		len;
 	char	*clean_delim;
+	char	*tmp;
 
-	len = ft_strlen(delimiter);
-
-	if (len >= 2 && ((delimiter[0] == '\'' && delimiter[len - 1] == '\'')
-		|| (delimiter[0] == '"' && delimiter[len - 1] == '"')))
+	/* In bash/POSIX: if any quoting is present in the delimiter, the delimiter
+	 * is used after quote removal without expansion, and the body is not expanded.
+	 * If unquoted, expand the delimiter word and expand the body. */
+	*should_expand = quoted ? 0 : 1;
+	if (*should_expand)
 	{
-		*should_expand = 0;
-		clean_delim = ft_substr(delimiter, 1, len - 2);
-		return (clean_delim);
+		tmp = expand_variable(delimiter, env_list);
+		clean_delim = tmp ? tmp : ft_strdup(delimiter);
 	}
-	*should_expand = 1;
-	return (ft_strdup(delimiter));
+	else
+		clean_delim = ft_strdup(delimiter);
+	return (clean_delim);
 }
 
-int read_heredoc(char *delimiter, t_env *env_list)
+static char *read_heredoc_line(void)
+{
+	char    *line;
+	char    *buf;
+	size_t  n;
+	ssize_t r;
+
+	if (isatty(STDIN_FILENO))
+	{
+		line = readline("");
+		return (line);
+	}
+	buf = NULL;
+	n = 0;
+	r = getline(&buf, &n, stdin);
+	if (r == -1)
+	{
+		if (buf)
+			free(buf);
+		return (NULL);
+	}
+	if (r > 0 && buf[r - 1] == '\n')
+		buf[r - 1] = '\0';
+	return (buf);
+}
+
+int read_heredoc(char *delimiter, t_env *env_list, int quoted)
 {
 	char    template[] = "/tmp/heredoc_XXXXXX";
 	int     fd;
@@ -39,7 +66,7 @@ int read_heredoc(char *delimiter, t_env *env_list)
 	int		should_expand;
 	char	*expanded_line;
 
-	clean_delim = process_delimiter(delimiter, &should_expand);
+	clean_delim = process_delimiter(delimiter, &should_expand, quoted, env_list);
 	fd = mkstemp(template);
 	if (fd == -1)
 	{
@@ -49,27 +76,37 @@ int read_heredoc(char *delimiter, t_env *env_list)
 	unlink(template);
 	while (1)
 	{
-		line = readline("> ");
+		line = read_heredoc_line();
 		if (!line)
 		{
 			ft_putendl_fd("minishell: warning here-doc delimited by endfile", 2);
 			break;
 		}
-		if (ft_strcmp(line, clean_delim) == 0)
-		{
-			free(line);
-			break;
-		}
 		if (should_expand)
 		{
-			expanded_line = expand_variable(line, env_list);
-			write (fd, expanded_line, ft_strlen(expanded_line));
+			expanded_line = expand_heredoc(line, env_list);
+			if (ft_strcmp(expanded_line, clean_delim) == 0)
+			{
+				free(expanded_line);
+				free(line);
+				break;
+			}
+			write(fd, expanded_line, ft_strlen(expanded_line));
+			write(fd, "\n", 1);
 			free(expanded_line);
+			free(line);
 		}
 		else
+		{
+			if (ft_strcmp(line, clean_delim) == 0)
+			{
+				free(line);
+				break;
+			}
 			write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
+			write(fd, "\n", 1);
+			free(line);
+		}
 	}
 	lseek(fd, 0, SEEK_SET);
 	free(clean_delim);

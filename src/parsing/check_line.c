@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   check_line.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:53:53 by brdany            #+#    #+#             */
-/*   Updated: 2025/11/22 14:39:33 by vboxuser         ###   ########.fr       */
+/*   Updated: 2025/12/02 03:20:07 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include "../../includes/parsing.h"
 
 //Check if closed quote and if their is ("|\) in the beginning
 int  check_quote(char *line)
@@ -38,57 +39,33 @@ int  check_quote(char *line)
 	return (1);
 }
 
-int	check_ampersand(char *line)
-{
-	int	i;
-
-	i = 0;
-	while(line[i])
-	{
-		if(i == 0 && line[i] == '&' && line[i + 1] == '&')
-		{
-			ft_putendl_fd("minishell: syntax error near `&&", STDERR_FILENO);
-			g_last_status = 2;
-			return (0);
-		}
-		if(i == 0 && line[i] == '&')
-		{
-			ft_putendl_fd("minishell: syntax error near `&", STDERR_FILENO);
-			g_last_status = 2;
-			return (0);
-		}
-		i++;
-	}
-	return(1);
-}
-
 int	check_redir(char *line)
 {
-	int	i;
+	(void)line;
+	/* Token-level validation handles redirection syntax; keep this neutral. */
+	return (1);
+}
 
-	i = 0;
+int	check_ampersand(char *line)
+{
+	int i = 0;
+	int in_squote = 0;
+	int in_dquote = 0;
+
 	while (line[i])
 	{
-		if (line[i] == '>' || line[i] == '<')
+		if (!in_dquote && line[i] == '\'')
+			in_squote = !in_squote;
+		else if (!in_squote && line[i] == '"')
+			in_dquote = !in_dquote;
+		else if (!in_squote && !in_dquote && line[i] == '&')
 		{
-			if (line[i + 1] == '>' || line[i + 1] == '<' || !line[i + 1])
-			{
-				if (line[i + 2] == '|' && line[i + 3] == '|')
-				{
-					ft_putendl_fd("minishell: syntax error near `||'", STDERR_FILENO);
-					return (0);
-				}
-				if (line[i + 2] == '|')
-				{
-					ft_putendl_fd("minishell: syntax error near `|'", STDERR_FILENO);
-					return (0);
-				}
-				if (!line[i + 2])
-				{
-					ft_putendl_fd("minishell: syntax error near `newline'", STDERR_FILENO);
-					return (0);
-				}
-			}
+			if (line[i + 1] == '&')
+				ft_putendl_fd("minishell: syntax error near unexpected token `&&'", STDERR_FILENO);
+			else
+				ft_putendl_fd("minishell: syntax error near unexpected token `&'", STDERR_FILENO);
+			g_last_status = 2;
+			return (0);
 		}
 		i++;
 	}
@@ -150,6 +127,43 @@ int	check_pipe_tokens(t_token *tokens)
 			return (0);
 		}
 		current = current->next;
+	}
+	return (1);
+}
+
+static void print_unexpected_token(const char *tok)
+{
+	ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd((char *)tok, STDERR_FILENO);
+	ft_putendl_fd("'", STDERR_FILENO);
+}
+
+int validate_tokens_syntax(t_token *tokens)
+{
+	t_token *t = tokens;
+
+	while (t)
+	{
+		if (t->type == T_REDIR_IN || t->type == T_REDIR_OUT
+			|| t->type == T_APPEND || t->type == T_HEREDOC)
+		{
+			if (!t->next)
+			{
+				ft_putendl_fd("minishell: syntax error near unexpected token `newline'", STDERR_FILENO);
+				g_last_status = 2;
+				return (0);
+			}
+			if (t->next->type != T_WORD)
+			{
+				if (t->next->value)
+					print_unexpected_token(t->next->value);
+				else
+					ft_putendl_fd("minishell: syntax error near unexpected token `newline'", STDERR_FILENO);
+				g_last_status = 2;
+				return (0);
+			}
+		}
+		t = t->next;
 	}
 	return (1);
 }

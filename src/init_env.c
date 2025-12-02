@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:15:58 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/28 13:50:43 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 21:15:33 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,27 @@ void	init_env(t_env **env_list, char **envp)
 			current = new_node;
 		}
 		i++;
+	}
+
+	/* Adjust SHLVL like bash: increment or set to 1 if missing */
+	{
+		char *lvl_str = get_env_value(*env_list, "SHLVL");
+		int   lvl;
+		char *new_val;
+
+		if (lvl_str)
+		{
+			lvl = ft_atoi(lvl_str);
+			lvl += 1;
+		}
+		else
+			lvl = 1;
+		new_val = ft_itoa(lvl);
+		if (new_val)
+		{
+			set_env_value(env_list, "SHLVL", new_val);
+			free(new_val);
+		}
 	}
 }
 

@@ -1,16 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 21:12:56 by brdany            #+#    #+#             */
-/*   Updated: 2025/09/08 01:35:30 by brdany           ###   ########.fr       */
+/*   Updated: 2025/12/01 19:05:51 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static int is_n_option(const char *s)
+{
+	int i;
+
+	if (!s || s[0] != '-')
+		return (0);
+	i = 1;
+	if (s[i] != 'n')
+		return (0);
+	while (s[i] == 'n')
+		i++;
+	return (s[i] == '\0');
+}
 
 int ft_echo(char **tokens)
 {
@@ -20,7 +34,7 @@ int ft_echo(char **tokens)
 	new_line = 1;
 	i = 1;
 	
-	if (tokens[1] && ft_strcmp(tokens[1], "-n") == 0)
+	while (tokens[i] && is_n_option(tokens[i]))
 	{
 		new_line = 0;
 		i++;

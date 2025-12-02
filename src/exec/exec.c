@@ -11,16 +11,23 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include <errno.h>
+#include <string.h>
+#include <fcntl.h>
 
 /**
  * spawn_external - fork and execve an external program
  * Returns: child's exit status, or -1 on fork error
  */
 
-static int	spawn_external(char *full_path, char **argv, char **envp)
+static int	spawn_external(char *full_path, char **argv, char **envp, t_env *env_list)
 {
 	pid_t	pid;
 	int		status;
+	char	**new_envp;
+	int		i;
+	int		env_count;
+	(void)envp;
 
 	pid = fork();
 	if (pid < 0)
@@ -30,9 +37,50 @@ static int	spawn_external(char *full_path, char **argv, char **envp)
 	}
 	if (pid == 0)
 	{
-		execve(full_path, argv, envp);
-		ft_putstr_fd("minishell: execve failed\n", 2);
-		exit(EXIT_FAILURE);
+		// Ensure _ reflects the command path for the child
+		set_env_value(&env_list, "_", full_path);
+		// Build envp from env_list to include runtime changes (SHLVL, etc)
+		t_env *cur = env_list;
+		env_count = 0;
+		while (cur)
+		{
+			env_count++;
+			cur = cur->next;
+		}
+		new_envp = malloc(sizeof(char *) * (env_count + 1));
+		if (!new_envp)
+			exit(1);
+		cur = env_list;
+		i = 0;
+		while (cur)
+		{
+			if (cur->value)
+			{
+				char *tmp = ft_strjoin(cur->key, "=");
+				new_envp[i] = ft_strjoin(tmp, cur->value);
+				free(tmp);
+			}
+			else
+				new_envp[i] = ft_strdup(cur->key);
+			cur = cur->next;
+			i++;
+		}
+		new_envp[i] = NULL;
+		execve(full_path, argv, new_envp);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(full_path, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
+		/* Free new_envp on exec failure to avoid leaks in child */
+		i = 0;
+		while (new_envp && new_envp[i])
+		{
+			free(new_envp[i]);
+			i++;
+		}
+		free(new_envp);
+		exit(126);
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
@@ -40,32 +88,77 @@ static int	spawn_external(char *full_path, char **argv, char **envp)
 	return (-1);
 }
 
-int		exec_external(char **argv, char **envp)
+static char **split_path_from_env(t_env *env_list)
+{
+	char *path = get_env_value(env_list, "PATH");
+	if (path == NULL)
+	{
+		/* When PATH is unset, bash still resolves bare names using a default
+		 * that effectively includes the current directory. Use CWD + common paths. */
+		path = ".:/bin:/usr/bin";
+		return ft_split(path, ':');
+	}
+	if (path[0] == '\0')
+	{
+		/* PATH explicitly set to empty: no lookup */
+		return NULL;
+	}
+	return ft_split(path, ':');
+}
+
+int		exec_external(char **argv, char **envp, t_env **env_list)
 {
 	char	*full_path;
 	int		ret;
+	(void)env_list;
 
 	// Si c'est un chemin absolu ou relatif (contient /), l'utiliser directement
 	if (ft_strchr(argv[0], '/'))
 	{
-		if (access(argv[0], X_OK) == 0)
-			return (spawn_external(argv[0], argv, envp));
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(argv[0], 2);
-		ft_putstr_fd(": command not found\n", 2);
-		return (127);
+		if (access(argv[0], F_OK) != 0)
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(argv[0], 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+			return (127);
+		}
+		if (access(argv[0], X_OK) != 0)
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(argv[0], 2);
+			ft_putstr_fd(": Permission denied\n", 2);
+			return (126);
+		}
+		return (spawn_external(argv[0], argv, envp, *env_list));
 	}
 	
 	// Sinon chercher dans PATH
-	full_path = find_command_path(argv[0]);
-	if (!full_path)
+	if (ft_strcmp(argv[0], ".") == 0 || ft_strcmp(argv[0], "..") == 0)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(argv[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		return (127);
 	}
-	ret = spawn_external(full_path, argv, envp);
+	full_path = find_command_path(argv[0], *env_list);
+	if (!full_path)
+	{
+		/* Not found in PATH search */
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(argv[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+		return (127);
+	}
+	/* Found in PATH but might not be executable: map to 126 if needed */
+	if (access(full_path, X_OK) != 0)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(argv[0], 2);
+		ft_putstr_fd(": Permission denied\n", 2);
+		free(full_path);
+		return (126);
+	}
+	ret = spawn_external(full_path, argv, envp, *env_list);
 	free(full_path);
 	return (ret);
 }
@@ -76,15 +169,26 @@ int		exec_external(char **argv, char **envp)
  */
 int	run_command(t_cmd *cmd, t_env **env_list, char **envp)
 {
-	if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd || !cmd->argv)
 		return (0);
+	if (!cmd->argv[0])
+		return (0);
+	if (cmd->argv[0][0] == '\0')
+	{
+		ft_putstr_fd("minishell: : command not found\n", 2);
+		return (127);
+	}
+	if (ft_strcmp(cmd->argv[0], "env") == 0 && cmd->argv[1] != NULL)
+	{
+		return (exec_external(cmd->argv, envp, env_list));
+	}
 	if (is_builtin(cmd->argv[0]))
 	{
 		if (ft_strcmp(cmd->argv[0], "exit") == 0)
 			return (ft_exit(cmd->argv));
 		return (exec_builtin(cmd->argv, env_list));
 	}
-	return (exec_external(cmd->argv, envp));
+	return (exec_external(cmd->argv, envp, env_list));
 }
 
 /*
@@ -101,7 +205,10 @@ static int	handle_input_redir(t_cmd *cmd, t_env **env_list)
 		return (-1);
 	if (cmd->heredoc)
 	{
-		fd_in = read_heredoc(cmd->infile, *env_list);
+		if (cmd->heredoc_fd >= 0)
+			fd_in = cmd->heredoc_fd;
+		else
+			fd_in = read_heredoc(cmd->infile, *env_list, cmd->heredoc_quoted);
 		if (fd_in < 0)
 		{
 			g_last_status = 1;
@@ -163,11 +270,21 @@ static void	restore_fds(int saved_stdin, int saved_stdout)
 	}
 }
 
+// No longer used; redirections are handled by legacy functions
+
 static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 {
 	int	saved_stdin;
 	int	saved_stdout;
+	int	saved_stderr;
 
+	if (cmd->has_in_redir_error && cmd->in_redir_first_error)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		perror(cmd->in_redir_first_error);
+		g_last_status = 1;
+		return ;
+	}
 	saved_stdin = handle_input_redir(cmd, env_list);
 	if (saved_stdin == -2)
 		return ;
@@ -177,10 +294,35 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 		restore_fds(saved_stdin, -1);
 		return ;
 	}
+	saved_stderr = -1;
+	if (cmd->redirect_stderr_to_out)
+	{
+		saved_stderr = dup(STDERR_FILENO);
+		if (cmd->outfile)
+			dup2(STDOUT_FILENO, STDERR_FILENO);
+		else
+			dup2(STDOUT_FILENO, STDERR_FILENO);
+	}
 	if (cmd->argv && cmd->argv[0])
+	{
 		g_last_status = run_command(cmd, env_list, envp);
+		// Update _ with command path for external commands
+		if (!is_builtin(cmd->argv[0]))
+		{
+			int i = 0;
+			while (cmd->argv[i])
+				i++;
+			if (i > 0)
+				set_env_value(env_list, "_", cmd->argv[i-1]);
+		}
+	}
 	else
 		g_last_status = 0;
+	if (saved_stderr >= 0)
+	{
+		dup2(saved_stderr, STDERR_FILENO);
+		close(saved_stderr);
+	}
 	restore_fds(saved_stdin, saved_stdout);
 }
 
@@ -221,19 +363,20 @@ static char	*test_path(char *path, char *cmd)
 	full_path = join_path_cmd(path, cmd);
 	if (!full_path)
 		return (NULL);
-	if (access(full_path, X_OK) == 0)
+	/* Return the first existing candidate; caller will check X_OK */
+	if (access(full_path, F_OK) == 0)
 		return (full_path);
 	free(full_path);
 	return (NULL);
 }
 
-char	*find_command_path(char *cmd)
+char	*find_command_path(char *cmd, t_env *env_list)
 {
 	char	**paths;
 	char	*full_path;
 	int		i;
 
-	paths = get_path_env("PATH");
+	paths = split_path_from_env(env_list);
 	if (!paths)
 		return (NULL);
 	i = 0;
@@ -283,6 +426,12 @@ static void	execute_pipeline(t_cmd *cmd_list,
 			if (i < n_cmds - 1)
 				dup2(pipes[i][1], STDOUT_FILENO);
 			close_pipes(pipes, n_cmds - 1);
+			if (cmd->has_in_redir_error && cmd->in_redir_first_error)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				perror(cmd->in_redir_first_error);
+				exit(1);
+			}
 			saved_in = handle_input_redir(cmd, env_list);
 			if (saved_in == -2)
 				exit(1);

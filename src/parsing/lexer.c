@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 12:16:44 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/11/30 19:24:39 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 21:37:28 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ static t_token	*new_token(char *value, t_token_type type)
 	new->value = ft_strdup(value);
 	new->type = type;
 	new->no_expand = 0;
+	new->was_quoted = 0;
+	new->space_before = 0;
 	new->next = NULL;
 	return (new);
 }
@@ -52,6 +54,24 @@ static t_token	*new_token_no_expand(char *value, t_token_type type)
 	new->value = ft_strdup(value);
 	new->type = type;
 	new->no_expand = 1;  // Pas d'expansion (single quotes)
+	new->was_quoted = 1;
+	new->space_before = 0;
+	new->next = NULL;
+	return (new);
+}
+
+static t_token *new_token_quoted(char *value, t_token_type type)
+{
+	t_token *new;
+
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->value = ft_strdup(value);
+	new->type = type;
+	new->no_expand = 0; // double quotes allow expansion
+	new->was_quoted = 1;
+	new->space_before = 0;
 	new->next = NULL;
 	return (new);
 }
@@ -79,6 +99,8 @@ static	t_token_type get_type(char *word)
 		return (T_SEMICOLON);
 	if (!ft_strncmp(word, "<", 2))
 		return (T_REDIR_IN);
+	if (!ft_strncmp(word, ">|", 3))
+		return (T_REDIR_OUT);
 	if (!ft_strncmp(word, ">", 2))
 		return (T_REDIR_OUT);
 	if (!ft_strncmp(word, ">>", 3))
@@ -120,7 +142,7 @@ static char	*handle_word(char *line, int *i)
 	char	*word;
 
 	start = *i;
-	while (line[*i] && line[*i] != ' ' && line[*i] != '\'' 
+	while (line[*i] && line[*i] != ' ' && line[*i] != '\t' && line[*i] != '\'' 
 		&& line[*i] != '"' && !ft_strchr("|<>;", line[*i]))
 		(*i)++;
 	word = ft_substr(line, start, *i - start);
@@ -130,46 +152,75 @@ static char	*handle_word(char *line, int *i)
 t_token	*tokenize_line(char *line)
 {
 	t_token	*token = NULL;
+	t_token	*new_tok;
 	char	*token_value;
 	int		i;
+	int		had_space;
 
 	i = 0;
 	while (line[i])
 	{
-		while (line[i] == ' ')
+		had_space = 0;
+		while (line[i] == ' ' || line[i] == '\t')
+		{
+			had_space = 1;
 			i++;
+		}
 		if (!line[i])
 			break ;
-		if ((line[i] == '>' || line[i] == '<') && line[i + 1] == line[i])
+				/* Skip $ before quotes ($"..." or $'...') */
+				if (line[i] == '$' && (line[i + 1] == '"' || line[i + 1] == '\''))
+					i++;
+		/* Recognize force-clobber redirection operator >| */
+		if (line[i] == '>' && line[i + 1] == '|')
 		{
 			token_value = ft_substr(line, i, 2);
-			add_token_back(&token, new_token(token_value, get_type(token_value)));
+			new_tok = new_token(token_value, get_type(token_value));
+			new_tok->space_before = had_space;
+			add_token_back(&token, new_tok);
+			free(token_value);
+			i += 2;
+		}
+		else if ((line[i] == '>' || line[i] == '<') && line[i + 1] == line[i])
+		{
+			token_value = ft_substr(line, i, 2);
+			new_tok = new_token(token_value, get_type(token_value));
+			new_tok->space_before = had_space;
+			add_token_back(&token, new_tok);
 			free(token_value);
 			i += 2;
 		}
 		else if (ft_strchr("|<>;", line[i]))
 		{
 			token_value = ft_substr(line, i, 1);
-			add_token_back(&token, new_token(token_value, get_type(token_value)));
+			new_tok = new_token(token_value, get_type(token_value));
+			new_tok->space_before = had_space;
+			add_token_back(&token, new_tok);
 			free(token_value);
 			i++;
 		}
 		else if (line[i] == '\'')
 		{
 			token_value = handle_quoted_word(line, &i, '\'');
-			add_token_back(&token, new_token_no_expand(token_value, T_WORD));
+			new_tok = new_token_no_expand(token_value, T_WORD);
+			new_tok->space_before = had_space;
+			add_token_back(&token, new_tok);
 			free(token_value);
 		}
 		else if (line[i] == '"')
 		{
 			token_value = handle_quoted_word(line, &i, '"');
-			add_token_back(&token, new_token(token_value, T_WORD));
+			new_tok = new_token_quoted(token_value, T_WORD);
+			new_tok->space_before = had_space;
+			add_token_back(&token, new_tok);
 			free(token_value);
 		}
 		else
 		{
 			token_value = handle_word(line, &i);
-			add_token_back(&token, new_token(token_value, T_WORD));
+			new_tok = new_token(token_value, T_WORD);
+			new_tok->space_before = had_space;
+			add_token_back(&token, new_tok);
 			free(token_value);
 		}
 	}

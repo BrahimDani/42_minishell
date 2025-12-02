@@ -15,9 +15,9 @@
 
 # include "../includes/minishell.h"
 
-int		exec_external(char **argv, char **envp);
+int		exec_external(char **argv, char **envp, t_env **env_list);
 
-char	*find_command_path(char *command);
+char	*find_command_path(char *command, t_env *env_list);
 
 int		run_command(t_cmd *cmd, t_env **env_list, char **envp);
 

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 20:54:01 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/10/01 21:39:53 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:42:31 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	ft_exit(char **args)
 			ft_putstr_fd("minishell: exit: ", 2);
 			ft_putstr_fd(args[1], 2);
 			ft_putstr_fd(": numeric argument required\n", 2);
-			exit(255);
+			exit(2);
 		}
 		code = ft_atol(args[1]) % 256;
 		if (args[2])
@@ -52,6 +52,6 @@ int	ft_exit(char **args)
 		}
 	}
 	if (isatty(STDIN_FILENO))
-		ft_putstr_fd("exit\n", 1);
+		ft_putstr_fd("exit\n", 2);
 	exit((unsigned char)code);
 }

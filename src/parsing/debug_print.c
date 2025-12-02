@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_print.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 22:11:33 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/10/23 22:18:31 by vboxuser         ###   ########.fr       */
+/*   Updated: 2025/12/02 04:27:14 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,14 @@ void	free_cmds(t_cmd *cmd)
 		if (cmd->outfile)
 			free(cmd->outfile);
 
+		// Ferme le fd de heredoc s'il a été pré-rempli
+		if (cmd->heredoc_fd >= 0)
+			close(cmd->heredoc_fd);
+
+		// Libère l'indicateur d'erreur de redirection d'entree
+		if (cmd->in_redir_first_error)
+			free(cmd->in_redir_first_error);
+
 		// Libère la structure
 		free(cmd);
 
@@ -51,6 +59,8 @@ void	free_cmds(t_cmd *cmd)
 
 void	print_cmds(t_cmd *cmd)
 {
+	(void)cmd;
+	/* DEBUG DISABLED - uncomment to debug
 	int i = 0;
 
 	while (cmd)
@@ -74,4 +84,5 @@ void	print_cmds(t_cmd *cmd)
 		cmd = cmd->next;
 		i = 0;
 	}
+	*/
 }

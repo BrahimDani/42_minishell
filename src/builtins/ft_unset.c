@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 00:00:00 by copilot           #+#    #+#             */
-/*   Updated: 2025/12/01 18:19:19 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/01 21:45:53 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,15 @@ int	ft_unset(char **tokens, t_env **env_list)
 	i = 1;
 	while (tokens[i])
 	{
+		// Check for invalid options (arguments starting with -)
+		if (tokens[i][0] == '-' && tokens[i][1])
+		{
+			ft_putstr_fd("minishell: unset: ", 2);
+			ft_putstr_fd(tokens[i], 2);
+			ft_putstr_fd(": invalid option\n", 2);
+			ft_putstr_fd("unset: usage: unset [-f] [-v] [-n] [name ...]\n", 2);
+			return (2);
+		}
 		current = *env_list;
 		prev = NULL;
 		while (current)
