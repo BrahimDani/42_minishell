@@ -98,7 +98,7 @@ void	set_env_value(t_env **env_list, char *key, char *value)
 {
 	t_env	*current;
 	t_env	*new_node;
-	
+
 	current = *env_list;
 
 	while (current)
@@ -120,96 +120,112 @@ void	set_env_value(t_env **env_list, char *key, char *value)
 	*env_list = new_node;
 }
 
-int	ft_export(char **tokens, t_env **env_list)
+static int	print_all_exports(t_env *env_list)
 {
+	int		n;
 	int		i;
-	char	*equal;
-	char	*key;
-	char	*value;
+	t_env	**arr;
 	t_env	*cur;
 
-	if (!tokens[1])
-	{
-		int   n;
-		int   i;
-		t_env **arr;
-
-		n = env_count(*env_list);
-		arr = (t_env **)malloc(sizeof(t_env *) * (n > 0 ? n : 1));
-		if (!arr)
-			return (0);
-		i = 0;
-		cur = *env_list;
-		while (cur)
-		{
-			arr[i++] = cur;
-			cur = cur->next;
-		}
-		sort_env_array(arr, n);
-		i = 0;
-		while (i < n)
-		{
-			if (ft_strcmp(arr[i]->key, "_") != 0)
-				print_export_line(arr[i]);
-			i++;
-		}
-		free(arr);
+	n = env_count(env_list);
+	arr = (t_env **)malloc(sizeof(t_env *) * (n > 0 ? n : 1));
+	if (!arr)
 		return (0);
+	i = -1;
+	cur = env_list;
+	while (cur)
+		arr[++i] = cur, cur = cur->next;
+	sort_env_array(arr, n);
+	i = -1;
+	while (++i < n)
+		if (ft_strcmp(arr[i]->key, "_") != 0)
+			print_export_line(arr[i]);
+	free(arr);
+	return (0);
+}
+
+static void	handle_append_export(t_env **env_list, char *token, char *equal)
+{
+	char	*key;
+	char	*value;
+	char	*existing;
+	char	*new_value;
+
+	*(equal - 1) = '\0';
+	key = token;
+	value = equal + 1;
+	existing = get_env_value(*env_list, key);
+	if (existing)
+	{
+		new_value = ft_strjoin(existing, value);
+		if (new_value)
+		{
+			set_env_value(env_list, key, new_value);
+			free(new_value);
+		}
 	}
+	else
+		set_env_value(env_list, key, value);
+}
+
+static void	handle_simple_export(t_env **env_list, char *token, char *equal)
+{
+	char	*key;
+	char	*value;
+
+	if (equal)
+	{
+		*equal = '\0';
+		key = token;
+		value = equal + 1;
+		set_env_value(env_list, key, value);
+	}
+	else
+		set_env_value(env_list, token, NULL);
+}
+
+static int	check_export_errors(char *token)
+{
+	if (token[0] == '-' && token[1] != '\0')
+		return (write(2, "export: ", 8), write(2, token, ft_strlen(token)),
+			write(2, ": invalid option\n", 16), 2);
+	if (token[0] == '\0')
+		return (0);
+	if (!is_valid_identifier(token))
+		return (write(2, "export: `", 9), write(2, token, ft_strlen(token)),
+			write(2, "': not a valid identifier\n", 26), 1);
+	return (-1);
+}
+
+static int	process_export_token(char *token, t_env **env_list)
+{
+	char	*equal;
+	int		err;
+
+	err = check_export_errors(token);
+	if (err != -1)
+		return (err);
+	equal = ft_strchr(token, '=');
+	if (equal && equal > token && *(equal - 1) == '+')
+		handle_append_export(env_list, token, equal);
+	else
+		handle_simple_export(env_list, token, equal);
+	return (0);
+}
+
+int	ft_export(char **tokens, t_env **env_list)
+{
+	int	i;
+	int	ret;
+
+	if (!tokens[1])
+		return (print_all_exports(*env_list));
 	i = 1;
 	while (tokens[i])
 	{
-		if (tokens[i][0] == '-' && tokens[i][1] != '\0')
-		{
-			write(2, "export: ", 8);
-			write(2, tokens[i], ft_strlen(tokens[i]));
-			write(2, ": invalid option\n", 16);
-			return (2);
-		}
-		if (tokens[i][0] == '\0')
-		{
-			i++;
-			continue;
-		}
-		if (!is_valid_identifier(tokens[i]))
-		{
-			write (2, "export: `", 9);
-			write (2, tokens[i], ft_strlen(tokens[i]));
-			write (2, "': not a valid identifier\n", 26);
-			return (1);
-		}
-		equal = ft_strchr(tokens[i], '=');
-		if (equal && equal > tokens[i] && *(equal - 1) == '+')
-		{
-			// Handle += operator (append to existing variable)
-			char *existing;
-			char *new_value;
-			
-			*(equal - 1) = '\0';
-			key = tokens[i];
-			value = equal + 1;
-			existing = get_env_value(*env_list, key);
-			if (existing)
-			{
-				new_value = ft_strjoin(existing, value);
-				if (new_value)
-				{
-					set_env_value(env_list, key, new_value);
-					free(new_value);
-				}
-			}
-			else
-				set_env_value(env_list, key, value);
-		}
-		else if (equal)
-		{
-			*equal = '\0';
-			key = tokens[i];
-			value =  equal + 1;
-			set_env_value(env_list, key, value);
-		}
-		else
-			set_env_value(env_list, tokens[i], NULL);
+		ret = process_export_token(tokens[i], env_list);
+		if (ret != 0)
+			return (ret);
 		i++;
 	}
 	return (0);

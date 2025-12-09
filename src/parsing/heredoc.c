@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 18:18:50 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/12/02 04:01:04 by kadrouin         ###   ########.fr       */
+/*   Updated: 2025/12/09 04:14:41 by vboxuser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,11 @@ static char *read_heredoc_line(void)
 	return (buf);
 }
 
-int read_heredoc(char *delimiter, t_env *env_list, int quoted)
+static int	create_tmpfile(void)
 {
-	char    template[] = "/tmp/heredoc_XXXXXX";
-	int     fd;
-	char    *line;
-	char	*clean_delim;
-	int		should_expand;
-	char	*expanded_line;
+	char	template[] = "/tmp/heredoc_XXXXXX";
+	int		fd;
 
-	clean_delim = process_delimiter(delimiter, &should_expand, quoted, env_list);
 	fd = mkstemp(template);
 	if (fd == -1)
 	{
@@ -74,40 +69,79 @@ int read_heredoc(char *delimiter, t_env *env_list, int quoted)
 		return (-1);
 	}
 	unlink(template);
+	return (fd);
+}
+
+static int	process_line_expanded(char *line, int fd, char *delim, t_env *env)
+{
+	char	*expanded_line;
+
+	expanded_line = expand_heredoc(line, env);
+	if (ft_strcmp(expanded_line, delim) == 0)
+	{
+		free(expanded_line);
+		free(line);
+		return (0);
+	}
+	write(fd, expanded_line, ft_strlen(expanded_line));
+	write(fd, "\n", 1);
+	free(expanded_line);
+	free(line);
+	return (1);
+}
+
+static int	process_line_raw(char *line, int fd, char *delim)
+{
+	if (ft_strcmp(line, delim) == 0)
+	{
+		free(line);
+		return (0);
+	}
+	write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
+	free(line);
+	return (1);
+}
+
+static void	read_heredoc_content(int fd, char *delim, int expand, t_env *env)
+{
+	char	*line;
+
 	while (1)
 	{
 		line = read_heredoc_line();
 		if (!line)
 		{
 			ft_putendl_fd("minishell: warning here-doc delimited by endfile", 2);
-			break;
+			break ;
 		}
-		if (should_expand)
+		if (expand)
 		{
-			expanded_line = expand_heredoc(line, env_list);
-			if (ft_strcmp(expanded_line, clean_delim) == 0)
-			{
-				free(expanded_line);
-				free(line);
-				break;
-			}
-			write(fd, expanded_line, ft_strlen(expanded_line));
-			write(fd, "\n", 1);
-			free(expanded_line);
-			free(line);
+			if (!process_line_expanded(line, fd, delim, env))
+				break ;
 		}
 		else
 		{
-			if (ft_strcmp(line, clean_delim) == 0)
-			{
-				free(line);
-				break;
-			}
-			write(fd, line, ft_strlen(line));
-			write(fd, "\n", 1);
-			free(line);
+			if (!process_line_raw(line, fd, delim))
+				break ;
 		}
 	}
+}
+
+int	read_heredoc(char *delimiter, t_env *env_list, int quoted)
+{
+	int		fd;
+	char	*clean_delim;
+	int		should_expand;
+
+	clean_delim = process_delimiter(delimiter, &should_expand, quoted, env_list);
+	fd = create_tmpfile();
+	if (fd == -1)
+	{
+		free(clean_delim);
+		return (-1);
+	}
+	read_heredoc_content(fd, clean_delim, should_expand, env_list);
 	lseek(fd, 0, SEEK_SET);
 	free(clean_delim);
 	return (fd);

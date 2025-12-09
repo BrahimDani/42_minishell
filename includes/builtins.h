@@ -24,6 +24,12 @@ int		ft_pwd(void);
 char	*get_env_value(t_env *env_list, char *key);
 void	set_end_value(t_env *env_list, char *key, char *value);
 int		ft_cd(char **tokens, t_env **env_list);
+// CD UTILS
+char	*handle_home_path(t_env *env_list, char *oldpwd);
+char	*handle_oldpwd_path(t_env *env_list, char *oldpwd, int *print);
+char	*expand_tilde_home(char *token, t_env *env_list, char *oldpwd);
+void	update_pwd_vars(t_env **env_list, char *oldpwd, int print_new_path);
+int		change_directory(char *path, char *oldpwd);
 // EXIT
 int	ft_exit(char **args);
 // ECHO
