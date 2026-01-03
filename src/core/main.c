@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 05:14:48 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 19:55:52 by kadrouin         ###   ########.fr       */
+/*   Created: 2025/08/21 10:11:29 by kadrouin          #+#    #+#             */
+/*   Updated: 2026/01/03 19:23:02 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "../includes/minishell.h"
+#include "../includes/parsing.h"
 
-int	ft_strcmp(char *s1, char *s2)
+int	g_last_status = 0;
+
+int	main(int argc, char **argv, char **envp)
 {
-	while (*s1 == *s2 && *s1)
-	{
-		s1++;
-		s2++;
-	}
-	return (*s1 - *s2);
+	t_env	*env_list;
+	int		is_interactive;
+
+	env_list = NULL;
+	is_interactive = isatty(STDIN_FILENO);
+	init_shell(argc, argv, envp, &env_list);
+	main_loop(is_interactive, &env_list, envp);
+	free_env_list(env_list);
+	clear_history();
+	return (g_last_status);
 }

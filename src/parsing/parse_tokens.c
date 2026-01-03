@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:42:22 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/12/02 18:01:48 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:57:53 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ static void	init_cmd_fields(t_cmd *cmd)
 	cmd->argv = NULL;
 	cmd->infile = NULL;
 	cmd->outfile = NULL;
+	cmd->errfile = NULL;
 	cmd->append = 0;
+	cmd->err_append = 0;
 	cmd->heredoc = 0;
 	cmd->heredoc_fd = -1;
 	cmd->heredoc_quoted = 0;
@@ -55,7 +57,7 @@ static t_cmd	*create_new_cmd(t_cmd **head)
 	add_cmd_to_list(head, new);
 	return (new);
 }
-// ajoute un mot a argv tah la struct
+
 static void	add_argument(t_cmd *cmd, char *value)
 {
 	int		i;
@@ -85,12 +87,15 @@ static void	add_argument(t_cmd *cmd, char *value)
 	cmd->argv = new_argv;
 }
 
-// Concatène les tokens T_WORD adjacents (pour gérer echo $?"42" -> "042")
 static int	aggregate_quoted(t_token *start)
 {
-	int quoted = 0;
-	t_token *cur = start;
-	if (!cur) return 0;
+	int		quoted;
+	t_token	*cur;
+
+	quoted = 0;
+	cur = start;
+	if (!cur)
+		return (0);
 	while (cur && cur->type == T_WORD)
 	{
 		if (cur->was_quoted || cur->no_expand)
@@ -98,10 +103,10 @@ static int	aggregate_quoted(t_token *start)
 			quoted = 1;
 		}
 		if (!cur->next || cur->next->space_before)
-			break;
+			break ;
 		cur = cur->next;
 	}
-	return quoted;
+	return (quoted);
 }
 
 static char	*join_adjacent_words(t_token **token)
@@ -112,8 +117,6 @@ static char	*join_adjacent_words(t_token **token)
 
 	result = ft_strdup((*token)->value);
 	current = (*token)->next;
-	
-	// Tant que le prochain token est un T_WORD SANS espace avant, on le concatène
 	while (current && current->type == T_WORD && !current->space_before)
 	{
 		tmp = result;
@@ -193,6 +196,14 @@ static void	handle_redir_out(t_cmd *cmd, char *joined, t_token_type type)
 	cmd->append = (type == T_APPEND);
 }
 
+static void	handle_stderr_redir(t_cmd *cmd, char *joined, int is_append)
+{
+	if (cmd->errfile)
+		free(cmd->errfile);
+	cmd->errfile = ft_strdup(joined);
+	cmd->err_append = is_append;
+}
+
 static void	handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted)
 {
 	if (cmd->infile)
@@ -207,7 +218,12 @@ static int	handle_redirection(t_cmd *cmd, t_token **token)
 	t_token	*t;
 	char	*joined;
 	int		heredoc_quoted_any;
+	int		is_stderr;
 
+	is_stderr = 0;
+	if ((*token)->value && (*token)->value[0] == '2'
+		&& ((*token)->type == T_REDIR_OUT || (*token)->type == T_APPEND))
+		is_stderr = 1;
 	t = *token;
 	heredoc_quoted_any = 0;
 	if (!check_redir_syntax(t))
@@ -219,7 +235,12 @@ static int	handle_redirection(t_cmd *cmd, t_token **token)
 	if ((*token)->type == T_REDIR_IN)
 		handle_redir_in(cmd, joined);
 	else if ((*token)->type == T_REDIR_OUT || (*token)->type == T_APPEND)
-		handle_redir_out(cmd, joined, (*token)->type);
+	{
+		if (is_stderr)
+			handle_stderr_redir(cmd, joined, (*token)->type == T_APPEND);
+		else
+			handle_redir_out(cmd, joined, (*token)->type);
+	}
 	else if ((*token)->type == T_HEREDOC)
 		handle_heredoc_redir(cmd, joined, heredoc_quoted_any);
 	free(joined);
@@ -243,15 +264,34 @@ static int	is_all_digits(char *str)
 
 static int	is_stderr_redirect(t_token *token, t_cmd *current, t_token **next)
 {
+	if (token->value && token->value[0] == '2' && token->value[1])
+	{
+		if ((token->value[1] == '>' || token->value[1] == '<')
+			&& token->next && token->next->type == T_WORD)
+		{
+			if (token->value[1] == '>' && token->value[2] == '>')
+				handle_stderr_redir(current, token->next->value, 1);
+			else if (token->value[1] == '>')
+				handle_stderr_redir(current, token->next->value, 0);
+			current->redirect_stderr_to_out = 0;
+			*next = token->next;
+			return (1);
+		}
+	}
 	if (token->next && (token->next->type == T_REDIR_OUT
 			|| token->next->type == T_APPEND)
 		&& token->next->space_before == 0)
 	{
 		if (is_all_digits(token->value) && ft_atoi(token->value) == 2)
 		{
-			current->redirect_stderr_to_out = 1;
-			*next = token->next;
-			return (1);
+			if (token->next->next && token->next->next->type == T_WORD)
+			{
+				handle_stderr_redir(current, token->next->next->value,
+					token->next->type == T_APPEND);
+				current->redirect_stderr_to_out = 0;
+				*next = token->next->next;
+				return (1);
+			}
 		}
 	}
 	return (0);

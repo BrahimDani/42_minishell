@@ -6,13 +6,13 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:08:14 by brdany            #+#    #+#             */
-/*   Updated: 2025/12/01 19:14:40 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:42:05 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int is_builtin(char *cmd)
+int	is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -33,7 +33,7 @@ int is_builtin(char *cmd)
 	return (0);
 }
 
-int exec_builtin(char **tokens, t_env **env_list)
+int	exec_builtin(char **tokens, t_env **env_list)
 {
 	if (ft_strcmp(tokens[0], "echo") == 0)
 		return (ft_echo(tokens));

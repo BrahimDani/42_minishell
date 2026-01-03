@@ -6,14 +6,14 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 20:54:01 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/12/01 18:42:31 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:42:05 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "../includes/minishell.h"
 
-extern int g_last_status;
+extern int	g_last_status;
 
 int	ft_is_number(char *str)
 {

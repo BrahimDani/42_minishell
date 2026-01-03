@@ -32,33 +32,3 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 		dst[i] = '\0';
 	return (j + ft_strlen(src));
 }
-
-char	*ft_strncat_free(char *s1, char c, int free_s1)
-{
-	char	*result;
-	size_t	len;
-	size_t	i;
-
-	if (!s1)
-	{
-		result = ft_calloc(2, 1);
-		if (!result)
-			return (NULL);
-		result[0] = c;
-		return (result);
-	}
-	len = ft_strlen(s1);
-	result = ft_calloc(len + 2, 1);
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		result[i] = s1[i];
-		i++;
-	}
-	result[i] = c;
-	if (free_s1)
-		free(s1);
-	return (result);
-}

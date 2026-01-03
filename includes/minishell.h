@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/11/10 12:45:48 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/03 19:23:21 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,22 @@ void	init_env(t_env **env_list, char **envp);
 void	call_eof_handler(void);
 void	disable_ctrl_echo(void);
 void	enable_ctrl_echo(void);
+// INIT_ENV_UTILS
+t_env	*create_env_node(char *env_str);
+void	add_env_node(t_env **env_list, t_env **current, t_env *new_node);
+void	adjust_shlvl(t_env **env_list);
+int		count_env_nodes(t_env *env_list);
+char	*format_env_entry(t_env *node);
+void	convert_env(t_env *env_list, char ***envp);
+// MAIN_UTILS
+int		quotes_balanced(const char *s);
+void	handle_cmd_mode(int argc, char **argv, t_env *env_list, char **envp);
+int		join_continuation(char **line, const char *cont);
+int		extend_line(char **line);
+void	strip_newline(char *line);
+char	*read_interactive_line(void);
+char	*read_non_interactive_line(void);
+void	init_shell(int argc, char **argv, char **envp, t_env **env_list);
+void	main_loop(int is_interactive, t_env **env_list, char **envp);
 
 #endif

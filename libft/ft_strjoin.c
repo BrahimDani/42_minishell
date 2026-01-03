@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 09:09:40 by brdani            #+#    #+#             */
-/*   Updated: 2025/11/01 10:53:19 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/03 19:56:31 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (join);
 }
 
-
 char	*ft_strjoin_free(char *s1, char *s2, int free_flags)
 {
 	char	*result;
@@ -48,5 +47,3 @@ char	*ft_strjoin_free(char *s1, char *s2, int free_flags)
 		free(s2);
 	return (result);
 }
-
-

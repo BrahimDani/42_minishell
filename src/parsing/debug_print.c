@@ -6,87 +6,57 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 22:11:33 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/12/02 17:50:07 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/03 20:24:22 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 #include "../../includes/parsing.h"
+
+static void	free_cmd_argv(char **argv)
+{
+	int	i;
+
+	i = 0;
+	while (argv && argv[i])
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
+}
+
+static void	free_cmd_files(t_cmd *cmd)
+{
+	free(cmd->infile);
+	free(cmd->outfile);
+	free(cmd->errfile);
+	if (cmd->heredoc_fd >= 0)
+		close(cmd->heredoc_fd);
+}
+
+static void	free_cmd_errors(t_cmd *cmd)
+{
+	free(cmd->in_redir_first_error);
+	free(cmd->out_redir_first_error);
+}
 
 void	free_cmds(t_cmd *cmd)
 {
-	t_cmd	*tmp;
-	int		i;
+	t_cmd	*next;
 
 	while (cmd)
 	{
-		tmp = cmd->next;
-
-		// Libère argv
-		if (cmd->argv)
-		{
-			i = 0;
-			while (cmd->argv[i])
-			{
-				free(cmd->argv[i]);
-				i++;
-			}
-			free(cmd->argv);
-		}
-
-		// Libère les fichiers
-		if (cmd->infile)
-			free(cmd->infile);
-		if (cmd->outfile)
-			free(cmd->outfile);
-
-		// Ferme le fd de heredoc s'il a été pré-rempli
-		if (cmd->heredoc_fd >= 0)
-			close(cmd->heredoc_fd);
-
-		// Libère l'indicateur d'erreur de redirection d'entree
-		if (cmd->in_redir_first_error)
-			free(cmd->in_redir_first_error);
-
-		// Libère l'indicateur d'erreur de redirection de sortie
-		if (cmd->out_redir_first_error)
-			free(cmd->out_redir_first_error);
-
-		// Libère la structure
+		next = cmd->next;
+		free_cmd_argv(cmd->argv);
+		free_cmd_files(cmd);
+		free_cmd_errors(cmd);
 		free(cmd);
-
-		cmd = tmp;
+		cmd = next;
 	}
 }
-
 
 void	print_cmds(t_cmd *cmd)
 {
 	(void)cmd;
-	/* DEBUG DISABLED - uncomment to debug
-	int i = 0;
-
-	while (cmd)
-	{
-		printf("=== Command ===\n");
-		if (cmd->argv)
-		{
-			printf("argv: ");
-			while (cmd->argv[i])
-				printf("[%s] ", cmd->argv[i++]);
-			printf("\n");
-		}
-		else
-			printf("argv: (none)\n");
-		printf("infile: %s\n", cmd->infile ? cmd->infile : "(none)");
-		printf("outfile: %s\n", cmd->outfile ? cmd->outfile : "(none)");
-		printf("append: %d\n", cmd->append);
-		printf("heredoc: %d\n", cmd->heredoc);
-		printf("next: %p\n", cmd->next);
-		printf("----------------\n");
-		cmd = cmd->next;
-		i = 0;
-	}
-	*/
 }

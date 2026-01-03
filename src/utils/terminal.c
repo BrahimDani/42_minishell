@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   terminal.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brdany <brdany@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 13:15:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/09/06 18:09:49 by brdany           ###   ########.fr       */
+/*   Updated: 2026/01/03 19:04:25 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 
 void	disable_ctrl_echo(void)
 {
-	struct termios term;
-	
+	struct termios	term;
+
 	if (tcgetattr(STDIN_FILENO, &term) == 0)
 	{
 		term.c_lflag &= ~ECHOCTL;
@@ -29,8 +29,8 @@ void	disable_ctrl_echo(void)
 
 void	enable_ctrl_echo(void)
 {
-	struct termios term;
-	
+	struct termios	term;
+
 	if (tcgetattr(STDIN_FILENO, &term) == 0)
 	{
 		term.c_lflag |= ECHOCTL;

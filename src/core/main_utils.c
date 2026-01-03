@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/21 12:52:57 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/08/26 14:09:44 by kadrouin         ###   ########.fr       */
+/*   Created: 2026/01/03 19:15:00 by kadrouin          #+#    #+#             */
+/*   Updated: 2026/01/03 19:23:21 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include "../includes/parsing.h"
 
-void	sigint_handler(int signum)
+void	handle_cmd_mode(int argc, char **argv, t_env *env_list,
+	char **envp)
 {
-	(void)signum;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
+	t_token	*token_list;
 
-void	call_eof_handler(void)
-{
-	return;
+	if (argc >= 3 && ft_strcmp(argv[1], "-c") == 0)
+	{
+		token_list = parse_line(argv[2]);
+		if (token_list)
+			exec_from_tokens(token_list, &env_list, envp);
+		clear_history();
+		free_env_list(env_list);
+		exit(g_last_status);
+	}
 }

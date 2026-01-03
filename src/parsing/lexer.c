@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 12:16:44 by vboxuser          #+#    #+#             */
-/*   Updated: 2025/12/01 21:37:28 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:52:28 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,37 @@ static int	handle_double_redir(char *line, int *i, t_token **token, int space)
 	}
 	return (0);
 }
+static int	handle_fd_redir(char *line, int *i, t_token **token, int space)
+{
+	char	*token_value;
+	t_token	*new_tok;
 
+	if ((line[*i] == '2' || line[*i] == '1' || line[*i] == '0')
+		&& (line[*i + 1] == '>' || line[*i + 1] == '<'))
+	{
+		if (line[*i + 1] == '>' && line[*i + 2] == '>')
+		{
+			token_value = ft_substr(line, *i, 3);
+			new_tok = new_token(token_value, T_APPEND);
+			new_tok->space_before = space;
+			add_token_back(token, new_tok);
+			free(token_value);
+			*i += 3;
+			return (1);
+		}
+		token_value = ft_substr(line, *i, 2);
+		if (line[*i + 1] == '>')
+			new_tok = new_token(token_value, T_REDIR_OUT);
+		else
+			new_tok = new_token(token_value, T_REDIR_IN);
+		new_tok->space_before = space;
+		add_token_back(token, new_tok);
+		free(token_value);
+		*i += 2;
+		return (1);
+	}
+	return (0);
+}
 static int	handle_simple_operator(char *line, int *i, t_token **token, int space)
 {
 	char	*token_value;
@@ -261,6 +291,8 @@ t_token	*tokenize_line(char *line)
 			break ;
 		if (line[i] == '$' && (line[i + 1] == '"' || line[i + 1] == '\''))
 			i++;
+		if (handle_fd_redir(line, &i, &token, had_space))
+			continue ;
 		if (handle_double_redir(line, &i, &token, had_space))
 			continue ;
 		if (handle_simple_operator(line, &i, &token, had_space))

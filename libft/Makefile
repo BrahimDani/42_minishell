@@ -10,6 +10,7 @@ SRCS = ft_bzero.c \
 		ft_memset.c \
 		ft_strlen.c \
 		ft_strlcat.c \
+		ft_strncat_free_utils.c \
 		ft_strcmp.c \
 		ft_strncmp.c \
 		ft_toupper.c \

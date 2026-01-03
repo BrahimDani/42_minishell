@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_env.c                                         :+:      :+:    :+:   */
+/*   init_env_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/21 10:15:58 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/12/09 04:32:53 by vboxuser         ###   ########.fr       */
+/*   Created: 2026/01/03 19:05:00 by kadrouin          #+#    #+#             */
+/*   Updated: 2026/01/03 19:05:10 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static t_env	*create_env_node(char *env_str)
+t_env	*create_env_node(char *env_str)
 {
 	t_env	*new_node;
 	char	*equal_sign;
@@ -38,7 +38,7 @@ static t_env	*create_env_node(char *env_str)
 	return (new_node);
 }
 
-static void	add_env_node(t_env **env_list, t_env **current, t_env *new_node)
+void	add_env_node(t_env **env_list, t_env **current, t_env *new_node)
 {
 	if (*env_list == NULL)
 	{
@@ -52,7 +52,7 @@ static void	add_env_node(t_env **env_list, t_env **current, t_env *new_node)
 	}
 }
 
-static void	adjust_shlvl(t_env **env_list)
+void	adjust_shlvl(t_env **env_list)
 {
 	char	*lvl_str;
 	int		lvl;
@@ -74,24 +74,7 @@ static void	adjust_shlvl(t_env **env_list)
 	}
 }
 
-void	init_env(t_env **env_list, char **envp)
-{
-	int		i;
-	t_env	*current;
-	t_env	*new_node;
-
-	i = 0;
-	current = NULL;
-	while (envp[i])
-	{
-		new_node = create_env_node(envp[i]);
-		add_env_node(env_list, &current, new_node);
-		i++;
-	}
-	adjust_shlvl(env_list);
-}
-
-static int	count_env_nodes(t_env *env_list)
+int	count_env_nodes(t_env *env_list)
 {
 	t_env	*current;
 	int		count;
@@ -106,7 +89,7 @@ static int	count_env_nodes(t_env *env_list)
 	return (count);
 }
 
-static char	*format_env_entry(t_env *node)
+char	*format_env_entry(t_env *node)
 {
 	char	*tmp;
 	char	*result;
@@ -120,28 +103,4 @@ static char	*format_env_entry(t_env *node)
 	}
 	else
 		return (ft_strdup(node->key));
-}
-
-void	convert_env(t_env *env_list, char ***envp)
-{
-	t_env	*current;
-	int		count;
-	int		i;
-
-	count = count_env_nodes(env_list);
-	*envp = malloc((count + 1) * sizeof(char *));
-	if (!*envp)
-	{
-		perror("Failed to allocate memory for envp");
-		exit(EXIT_FAILURE);
-	}
-	current = env_list;
-	i = 0;
-	while (i < count)
-	{
-		(*envp)[i] = format_env_entry(current);
-		current = current->next;
-		i++;
-	}
-	(*envp)[count] = NULL;
 }

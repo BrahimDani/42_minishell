@@ -1,23 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   expander_split_count.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 05:14:48 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 19:55:52 by kadrouin         ###   ########.fr       */
+/*   Created: 2026/01/03 20:55:26 by kadrouin          #+#    #+#             */
+/*   Updated: 2026/01/03 20:47:21 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "../../includes/minishell.h"
+#include "../../includes/parsing.h"
 
-int	ft_strcmp(char *s1, char *s2)
+int	count_leading_spaces(char *str)
 {
-	while (*s1 == *s2 && *s1)
-	{
-		s1++;
-		s2++;
-	}
-	return (*s1 - *s2);
+	int	count;
+
+	count = 0;
+	while (str[count] == ' ')
+		count++;
+	return (count);
+}
+
+int	count_trailing_spaces(char *str, int len)
+{
+	int	count;
+
+	count = 0;
+	while (count < len && str[len - 1 - count] == ' ')
+		count++;
+	return (count);
 }

@@ -6,7 +6,7 @@
 #    By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/21 10:30:00 by kadrouin          #+#    #+#              #
-#    Updated: 2025/11/30 18:43:34 by kadrouin         ###   ########.fr        #
+#    Updated: 2026/01/03 19:30:30 by kadrouin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -lreadline
 
 SRCDIR = src
+COREDIR = $(SRCDIR)/core
+UTILSDIR = $(SRCDIR)/utils
 BUILTINSDIR = $(SRCDIR)/builtins
 EXECDIR = $(SRCDIR)/exec
 PARSINGDIR = $(SRCDIR)/parsing
@@ -24,7 +26,8 @@ INCDIR = includes
 LIBFTDIR = libft
 LIBFT = $(LIBFTDIR)/libft.a
 
-SRCS = $(wildcard $(SRCDIR)/*.c) \
+SRCS = $(wildcard $(COREDIR)/*.c) \
+       $(wildcard $(UTILSDIR)/*.c) \
        $(wildcard $(BUILTINSDIR)/*.c) \
        $(wildcard $(EXECDIR)/*.c) \
        $(wildcard $(PARSINGDIR)/*.c)

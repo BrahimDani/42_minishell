@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 05:14:48 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 19:55:52 by kadrouin         ###   ########.fr       */
+/*   Created: 2025/08/21 12:52:57 by kadrouin          #+#    #+#             */
+/*   Updated: 2026/01/03 19:04:42 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "../includes/minishell.h"
 
-int	ft_strcmp(char *s1, char *s2)
+void	sigint_handler(int signum)
 {
-	while (*s1 == *s2 && *s1)
-	{
-		s1++;
-		s2++;
-	}
-	return (*s1 - *s2);
+	(void)signum;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
+void	call_eof_handler(void)
+{
+	return ;
 }

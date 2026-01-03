@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vboxuser <vboxuser@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 00:00:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/12/09 04:07:42 by vboxuser         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:58:02 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	close_pipes(int pipes[][2], int count)
 	}
 }
 
-int create_pipes(int pipes[][2], int n_cmds)
+int	create_pipes(int pipes[][2], int n_cmds)
 {
 	int	i;
 
