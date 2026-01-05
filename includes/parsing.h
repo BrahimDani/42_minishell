@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:07:23 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 05:26:12 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 05:45:11 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ void			pre_read_one(t_cmd *cmd, t_env *env_list);
 int				is_ifs_char(char c);
 int				count_ifs_words(char *str);
 char			**split_on_ifs(char *str);
+void			init_word_split(t_word_split *ws, char *value);
 void			free_split_result(t_word_split *ws);
 t_token			*handle_word_split(t_token **tokens, t_token *current,
 					t_token *prev, t_token *next);

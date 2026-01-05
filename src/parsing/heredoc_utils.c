@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:30:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 04:37:44 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 06:27:38 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,40 +38,39 @@ char	*read_heredoc_line(void)
 {
 	char	*line;
 	char	*buf;
-	size_t	n;
-	ssize_t	r;
+	int		len;
 
 	if (isatty(STDIN_FILENO))
 	{
 		line = readline("");
 		return (line);
 	}
-	buf = NULL;
-	n = 0;
-	r = getline(&buf, &n, stdin);
-	if (r == -1)
-	{
-		if (buf)
-			free(buf);
+	buf = get_next_line(STDIN_FILENO);
+	if (!buf)
 		return (NULL);
-	}
-	if (r > 0 && buf[r - 1] == '\n')
-		buf[r - 1] = '\0';
+	len = ft_strlen(buf);
+	if (len > 0 && buf[len - 1] == '\n')
+		buf[len - 1] = '\0';
 	return (buf);
 }
 
 int	create_tmpfile(void)
 {
-	char	template[20];
-	int		fd;
+	static int	counter = 0;
+	char		path[50];
+	char		*num;
+	int			fd;
 
-	ft_strlcpy(template, "/tmp/heredoc_XXXXXX", 20);
-	fd = mkstemp(template);
+	num = ft_itoa(counter++);
+	path[0] = '\0';
+	ft_strlcpy(path, "/tmp/.minishell_heredoc_", 50);
+	ft_strlcat(path, num, 50);
+	free(num);
+	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0600);
 	if (fd == -1)
 	{
 		perror("minishell: heredoc");
 		return (-1);
 	}
-	unlink(template);
 	return (fd);
 }

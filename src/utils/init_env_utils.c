@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 19:05:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 19:05:10 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 06:13:33 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_env	*create_env_node(char *env_str)
 	equal_sign = strchr(env_str, '=');
 	if (equal_sign)
 	{
-		new_node->key = strndup(env_str, equal_sign - env_str);
+		new_node->key = ft_substr(env_str, 0, equal_sign - env_str);
 		new_node->value = strdup(equal_sign + 1);
 	}
 	else

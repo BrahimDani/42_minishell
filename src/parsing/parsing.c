@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 05:39:36 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 05:43:46 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,19 @@ char	**tokens_to_array(t_token *list)
 	return (arr);
 }
 
-static void	parse_line_end(t_token *tokens)
+static int	parse_line_end(t_token *tokens)
 {
 	if (!tokens)
-		return (NULL);
+		return (0);
 	if (!check_pipe_tokens(tokens))
 	{
 		free_tokens(tokens);
-		return (NULL);
+		return (0);
 	}
 	if (!validate_tokens_syntax(tokens))
 	{
 		free_tokens(tokens);
-		return (NULL);
+		return (0);
 	}
 	return (1);
 }
@@ -70,7 +70,7 @@ t_token	*parse_line(char *line)
 		return (NULL);
 	}
 	tokens = tokenize_line(line);
-	if (parse_line_end(tokens) == NULL)
+	if (!parse_line_end(tokens))
 		return (NULL);
 	return (tokens);
 }

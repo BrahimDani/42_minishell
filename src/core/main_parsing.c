@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 19:22:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 19:15:36 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 06:09:30 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,9 @@ int	extend_line(char **line)
 	char	*next;
 	char	*with_nl;
 	char	*joined;
-	size_t	l2;
-	ssize_t	r2;
 
-	next = NULL;
-	l2 = 0;
-	r2 = getline(&next, &l2, stdin);
-	if (r2 == -1)
+	next = get_next_line(STDIN_FILENO);
+	if (!next)
 		return (0);
 	with_nl = ft_strjoin(*line, "");
 	free(*line);
