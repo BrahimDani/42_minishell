@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2025/12/02 03:06:15 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 05:39:36 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 char	**tokens_to_array(t_token *list)
 {
 	int		count;
-	t_token	*tmp = list;
+	t_token	*tmp;
 	char	**arr;
 
+	tmp = list;
 	count = 0;
 	while (tmp)
 	{
@@ -37,20 +38,8 @@ char	**tokens_to_array(t_token *list)
 	return (arr);
 }
 
-t_token	*parse_line(char *line)
+static void	parse_line_end(t_token *tokens)
 {
-	t_token *tokens;
-
-	if (!line || !*line)
-		return (NULL);
-	if (empty_line(line))
-		return (NULL);
-	if (!check_quote(line) || !check_redir(line) || !check_ampersand (line))
-	{
-		g_last_status = 2;
-		return (NULL);
-	}
-	tokens = tokenize_line(line);
 	if (!tokens)
 		return (NULL);
 	if (!check_pipe_tokens(tokens))
@@ -63,41 +52,31 @@ t_token	*parse_line(char *line)
 		free_tokens(tokens);
 		return (NULL);
 	}
-	return (tokens);
+	return (1);
 }
 
-static t_token	*extract_until_semicolon(t_token **tokens)
+t_token	*parse_line(char *line)
 {
-	t_token	*start;
-	t_token	*cur;
-	t_token	*prev;
+	t_token	*tokens;
 
-	if (!tokens || !*tokens)
+	if (!line || !*line)
 		return (NULL);
-	start = *tokens;
-	cur = *tokens;
-	prev = NULL;
-	while (cur && cur->type != T_SEMICOLON)
+	if (empty_line(line))
+		return (NULL);
+	if (!check_quote(line) || !check_redir(line)
+		|| !check_ampersand(line))
 	{
-		prev = cur;
-		cur = cur->next;
+		g_last_status = 2;
+		return (NULL);
 	}
-	if (cur && cur->type == T_SEMICOLON)
-	{
-		if (prev)
-			prev->next = NULL;
-		*tokens = cur->next;
-		free(cur->value);
-		free(cur);
-	}
-	else
-		*tokens = NULL;
-	return (start);
+	tokens = tokenize_line(line);
+	if (parse_line_end(tokens) == NULL)
+		return (NULL);
+	return (tokens);
 }
 
 void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
 {
-	// Execute commands from the token list
 	t_token	*current_block;
 	t_cmd	*cmd_list;
 
@@ -106,38 +85,25 @@ void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
 		current_block = extract_until_semicolon(&tokens);
 		if (!current_block)
 			continue ;
-		// Expand variables AFTER splitting by ; so each block has current env state
 		current_block = expand_tokens(current_block, *env_list);
 		cmd_list = parse_tokens(current_block);
 		free_tokens(current_block);
 		if (!cmd_list)
 			continue ;
-		/* Pre-read heredoc bodies (non-interactive scripts) so their lines
-		 * are consumed here instead of being interpreted as later commands. */
 		pre_read_heredocs(cmd_list, *env_list);
 		exec_cmd_list(cmd_list, env_list, envp);
 		free_cmds(cmd_list);
 	}
 }
 
-static void	pre_read_one(t_cmd *cmd, t_env *env_list)
-{
-	int fd;
-	if (cmd->heredoc && cmd->heredoc_fd < 0)
-	{
-		fd = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted);
-		if (fd >= 0)
-			cmd->heredoc_fd = fd;
-	}
-}
-
 void	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list)
 {
-	t_cmd *c = cmd_list;
+	t_cmd	*c;
+
+	c = cmd_list;
 	while (c)
 	{
 		pre_read_one(c, env_list);
 		c = c->next;
 	}
 }
-

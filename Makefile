@@ -6,7 +6,7 @@
 #    By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/21 10:30:00 by kadrouin          #+#    #+#              #
-#    Updated: 2026/01/03 19:30:30 by kadrouin         ###   ########.fr        #
+#    Updated: 2026/01/05 04:10:14 by kadrouin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -lreadline
 
 SRCDIR = src
+OBJDIR = obj
 COREDIR = $(SRCDIR)/core
 UTILSDIR = $(SRCDIR)/utils
 BUILTINSDIR = $(SRCDIR)/builtins
@@ -32,7 +33,7 @@ SRCS = $(wildcard $(COREDIR)/*.c) \
        $(wildcard $(EXECDIR)/*.c) \
        $(wildcard $(PARSINGDIR)/*.c)
 
-OBJS = $(SRCS:.c=.o)
+OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 all: $(LIBFT) $(NAME)
 
@@ -42,11 +43,12 @@ $(NAME): $(OBJS) $(LIBFT)
 $(LIBFT):
 	$(MAKE) -C $(LIBFTDIR)
 
-%.o: %.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I$(INCDIR) -I$(LIBFTDIR) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJDIR)
 	$(MAKE) -C $(LIBFTDIR) clean
 
 fclean: clean

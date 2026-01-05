@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 20:55:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 20:47:27 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 03:15:20 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ static t_token	*handle_multi_split(t_field_ctx *ctx, char **split,
 {
 	t_token	*last;
 
-	last = handle_multi_fields(*ctx->cur, *ctx->prev, split, meta);
+	last = handle_multi_fields(ctx->cur, *(ctx->prev), split, meta);
 	if (meta->trailing > 0 && last && last->next
 		&& last->next->space_before == 0)
 		last->next->space_before = 1;
-	*ctx->prev = last;
+	*(ctx->prev) = last;
 	free_split_words(split);
 	return (last->next);
 }
@@ -74,16 +74,16 @@ t_token	*process_fields(t_field_ctx *ctx, char **split, t_split_meta *meta)
 	{
 		free_split_words(split);
 		if (meta->len == 0)
-			return (handle_empty_result(*ctx->cur, ctx->head, *ctx->prev));
-		return (handle_spaces_only(*ctx->cur, ctx->head, *ctx->prev));
+			return (handle_empty_result(ctx->cur, ctx->head, *(ctx->prev)));
+		return (handle_spaces_only(ctx->cur, ctx->head, *(ctx->prev)));
 	}
 	if (count == 1)
 	{
-		handle_single_field(*ctx->cur, *ctx->prev, split[0], meta);
+		handle_single_field(ctx->cur, *(ctx->prev), split[0], meta);
 		free_split_words(split);
 	}
 	else
 		return (handle_multi_split(ctx, split, meta));
-	*ctx->prev = *ctx->cur;
-	return ((*ctx->cur)->next);
+	*(ctx->prev) = ctx->cur;
+	return (ctx->cur->next);
 }

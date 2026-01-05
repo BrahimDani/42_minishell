@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 20:55:18 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 20:37:53 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 03:14:30 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,17 @@ void	free_split_words(char **split)
 t_token	*handle_empty_result(t_token *cur, t_token **head, t_token *prev)
 {
 	t_token	*next;
+	int		space_before;
 
 	next = cur->next;
+	space_before = cur->space_before;
 	if (prev)
 		prev->next = next;
 	else
 		*head = next;
 	free(cur->value);
 	free(cur);
-	if (next && cur->space_before && next->space_before == 0)
+	if (next && space_before && next->space_before == 0)
 		next->space_before = 1;
 	return (next);
 }
