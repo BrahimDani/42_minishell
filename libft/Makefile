@@ -35,6 +35,7 @@ SRCS = ft_bzero.c \
 		ft_putstr_fd.c \
 		ft_putendl_fd.c \
 		ft_atol.c \
+		ft_atoll.c \
 		ft_putnbr_fd.c \
 		get_next_line.c
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 20:54:01 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/07 17:41:29 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/07 19:19:03 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,36 +49,20 @@ static char	*strip_outer_quotes(const char *arg, int *was_alloc)
 	return ((char *)arg);
 }
 
-static int	is_overflow_long(const char *str)
+static int	is_overflow_long(char *str)
 {
-	const char	*digits;
-	int			neg;
-	size_t		len;
-
-	if (!str || !*str)
-		return (1);
-	neg = 0;
-	digits = str;
-	if (*digits == '+' || *digits == '-')
-	{
-		neg = (*digits == '-');
-		digits++;
-	}
-	if (!*digits)
-		return (1);
-	len = ft_strlen(digits);
-	if (len > 19)
-		return (1);
-	if (len < 19)
+	if (!ft_is_number(str))
 		return (0);
-	if (!neg)
-		return (ft_strcmp(digits, "9223372036854775807") > 0);
-	return (ft_strcmp(digits, "9223372036854775808") > 0);
+	if (ft_strlen(str) > 20)
+		return (0);
+	if (ft_atoll(str) > 9223372036854775807 || ft_atoll(str) < -9223372036854775808)
+		return (0);
+	return (1);
 }
 
 static void	exit_parse(char **args, char *number, int was_alloc)
 {
-	if (!ft_is_number(number) || is_overflow_long(number))
+	if (is_overflow_long(number))
 	{
 		ft_putstr_fd("minishell: exit: ", 2);
 		ft_putstr_fd(args[1], 2);

@@ -13,6 +13,8 @@ libft/libft.a
 42_minishell_tester/**/vgcore.*
 42_minishell_tester/**/.valgrind*
 42_minishell_tester/**/tmp*
+minishell_teser/
+minishell_tester/
 tmp_*
 tmp-*
 tmp.*

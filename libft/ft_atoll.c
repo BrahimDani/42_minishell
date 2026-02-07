@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atol.c                                          :+:      :+:    :+:   */
+/*   ft_atoll.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 20:56:52 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/07 19:15:11 by kadrouin         ###   ########.fr       */
+/*   Created: 2026/02/07 18:45:00 by kadrouin          #+#    #+#             */
+/*   Updated: 2026/02/07 19:15:09 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long	ft_atol(const char *str)
+long long	ft_atoll(const char *str)
 {
-	int		i;
-	int		sign;
-	long	result;
+	int			i;
+	int			sign;
+	long long	result;
 
 	i = 0;
 	sign = 1;
@@ -34,6 +34,5 @@ long	ft_atol(const char *str)
 		result = (result * 10) + (str[i] - '0');
 		i++;
 	}
-	return ((long)sign * result);
+	return ((long long)sign * result);
 }
-
