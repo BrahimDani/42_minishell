@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:25:39 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 05:36:51 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/07 17:01:23 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_pipe_ctx
 	int			(*pipes)[2];
 	t_env		**env_list;
 	char		**envp;
+	t_cmd		*head;
 	int			n_cmds;
 }				t_pipe_ctx;
 
@@ -52,8 +53,8 @@ int				setup_redirections(t_cmd *cmd, t_env **env_list,
 int				setup_stderr_redir(t_cmd *cmd);
 void			setup_child_pipes(int pipes[][2], int i, int n_cmds);
 int				handle_child_redirs(t_cmd *cmd, t_env **env_list);
-void			exec_pipeline_child_cmd(t_cmd *cmd, t_env **env_list,
-					char **envp);
+void			exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head,
+					t_env **env_list, char **envp);
 t_pipe_array	alloc_pipes(int n_cmds);
 t_pipe_array	init_pipes_array(int n_cmds);
 void			wait_all_children(pid_t *pids, int n_cmds);
