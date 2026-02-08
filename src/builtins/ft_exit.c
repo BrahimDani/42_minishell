@@ -6,11 +6,12 @@
 /*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 20:54:01 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/07 19:19:03 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/07 23:18:16 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <limits.h>
 #include "../includes/minishell.h"
 
 extern int	g_last_status;
@@ -55,7 +56,7 @@ static int	is_overflow_long(char *str)
 		return (0);
 	if (ft_strlen(str) > 20)
 		return (0);
-	if (ft_atoll(str) > 9223372036854775807 || ft_atoll(str) < -9223372036854775808)
+	if (ft_atoll(str) > LLONG_MAX || ft_atoll(str) < LLONG_MIN)
 		return (0);
 	return (1);
 }

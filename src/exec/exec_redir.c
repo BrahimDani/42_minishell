@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 20:11:25 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/08 00:17:36 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ int	handle_input_redir(t_cmd *cmd, t_env **env_list)
 	saved_stdin = dup(STDIN_FILENO);
 	dup2(fd_in, STDIN_FILENO);
 	close(fd_in);
+	if (cmd->heredoc && cmd->heredoc_fd == fd_in)
+		cmd->heredoc_fd = -1;
 	return (saved_stdin);
 }
 

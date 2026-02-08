@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipeline_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/07 16:35:03 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/08 00:17:38 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,18 @@ void	exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head,
 		t_env **env_list, char **envp)
 {
 	int	status;
+	t_cmd	*cur;
+
+	cur = head;
+	while (cur)
+	{
+		if (cur != cmd && cur->heredoc_fd >= 0)
+		{
+			close(cur->heredoc_fd);
+			cur->heredoc_fd = -1;
+		}
+		cur = cur->next;
+	}
 
 	if (handle_child_redirs(cmd, env_list) == -1)
 		status = 1;

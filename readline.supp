@@ -1,0 +1,51 @@
+{
+   readline_leak_1
+   Memcheck:Leak
+   ...
+   fun:readline
+}
+{
+   readline_leak_2
+   Memcheck:Leak
+   ...
+   obj:*/libreadline.so.*
+}
+{
+   readline_leak_3
+   Memcheck:Leak
+   ...
+   fun:add_history
+}
+{
+   readline_leak_4
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:readline
+}
+{
+   readline_leak_5
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libreadline.so.*
+}
+{
+   readline_leak_6
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:add_history
+}
+{
+   readline_cond
+   Memcheck:Cond
+   ...
+   obj:*/libreadline.so.*
+}
+{
+   readline_value8
+   Memcheck:Value8
+   ...
+   obj:*/libreadline.so.*
+}
