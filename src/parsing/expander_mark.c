@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 20:55:34 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 20:37:53 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 12:02:47 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static void	mark_heredoc_group(t_token *start)
 	while (scan && scan->type == T_WORD)
 	{
 		scan->no_expand = 1;
-		scan->was_quoted = 1;
 		if (!scan->next || scan->next->space_before)
 			break ;
 		scan = scan->next;
@@ -39,17 +38,8 @@ void	mark_heredoc_tokens(t_token *tokens)
 		if (current->type == T_HEREDOC && current->next)
 		{
 			scan = current->next;
-			while (scan && scan->type == T_WORD)
-			{
-				if (scan->was_quoted || scan->no_expand)
-				{
-					mark_heredoc_group(current->next);
-					break ;
-				}
-				if (!scan->next || scan->next->space_before)
-					break ;
-				scan = scan->next;
-			}
+			if (scan && scan->type == T_WORD)
+				mark_heredoc_group(current->next);
 		}
 		current = current->next;
 	}

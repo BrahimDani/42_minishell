@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 20:10:37 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 11:20:55 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,18 @@ char	*join_path_cmd(char *path, char *cmd)
 	full_path = ft_strjoin(tmp, cmd);
 	free(tmp);
 	return (full_path);
+}
+
+char	**split_pwd_from_env(t_env *env_list)
+{
+	char	*path;
+
+	path = get_env_value(env_list, "PWD");
+	if (path == NULL)
+		return (NULL);
+	if (path[0] == '\0')
+		return (NULL);
+	return (ft_split(path, ':'));
 }
 
 char	*test_path(char *path, char *cmd)

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 19:20:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 06:13:47 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 13:21:18 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ char	*read_non_interactive_line(void)
 void	init_shell(int argc, char **argv, char **envp,
 	t_env **env_list)
 {
+	close_extra_fds();
 	disable_ctrl_echo();
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
@@ -81,7 +82,7 @@ void	main_loop(int is_interactive, t_env **env_list, char **envp)
 				break ;
 			continue ;
 		}
-		exec_from_tokens(token_list, env_list, envp);
 		free(line);
+		exec_from_tokens(token_list, env_list, envp);
 	}
 }

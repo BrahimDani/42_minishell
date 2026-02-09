@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 20:10:48 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 11:23:06 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,7 @@ char	**split_path_from_env(t_env *env_list)
 
 	path = get_env_value(env_list, "PATH");
 	if (path == NULL)
-	{
-		path = ".:/bin:/usr/bin";
-		return (ft_split(path, ':'));
-	}
+		return (NULL);
 	if (path[0] == '\0')
 		return (NULL);
 	return (ft_split(path, ':'));
@@ -34,6 +31,8 @@ char	*find_command_path(char *cmd, t_env *env_list)
 	int		i;
 
 	paths = split_path_from_env(env_list);
+	if (!paths)
+		paths = split_pwd_from_env(env_list);
 	if (!paths)
 		return (NULL);
 	i = 0;

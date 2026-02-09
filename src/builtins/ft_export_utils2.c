@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 18:46:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 18:42:25 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/08 15:22:17 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	handle_simple_export(t_env **env_list, char *token, char *equal)
 {
 	char	*key;
 	char	*value;
+	char	*existing;
 
 	if (equal)
 	{
@@ -49,7 +50,11 @@ void	handle_simple_export(t_env **env_list, char *token, char *equal)
 		set_env_value(env_list, key, value);
 	}
 	else
-		set_env_value(env_list, token, NULL);
+	{
+		existing = get_env_value(*env_list, token);
+		if (!existing)
+			set_env_value(env_list, token, NULL);
+	}
 }
 
 int	check_export_errors(char *token)

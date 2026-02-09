@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 19:05:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 06:13:33 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 13:08:48 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_env	*create_env_node(char *env_str)
 	if (!new_node)
 	{
 		perror("Failed to allocate memory for new node");
-		exit(EXIT_FAILURE);
+		ms_exit(EXIT_FAILURE, NULL);
 	}
 	equal_sign = strchr(env_str, '=');
 	if (equal_sign)

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:50:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 04:41:23 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 12:03:12 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	aggregate_quoted(t_token *start)
 		return (0);
 	while (cur && cur->type == T_WORD)
 	{
-		if (cur->was_quoted || cur->no_expand)
+		if (cur->was_quoted)
 		{
 			quoted = 1;
 		}

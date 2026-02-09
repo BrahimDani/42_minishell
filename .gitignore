@@ -26,7 +26,8 @@ echo
 # Accidental files present in tester
 42_minishell_tester/lol.c'
 42_minishell_tester/lol.c"
-
+run_valgrind.sh
+valgrind_output.txt
 # Build dirs
 build/
 

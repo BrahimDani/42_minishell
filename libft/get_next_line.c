@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 06:10:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 06:12:44 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 13:00:59 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,13 @@ char	*get_next_line(int fd)
 {
 	static char	*backup;
 
+	if (fd == -1)
+	{
+		if (backup)
+			free(backup);
+		backup = NULL;
+		return (NULL);
+	}
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!read_to_backup(fd, &backup))

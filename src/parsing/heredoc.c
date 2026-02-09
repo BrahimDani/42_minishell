@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 18:18:50 by vboxuser          #+#    #+#             */
-/*   Updated: 2026/01/05 06:29:26 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 12:38:17 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,16 @@ static void	build_heredoc_path(char *path, int size)
 {
 	static int	counter = 0;
 	char		*num;
+	char		*pid;
 
 	num = ft_itoa(counter++);
+	pid = ft_itoa(getpid());
 	path[0] = '\0';
 	ft_strlcpy(path, "/tmp/.minishell_heredoc_", size);
+	ft_strlcat(path, pid, size);
+	ft_strlcat(path, "_", size);
 	ft_strlcat(path, num, size);
+	free(pid);
 	free(num);
 }
 

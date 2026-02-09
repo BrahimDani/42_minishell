@@ -3,15 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 20:54:01 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/07 23:18:16 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 13:10:28 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <limits.h>
 #include "../includes/minishell.h"
 
 extern int	g_last_status;
@@ -53,12 +51,12 @@ static char	*strip_outer_quotes(const char *arg, int *was_alloc)
 static int	is_overflow_long(char *str)
 {
 	if (!ft_is_number(str))
-		return (0);
+		return (1);
 	if (ft_strlen(str) > 20)
-		return (0);
-	if (ft_atoll(str) > LLONG_MAX || ft_atoll(str) < LLONG_MIN)
-		return (0);
-	return (1);
+		return (1);
+	if (!ft_atoll(str))
+		return (1);
+	return (0);
 }
 
 static void	exit_parse(char **args, char *number, int was_alloc)
@@ -70,7 +68,7 @@ static void	exit_parse(char **args, char *number, int was_alloc)
 		ft_putstr_fd(": numeric argument required\n", 2);
 		if (was_alloc)
 			free(number);
-		exit(2);
+		ms_exit(2, NULL);
 	}
 }
 
@@ -96,5 +94,6 @@ int	ft_exit(char **args)
 	}
 	if (isatty(STDIN_FILENO))
 		ft_putstr_fd("exit\n", 2);
-	exit((unsigned char)code);
+	ms_exit((unsigned char)code, NULL);
+	return (0);
 }

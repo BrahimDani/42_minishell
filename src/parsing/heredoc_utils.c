@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:30:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 06:27:38 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 12:38:17 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,11 @@ char	*process_delimiter(char *delimiter, int *should_expand,
 		int quoted, t_env *env_list)
 {
 	char	*clean_delim;
-	char	*tmp;
-
+	(void)env_list;
 	*should_expand = 0;
 	if (!quoted)
 		*should_expand = 1;
-	if (*should_expand)
-	{
-		tmp = expand_variable(delimiter, env_list);
-		if (tmp)
-			clean_delim = tmp;
-		else
-			clean_delim = ft_strdup(delimiter);
-	}
-	else
-		clean_delim = ft_strdup(delimiter);
+	clean_delim = ft_strdup(delimiter);
 	return (clean_delim);
 }
 
@@ -59,12 +49,17 @@ int	create_tmpfile(void)
 	static int	counter = 0;
 	char		path[50];
 	char		*num;
+	char		*pid;
 	int			fd;
 
 	num = ft_itoa(counter++);
+	pid = ft_itoa(getpid());
 	path[0] = '\0';
 	ft_strlcpy(path, "/tmp/.minishell_heredoc_", 50);
+	ft_strlcat(path, pid, 50);
+	ft_strlcat(path, "_", 50);
 	ft_strlcat(path, num, 50);
+	free(pid);
 	free(num);
 	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0600);
 	if (fd == -1)

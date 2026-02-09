@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:15:58 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 19:05:19 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 13:08:47 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	convert_env(t_env *env_list, char ***envp)
 	if (!*envp)
 	{
 		perror("Failed to allocate memory for envp");
-		exit(EXIT_FAILURE);
+		ms_exit(EXIT_FAILURE, env_list);
 	}
 	current = env_list;
 	i = 0;

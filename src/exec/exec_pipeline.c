@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/07 17:02:21 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/08 13:23:45 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 {
 	int	saved_in;
 	int	saved_out;
+	int	saved_err;
 
 	if (handle_child_error(cmd) == -1)
 		return (-1);
@@ -55,11 +56,37 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 			close(saved_in);
 		return (-1);
 	}
+	saved_err = setup_stderr_redir(cmd);
 	if (saved_in >= 0)
 		close(saved_in);
 	if (saved_out >= 0)
 		close(saved_out);
+	if (saved_err >= 0)
+		close(saved_err);
 	return (0);
+}
+
+static void	close_parent_heredocs(t_cmd *cmd_list)
+{
+	while (cmd_list)
+	{
+		if (cmd_list->heredoc_fd >= 0)
+		{
+			close(cmd_list->heredoc_fd);
+			cmd_list->heredoc_fd = -1;
+		}
+		cmd_list = cmd_list->next;
+	}
+}
+
+static void	close_parent_pipe_ends(int pipes[][2], int idx, int n_cmds)
+{
+	if (!pipes)
+		return ;
+	if (idx > 0)
+		close(pipes[idx - 1][0]);
+	if (idx < n_cmds - 1)
+		close(pipes[idx][1]);
 }
 
 static int	process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,
@@ -71,6 +98,7 @@ static int	process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,
 	if (*pid_slot == 0)
 	{
 		setup_child_pipes(ctx->pipes, idx, ctx->n_cmds);
+		free(ctx->pipes);
 		exec_pipeline_child_cmd(cmd, ctx->head, ctx->env_list, ctx->envp);
 	}
 	return (0);
@@ -95,11 +123,11 @@ void	execute_pipeline(t_cmd *cmd_list,
 	{
 		if (process_pipeline_cmd(cmd_list, &ctx, &pids[i], i) == -1)
 			break ;
+		close_parent_pipe_ends(pipes, i, n_cmds);
 		cmd_list = cmd_list->next;
 		i++;
 	}
-	if (pipes)
-		close_pipes(pipes, n_cmds - 1);
+	close_parent_heredocs(head);
 	wait_all_children(pids, i);
 	free(pipes);
 }

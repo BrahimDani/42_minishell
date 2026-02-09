@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/03 19:23:21 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 13:05:22 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <unistd.h>
+# include <limits.h>
 # include <stdbool.h>
 
 // GENERAL
@@ -53,6 +54,7 @@ void	handle_cmd_mode(int argc, char **argv, t_env *env_list, char **envp);
 int		join_continuation(char **line, const char *cont);
 int		extend_line(char **line);
 void	strip_newline(char *line);
+void	ms_exit(int status, t_env *env_list);
 char	*read_interactive_line(void);
 char	*read_non_interactive_line(void);
 void	init_shell(int argc, char **argv, char **envp, t_env **env_list);
