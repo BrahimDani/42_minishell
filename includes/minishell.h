@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 13:05:22 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:33:12 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include <unistd.h>
 # include <limits.h>
 # include <stdbool.h>
+# include <errno.h>
 
 // GENERAL
 void	sigint_handler(int signum);

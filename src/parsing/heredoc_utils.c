@@ -6,17 +6,17 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:30:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 12:38:17 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:12:25 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 char	*process_delimiter(char *delimiter, int *should_expand,
-		int quoted, t_env *env_list)
+		int quoted)
 {
 	char	*clean_delim;
-	(void)env_list;
+
 	*should_expand = 0;
 	if (!quoted)
 		*should_expand = 1;

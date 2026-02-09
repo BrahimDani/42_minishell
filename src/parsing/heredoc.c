@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 18:18:50 by vboxuser          #+#    #+#             */
-/*   Updated: 2026/02/09 12:38:17 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:12:05 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	read_heredoc(char *delimiter, t_env *env_list, int quoted)
 	char	path[50];
 
 	clean_delim = process_delimiter(delimiter, &should_expand,
-			quoted, env_list);
+			quoted);
 	build_heredoc_path(path, 50);
 	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0600);
 	if (fd == -1)

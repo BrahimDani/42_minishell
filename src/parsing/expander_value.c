@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 20:55:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/08 12:03:51 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:16:46 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,31 +79,4 @@ char	*append_var_value(char *result, const char **p, t_env *env_list)
 	if (*(*p + 1) == '?')
 		return (expand_status_var(result, p));
 	return (expand_regular_var(result, p, env_list));
-}
-
-char	*expand_variable_mode(const char *str, t_env *env_list,
-		t_quote_mode mode)
-{
-	char		*result;
-	const char	*p;
-
-	if (mode == QM_SINGLE)
-		return (ft_strdup(str));
-	result = ft_strdup("");
-	p = str;
-	while (result && *p)
-	{
-		if (*p == '\\' && mode == QM_DOUBLE)
-			result = handle_escape_double(result, &p);
-		else if (*p == '\\' && mode == QM_NONE)
-			result = handle_escape_none(result, &p);
-		else if (*p == '$')
-			result = append_var_value(result, &p, env_list);
-		else
-		{
-			result = ft_strncat_free(result, *p, 1);
-			p++;
-		}
-	}
-	return (result);
 }

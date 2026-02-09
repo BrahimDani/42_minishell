@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:44:43 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 05:10:29 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:16:36 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,14 +106,29 @@ t_token	*expand_tokens(t_token *tokens, t_env *env_list)
 	return (tokens);
 }
 
-void	expand_token(t_cmd *cmd_list, t_env *env_list)
+char	*expand_variable_mode(const char *str, t_env *env_list,
+		t_quote_mode mode)
 {
-	t_cmd	*cmd;
+	char		*result;
+	const char	*p;
 
-	(void)env_list;
-	cmd = cmd_list;
-	while (cmd)
+	if (mode == QM_SINGLE)
+		return (ft_strdup(str));
+	result = ft_strdup("");
+	p = str;
+	while (result && *p)
 	{
-		cmd = cmd->next;
+		if (*p == '\\' && mode == QM_DOUBLE)
+			result = handle_escape_double(result, &p);
+		else if (*p == '\\' && mode == QM_NONE)
+			result = handle_escape_none(result, &p);
+		else if (*p == '$')
+			result = append_var_value(result, &p, env_list);
+		else
+		{
+			result = ft_strncat_free(result, *p, 1);
+			p++;
+		}
 	}
+	return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:25:39 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 11:21:30 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:27:56 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,6 @@ void			exec_cmd_list(t_cmd *cmd_list, t_env **env_list, char **envp);
 int				create_pipes(int pipes[][2], int n_cmds);
 void			close_pipes(int pipes[][2], int count);
 char			**split_pwd_from_env(t_env *env_list);
+void			exec_external_child(char **argv, t_env **env_list);
 
 #endif

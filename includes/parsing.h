@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:07:23 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 05:45:11 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:29:18 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ typedef struct s_cmd
 void			pre_read_heredocs(t_cmd *cmd_list, t_env *env_list);
 int				read_heredoc(char *delimiter, t_env *env_list, int quoted);
 char			*process_delimiter(char *delimiter, int *should_expand,
-					int quoted, t_env *env_list);
+					int quoted);
 char			*read_heredoc_line(void);
 int				create_tmpfile(void);
 int				process_line_expanded(char *line, int fd, char *delim,
@@ -149,7 +149,6 @@ int				check_pipe_tokens(t_token *tokens);
 t_token			*tokenize_line(char *line);
 int				validate_tokens_syntax(t_token *tokens);
 char			**tokens_to_array(t_token *list);
-void			expand_token(t_cmd *cmd_list, t_env *env_list);
 t_token			*expand_tokens(t_token *tokens, t_env *env_list);
 char			*expand_variable(const char *str, t_env *env_list);
 char			*expand_variable_mode(const char *str, t_env *env_list,
@@ -202,5 +201,7 @@ void			exec_from_tokens(t_token *tokens, t_env **env_list,
 void			print_cmds(t_cmd *cmd);
 t_cmd			*parse_tokens(t_token *tokens);
 void			free_cmds(t_cmd *cmd);
+void			close_parent_pipe_ends(int pipes[][2], int idx, int n_cmds);
+void			close_parent_heredocs(t_cmd *cmd_list);
 
 #endif
