@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:42:22 by vboxuser          #+#    #+#             */
-/*   Updated: 2026/01/05 04:44:48 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:38:19 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ int	process_token(t_token **tokens, t_cmd **current, t_cmd *head)
 {
 	if ((*tokens)->type == T_WORD)
 	{
-		if (is_stderr_redirect(*tokens, *current, tokens))
-			return (1);
 		handle_word_token(tokens, *current);
 	}
 	else if ((*tokens)->type == T_REDIR_IN || (*tokens)->type == T_REDIR_OUT

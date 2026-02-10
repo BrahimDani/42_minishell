@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug_print.c                                      :+:      :+:    :+:   */
+/*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 22:11:33 by vboxuser          #+#    #+#             */
-/*   Updated: 2026/01/03 20:24:22 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:52:10 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ static void	free_cmd_files(t_cmd *cmd)
 {
 	free(cmd->infile);
 	free(cmd->outfile);
-	free(cmd->errfile);
 	if (cmd->heredoc_fd >= 0)
 		close(cmd->heredoc_fd);
 }
@@ -54,9 +53,4 @@ void	free_cmds(t_cmd *cmd)
 		free(cmd);
 		cmd = next;
 	}
-}
-
-void	print_cmds(t_cmd *cmd)
-{
-	(void)cmd;
 }

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 14:10:40 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:55:23 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 {
 	int	saved_in;
 	int	saved_out;
-	int	saved_err;
 
 	if (handle_child_error(cmd) == -1)
 		return (-1);
@@ -56,13 +55,10 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 			close(saved_in);
 		return (-1);
 	}
-	saved_err = setup_stderr_redir(cmd);
 	if (saved_in >= 0)
 		close(saved_in);
 	if (saved_out >= 0)
 		close(saved_out);
-	if (saved_err >= 0)
-		close(saved_err);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:40:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 04:39:15 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:30:56 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*handle_word(char *line, int *i)
 
 	start = *i;
 	while (line[*i] && line[*i] != ' ' && line[*i] != '\t' && line[*i] != '\''
-		&& line[*i] != '"' && !ft_strchr("|<>;", line[*i]))
+		&& line[*i] != '"' && !ft_strchr("|<>", line[*i]))
 		(*i)++;
 	word = ft_substr(line, start, *i - start);
 	return (word);

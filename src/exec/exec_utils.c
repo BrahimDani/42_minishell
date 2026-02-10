@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 14:07:34 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 14:08:09 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:51:29 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 {
 	int	saved_stdin;
 	int	saved_stdout;
-	int	saved_stderr;
 
 	if (check_redir_errors(cmd))
 		return (close_cmd_heredoc_fd(cmd));
@@ -75,7 +74,6 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 		close_cmd_heredoc_fd(cmd);
 		return ;
 	}
-	saved_stderr = setup_stderr_redir(cmd);
 	if (cmd->argv && cmd->argv[0])
 	{
 		g_last_status = run_command(cmd, env_list, envp);
@@ -83,11 +81,6 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 	}
 	else
 		g_last_status = 0;
-	if (saved_stderr >= 0)
-	{
-		dup2(saved_stderr, STDERR_FILENO);
-		close(saved_stderr);
-	}
 	restore_fds(saved_stdin, saved_stdout);
 }
 

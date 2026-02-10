@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 03:37:14 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 19:59:18 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:51:29 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int		ft_cd(char **tokens, t_env **env_list);
 // CD UTILS
 char	*handle_home_path(t_env *env_list, char *oldpwd);
 char	*handle_oldpwd_path(t_env *env_list, char *oldpwd, int *print);
-char	*expand_tilde_home(char *token, t_env *env_list, char *oldpwd);
 void	update_pwd_vars(t_env **env_list, char *oldpwd, int print_new_path);
 int		change_directory(char *path, char *oldpwd);
 int		ft_exit(char **args);

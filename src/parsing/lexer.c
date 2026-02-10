@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 12:16:44 by vboxuser          #+#    #+#             */
-/*   Updated: 2026/01/05 04:39:51 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:38:02 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ t_token	*tokenize_line(char *line)
 			break ;
 		if (line[i] == '$' && (line[i + 1] == '"' || line[i + 1] == '\''))
 			i++;
-		if (handle_fd_redir(line, &i, &token, had_space))
-			continue ;
 		if (handle_double_redir(line, &i, &token, had_space))
 			continue ;
 		if (handle_simple_operator(line, &i, &token, had_space))

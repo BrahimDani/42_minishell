@@ -152,7 +152,6 @@ read_heredoc()
 | Fichier | Fonction | Rôle |
 |---------|----------|------|
 | `parsing.c` | `parse_line()` | Valide et parse |
-| `parsing_utils.c` | `extract_until_semicolon()` | Découpe sur `;` |
 
 #### **Vérifications** (4 fichiers)
 | Fichier | Fonction | Rôle |
@@ -472,7 +471,7 @@ bash tester.sh m
 - ✅ `$?` exit status
 - ✅ Single quotes (no expansion)
 - ✅ Double quotes (expansion de $)
-- ✅ Escape sequences `\$`, `\"`, `\\`
+
 
 ### **Signaux**
 - ✅ Ctrl-C (nouveau prompt)

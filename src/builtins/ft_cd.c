@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:11:34 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 18:43:57 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:48:23 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ static char	*get_cd_path(char **tokens, t_env *env_list, char *oldpwd,
 		return (handle_home_path(env_list, oldpwd));
 	else if (tokens[1] && ft_strcmp(tokens[1], "-") == 0)
 		return (handle_oldpwd_path(env_list, oldpwd, print));
-	else if (tokens[1][0] == '~')
-		return (expand_tilde_home(tokens[1], env_list, oldpwd));
 	else
 		return (tokens[1]);
 }
@@ -77,7 +75,7 @@ int	ft_cd(char **tokens, t_env **env_list)
 		return (1);
 	update_pwd_vars(env_list, oldpwd, print_new_path);
 	free(oldpwd);
-	if (tokens[1] && tokens[1][0] == '~' && tokens[1][1] == '/'
+	if (tokens[1] && tokens[1][1] == '/'
 		&& path != tokens[1])
 		free(path);
 	return (0);

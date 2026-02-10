@@ -6,19 +6,11 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:50:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 04:42:06 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:53:42 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-void	handle_stderr_redir(t_cmd *cmd, char *joined, int is_append)
-{
-	if (cmd->errfile)
-		free(cmd->errfile);
-	cmd->errfile = ft_strdup(joined);
-	cmd->err_append = is_append;
-}
 
 void	handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted)
 {
