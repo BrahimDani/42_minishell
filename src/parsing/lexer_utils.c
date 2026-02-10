@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:40:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 17:36:59 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 12:09:54 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,16 @@ t_token_type	get_type(char *word)
 {
 	if (!ft_strncmp(word, "|", 2))
 		return (T_PIPE);
+	if (!ft_strncmp(word, ";", 2))
+		return (T_SEMICOLON);
 	if (!ft_strncmp(word, ">>", 3))
 		return (T_APPEND);
 	if (!ft_strncmp(word, "<<", 3))
 		return (T_HEREDOC);
 	if (!ft_strncmp(word, "<", 2))
 		return (T_REDIR_IN);
+	if (!ft_strncmp(word, ">|", 3))
+		return (T_REDIR_OUT);
 	if (!ft_strncmp(word, ">", 2))
 		return (T_REDIR_OUT);
 	return (T_WORD);

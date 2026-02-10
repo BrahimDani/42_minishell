@@ -90,7 +90,7 @@ int	run_command(t_cmd *cmd, t_env **env_list, char **envp)
 	if (is_builtin(cmd->argv[0]))
 	{
 		if (ft_strcmp(cmd->argv[0], "exit") == 0)
-			return (ft_exit(cmd->argv));
+			return (ft_exit(cmd->argv, *env_list, cmd));
 		return (exec_builtin(cmd->argv, env_list));
 	}
 	return (exec_external(cmd->argv, envp, env_list));

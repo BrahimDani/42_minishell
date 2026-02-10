@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   init_env_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 19:05:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 13:08:48 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 19:09:27 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_env	*create_env_node(char *env_str)
+t_env	*create_env_node(char *env_str, t_env *env_list)
 {
 	t_env	*new_node;
 	char	*equal_sign;
@@ -21,7 +21,7 @@ t_env	*create_env_node(char *env_str)
 	if (!new_node)
 	{
 		perror("Failed to allocate memory for new node");
-		ms_exit(EXIT_FAILURE, NULL);
+		ms_exit(EXIT_FAILURE, env_list);
 	}
 	equal_sign = strchr(env_str, '=');
 	if (equal_sign)

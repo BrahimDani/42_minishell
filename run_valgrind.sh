@@ -7,6 +7,7 @@ valgrind \
   --show-leak-kinds=all \
   --track-origins=yes \
   --track-fds=yes \
+  --trace-children=yes \
   --verbose \
   --suppressions=readline.supp \
   --log-file=valgrind_output.log \

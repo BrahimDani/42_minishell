@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:08:14 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 18:42:05 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 19:20:28 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,6 @@ int	exec_builtin(char **tokens, t_env **env_list)
 	else if (ft_strcmp(tokens[0], "unset") == 0)
 		return (ft_unset(tokens, env_list));
 	else if (ft_strcmp(tokens[0], "exit") == 0)
-		return (ft_exit(tokens));
+		return (ft_exit(tokens, *env_list, NULL));
 	return (1);
 }

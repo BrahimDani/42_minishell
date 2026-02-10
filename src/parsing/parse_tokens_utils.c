@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:50:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 17:54:06 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 12:03:12 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,14 @@ void	init_cmd_fields(t_cmd *cmd)
 	cmd->argv = NULL;
 	cmd->infile = NULL;
 	cmd->outfile = NULL;
+	cmd->errfile = NULL;
 	cmd->append = 0;
+	cmd->err_append = 0;
 	cmd->heredoc = 0;
 	cmd->heredoc_fd = -1;
 	cmd->heredoc_quoted = 0;
 	cmd->next = NULL;
+	cmd->redirect_stderr_to_out = 0;
 	cmd->has_in_redir_error = 0;
 	cmd->in_redir_first_error = NULL;
 	cmd->has_out_redir_error = 0;

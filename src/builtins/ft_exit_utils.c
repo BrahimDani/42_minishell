@@ -1,45 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipes.c                                            :+:      :+:    :+:   */
+/*   ft_exit_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/30 00:00:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 18:47:41 by kadrouin         ###   ########.fr       */
+/*   Created: 2026/02/10 20:13:47 by kadrouin          #+#    #+#             */
+/*   Updated: 2026/02/10 20:29:01 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
-void	close_pipes(int pipes[][2], int count)
+int	ft_is_number(char *str)
 {
-	int	i;
-
-	i = 0;
-	while (i < count)
+	if (!str || !*str)
+		return (0);
+	if (*str == '+' || *str == '-')
+		str++;
+	if (!*str)
+		return (0);
+	while (*str)
 	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
-		i++;
+		if (!ft_isdigit(*str))
+			return (0);
+		str++;
 	}
+	return (1);
 }
 
-int	create_pipes(int pipes[][2], int n_cmds)
+int	ft_exit_status(char **args)
 {
-	int	i;
+	int	should_exit;
 
-	i = 0;
-	while (i < n_cmds - 1)
-	{
-		if (pipe(pipes[i]) == -1)
-		{
-			perror("minishell: pipe");
-			close_pipes(pipes, i);
-			g_last_status = 1;
-			return (-1);
-		}
-		i++;
-	}
-	return (0);
+	return (parse_exit_args(args, &should_exit));
 }

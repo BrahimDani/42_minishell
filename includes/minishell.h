@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 14:33:12 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 22:14:05 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	call_eof_handler(void);
 void	disable_ctrl_echo(void);
 void	enable_ctrl_echo(void);
 // INIT_ENV_UTILS
-t_env	*create_env_node(char *env_str);
+t_env	*create_env_node(char *env_str, t_env *env_list);
 void	add_env_node(t_env **env_list, t_env **current, t_env *new_node);
 void	adjust_shlvl(t_env **env_list);
 int		count_env_nodes(t_env *env_list);
@@ -60,5 +60,7 @@ char	*read_interactive_line(void);
 char	*read_non_interactive_line(void);
 void	init_shell(int argc, char **argv, char **envp, t_env **env_list);
 void	main_loop(int is_interactive, t_env **env_list, char **envp);
+int		parse_exit_args(char **args, int *should_exit);
+int		ft_is_number(char *str);
 
 #endif

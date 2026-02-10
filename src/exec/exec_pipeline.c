@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipeline.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 17:55:23 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 22:17:51 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 {
 	int	saved_in;
 	int	saved_out;
+	int	saved_err;
 
 	if (handle_child_error(cmd) == -1)
 		return (-1);
@@ -55,14 +56,17 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 			close(saved_in);
 		return (-1);
 	}
+	saved_err = setup_stderr_redir(cmd);
 	if (saved_in >= 0)
 		close(saved_in);
 	if (saved_out >= 0)
 		close(saved_out);
+	if (saved_err >= 0)
+		close(saved_err);
 	return (0);
 }
 
-static int	process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,
+int	process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,
 		pid_t *pid_slot, int idx)
 {
 	*pid_slot = fork_and_check(ctx->pipes, ctx->n_cmds);
@@ -72,7 +76,7 @@ static int	process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,
 	{
 		setup_child_pipes(ctx->pipes, idx, ctx->n_cmds);
 		free(ctx->pipes);
-		exec_pipeline_child_cmd(cmd, ctx->head, ctx->env_list, ctx->envp);
+		exec_pipeline_child_cmd(cmd, ctx->head, ctx->env_list);
 	}
 	return (0);
 }
@@ -81,26 +85,18 @@ void	execute_pipeline(t_cmd *cmd_list,
 	t_env **env_list, char **envp, int n_cmds)
 {
 	int			(*pipes)[2];
-	pid_t		pids[1024];
 	t_pipe_ctx	ctx;
-	int			i;
-	t_cmd		*head;
 
-	pipes = init_pipes_array(n_cmds);
-	if (!pipes && n_cmds > 1)
-		return ;
-	head = cmd_list;
-	ctx = (t_pipe_ctx){pipes, env_list, envp, head, n_cmds};
-	i = 0;
-	while (cmd_list && i < n_cmds)
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	ctx = (t_pipe_ctx){NULL, env_list, envp, cmd_list, n_cmds};
+	if (!init_pipeline(n_cmds, &pipes, &ctx))
 	{
-		if (process_pipeline_cmd(cmd_list, &ctx, &pids[i], i) == -1)
-			break ;
-		close_parent_pipe_ends(pipes, i, n_cmds);
-		cmd_list = cmd_list->next;
-		i++;
+		signal(SIGINT, sigint_handler);
+		signal(SIGQUIT, SIG_IGN);
+		return ;
 	}
-	close_parent_heredocs(head);
-	wait_all_children(pids, i);
-	free(pipes);
+	exec_pipeline_loop(cmd_list, &ctx);
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 }

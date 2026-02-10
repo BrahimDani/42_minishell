@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:03:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 17:16:46 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/01/05 05:43:46 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,18 +77,23 @@ t_token	*parse_line(char *line)
 
 void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
 {
+	t_token	*current_block;
 	t_cmd	*cmd_list;
 
-	if (!tokens)
-		return ;
-	tokens = expand_tokens(tokens, *env_list);
-	cmd_list = parse_tokens(tokens);
-	free_tokens(tokens);
-	if (!cmd_list)
-		return ;
-	pre_read_heredocs(cmd_list, *env_list);
-	exec_cmd_list(cmd_list, env_list, envp);
-	free_cmds(cmd_list);
+	while (tokens)
+	{
+		current_block = extract_until_semicolon(&tokens);
+		if (!current_block)
+			continue ;
+		current_block = expand_tokens(current_block, *env_list);
+		cmd_list = parse_tokens(current_block);
+		free_tokens(current_block);
+		if (!cmd_list)
+			continue ;
+		pre_read_heredocs(cmd_list, *env_list);
+		exec_cmd_list(cmd_list, env_list, envp);
+		free_cmds(cmd_list);
+	}
 }
 
 void	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list)

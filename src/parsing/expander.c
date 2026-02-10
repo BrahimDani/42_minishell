@@ -6,12 +6,40 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:44:43 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 17:22:42 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/09 14:16:36 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include "../../includes/parsing.h"
+
+static void	expand_tilde(t_token *token, t_env *env_list)
+{
+	char	*home;
+	char	*joined;
+
+	if (token->was_quoted || token->value[0] != '~')
+		return ;
+	if (token->value[1] != '\0' && token->value[1] != '/')
+		return ;
+	home = get_env_value(env_list, "HOME");
+	if (!home)
+		return ;
+	if (token->value[1] == '\0')
+	{
+		free(token->value);
+		token->value = ft_strdup(home);
+	}
+	else
+	{
+		joined = ft_strjoin(home, token->value + 1);
+		if (joined)
+		{
+			free(token->value);
+			token->value = joined;
+		}
+	}
+}
 
 static void	expand_token_value(t_token *token, t_env *env_list)
 {
@@ -22,6 +50,7 @@ static void	expand_token_value(t_token *token, t_env *env_list)
 		return ;
 	if (token->no_expand)
 		return ;
+	expand_tilde(token, env_list);
 	if (token->was_quoted)
 		mode = QM_DOUBLE;
 	else
@@ -89,7 +118,11 @@ char	*expand_variable_mode(const char *str, t_env *env_list,
 	p = str;
 	while (result && *p)
 	{
-		if (*p == '$')
+		if (*p == '\\' && mode == QM_DOUBLE)
+			result = handle_escape_double(result, &p);
+		else if (*p == '\\' && mode == QM_NONE)
+			result = handle_escape_none(result, &p);
+		else if (*p == '$')
 			result = append_var_value(result, &p, env_list);
 		else
 		{

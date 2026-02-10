@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:15:58 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 13:08:47 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 19:10:47 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	init_env(t_env **env_list, char **envp)
 	current = NULL;
 	while (envp[i])
 	{
-		new_node = create_env_node(envp[i]);
+		new_node = create_env_node(envp[i], *env_list);
 		add_env_node(env_list, &current, new_node);
 		i++;
 	}

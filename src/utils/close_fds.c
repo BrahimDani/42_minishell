@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   close_fds.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 14:19:26 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 14:22:09 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/10 19:01:40 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	should_keep_fd(int fd, int dir_fd)
 		return (0);
 	if (fd == dir_fd)
 		return (0);
-	if (fd > 1024)
+	if (fd >= 1024)
 		return (0);
 	return (1);
 }
