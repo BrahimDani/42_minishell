@@ -34,7 +34,7 @@ char	*handle_word(char *line, int *i)
 
 	start = *i;
 	while (line[*i] && line[*i] != ' ' && line[*i] != '\t' && line[*i] != '\''
-		&& line[*i] != '"' && !ft_strchr("|<>;", line[*i]))
+		&& line[*i] != '"' && !ft_strchr("|<>", line[*i]))
 		(*i)++;
 	word = ft_substr(line, start, *i - start);
 	return (word);

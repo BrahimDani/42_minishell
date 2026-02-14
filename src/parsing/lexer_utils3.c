@@ -88,7 +88,7 @@ int	handle_simple_operator(char *line, int *i, t_token **token, int space)
 	char	*token_value;
 	t_token	*new_tok;
 
-	if (ft_strchr("|<>;", line[*i]))
+	if (ft_strchr("|<>", line[*i]))
 	{
 		token_value = ft_substr(line, *i, 1);
 		new_tok = new_token(token_value, get_type(token_value));

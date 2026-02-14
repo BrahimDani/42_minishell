@@ -79,8 +79,6 @@ t_token_type	get_type(char *word)
 {
 	if (!ft_strncmp(word, "|", 2))
 		return (T_PIPE);
-	if (!ft_strncmp(word, ";", 2))
-		return (T_SEMICOLON);
 	if (!ft_strncmp(word, ">>", 3))
 		return (T_APPEND);
 	if (!ft_strncmp(word, "<<", 3))

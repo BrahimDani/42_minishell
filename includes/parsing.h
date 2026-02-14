@@ -19,7 +19,6 @@ typedef enum e_token_type
 {
 	T_WORD,
 	T_PIPE,
-	T_SEMICOLON,
 	T_REDIR_IN,
 	T_REDIR_OUT,
 	T_APPEND,
@@ -129,7 +128,6 @@ void			init_word_split(t_word_split *ws, char *value);
 void			free_split_result(t_word_split *ws);
 t_token			*handle_word_split(t_token **tokens, t_token *current,
 					t_token *prev, t_token *next);
-t_token			*extract_until_semicolon(t_token **tokens);
 
 t_token			*new_token(char *value, t_token_type type);
 t_token			*new_token_no_expand(char *value, t_token_type type);

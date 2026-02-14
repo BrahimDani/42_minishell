@@ -77,28 +77,17 @@ t_token	*parse_line(char *line, t_shell *sh)
 
 void	exec_from_tokens(t_token *tokens, t_env **env_list, t_shell *sh)
 {
-	t_token	*current_block;
 	t_cmd	*cmd_list;
 
-	while (tokens)
-	{
-		current_block = extract_until_semicolon(&tokens);
-		if (!current_block)
-			continue ;
-		current_block = expand_tokens(current_block, *env_list, sh);
-		cmd_list = parse_tokens(current_block, sh);
-		free_tokens(current_block);
-		if (!cmd_list)
-			continue ;
-		if (!pre_read_heredocs(cmd_list, *env_list, sh))
-		{
-			free_cmds(cmd_list);
-			free_tokens(tokens);
-			return ;
-		}
-		exec_cmd_list(cmd_list, env_list, sh);
-		free_cmds(cmd_list);
-	}
+	tokens = expand_tokens(tokens, *env_list, sh);
+	cmd_list = parse_tokens(tokens, sh);
+	free_tokens(tokens);
+	if (!cmd_list)
+		return ;
+	if (!pre_read_heredocs(cmd_list, *env_list, sh))
+		return (free_cmds(cmd_list));
+	exec_cmd_list(cmd_list, env_list, sh);
+	free_cmds(cmd_list);
 }
 
 int	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list, t_shell *sh)

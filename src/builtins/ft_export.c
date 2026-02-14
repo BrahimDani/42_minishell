@@ -69,16 +69,20 @@ int	ft_export(char **tokens, t_env **env_list)
 {
 	int	i;
 	int	ret;
+	int	status;
 
 	if (!tokens[1])
 		return (print_all_exports(*env_list));
 	i = 1;
+	status = 0;
 	while (tokens[i])
 	{
 		ret = process_export_token(tokens[i], env_list);
+		if (ret == 2)
+			return (2);
 		if (ret != 0)
-			return (ret);
+			status = 1;
 		i++;
 	}
-	return (0);
+	return (status);
 }
