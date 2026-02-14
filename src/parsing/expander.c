@@ -118,11 +118,7 @@ char	*expand_variable_mode(const char *str, t_env *env_list,
 	p = str;
 	while (result && *p)
 	{
-		if (*p == '\\' && mode == QM_DOUBLE)
-			result = handle_escape_double(result, &p);
-		else if (*p == '\\' && mode == QM_NONE)
-			result = handle_escape_none(result, &p);
-		else if (*p == '$')
+		if (*p == '$')
 			result = append_var_value(result, &p, env_list, sh);
 		else
 		{

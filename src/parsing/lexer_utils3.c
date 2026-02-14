@@ -17,16 +17,6 @@ int	handle_double_redir(char *line, int *i, t_token **token, int space)
 	char	*token_value;
 	t_token	*new_tok;
 
-	if (line[*i] == '>' && line[*i + 1] == '|')
-	{
-		token_value = ft_substr(line, *i, 2);
-		new_tok = new_token(token_value, get_type(token_value));
-		new_tok->space_before = space;
-		add_token_back(token, new_tok);
-		free(token_value);
-		*i += 2;
-		return (1);
-	}
 	if ((line[*i] == '>' || line[*i] == '<') && line[*i + 1] == line[*i])
 	{
 		token_value = ft_substr(line, *i, 2);

@@ -59,15 +59,11 @@ void	handle_simple_export(t_env **env_list, char *token, char *equal)
 
 int	check_export_errors(char *token)
 {
-	if (token[0] == '-' && token[1] != '\0')
-	{
-		write(2, "export: ", 8);
-		write(2, token, ft_strlen(token));
-		write(2, ": invalid option\n", 17);
-		return (2);
-	}
 	if (token[0] == '\0')
-		return (0);
+	{
+		write(2, "export: `': not a valid identifier\n", 35);
+		return (1);
+	}
 	if (!is_valid_identifier(token))
 	{
 		write(2, "export: `", 9);

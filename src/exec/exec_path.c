@@ -21,7 +21,7 @@ char	**split_path_from_env(t_env *env_list)
 		return (NULL);
 	if (path[0] == '\0')
 		return (NULL);
-	return (ft_split(path, ':'));
+	return (split_path_keep_empty(path));
 }
 
 char	*find_command_path(char *cmd, t_env *env_list)

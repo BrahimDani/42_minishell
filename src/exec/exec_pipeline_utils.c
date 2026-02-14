@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipeline_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 22:58:34 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/14 05:20:02 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	wait_all_children(pid_t *pids, int n_cmds, t_shell *sh)
 			if (sig == SIGINT)
 				write(STDOUT_FILENO, "\n", 1);
 			else if (sig == SIGQUIT)
-				ft_putstr_fd("Quit (core dumped)\n", 2);
+				ft_putstr_fd("Quit\n", 2);
 			ms_status_set(sh, 128 + sig);
 		}
 		i++;

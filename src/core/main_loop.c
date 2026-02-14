@@ -16,6 +16,7 @@
 char	*read_interactive_line(void)
 {
 	char	*line;
+	char	*cont;
 
 	rl_done = 0;
 	line = readline("minishell> ");
@@ -27,7 +28,13 @@ char	*read_interactive_line(void)
 	add_history(line);
 	while (line && !quotes_balanced(line))
 	{
-		if (!join_continuation(&line, readline("> ")))
+		cont = readline("> ");
+		if (!cont)
+		{
+			write(STDERR_FILENO, "\n", 1);
+			break ;
+		}
+		if (!join_continuation(&line, cont))
 			break ;
 	}
 	return (line);

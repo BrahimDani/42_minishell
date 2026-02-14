@@ -25,6 +25,33 @@ char	*join_path_cmd(char *path, char *cmd)
 	return (full_path);
 }
 
+char	**split_path_keep_empty(char *path)
+{
+	char	*normalized;
+	char	**paths;
+	char	prev;
+
+	normalized = ft_strdup("");
+	if (!normalized)
+		return (NULL);
+	prev = ':';
+	while (*path && normalized)
+	{
+		if (*path == ':' && prev == ':')
+			normalized = ft_strjoin_free(normalized, ".", 1);
+		if (normalized)
+			normalized = ft_strncat_free(normalized, *path, 1);
+		prev = *path++;
+	}
+	if (prev == ':' && normalized)
+		normalized = ft_strjoin_free(normalized, ".", 1);
+	if (!normalized)
+		return (NULL);
+	paths = ft_split(normalized, ':');
+	free(normalized);
+	return (paths);
+}
+
 char	**split_pwd_from_env(t_env *env_list)
 {
 	char	*path;

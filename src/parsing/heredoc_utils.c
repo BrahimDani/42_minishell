@@ -49,7 +49,7 @@ char	*read_heredoc_line(void)
 	if (isatty(STDIN_FILENO))
 	{
 		rl_done = 0;
-		line = readline("");
+		line = readline("> ");
 		return (line);
 	}
 	buf = get_next_line(STDIN_FILENO);

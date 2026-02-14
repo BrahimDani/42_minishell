@@ -48,6 +48,7 @@ void			child_process(char *full_path, char **argv, t_env *env_list);
 int				spawn_external(char *full_path, char **argv, char **envp,
 					t_env *env_list);
 char			**split_path_from_env(t_env *env_list);
+char			**split_path_keep_empty(char *path);
 char			*join_path_cmd(char *path, char *cmd);
 char			*test_path(char *path, char *cmd);
 char			*find_command_path(char *command, t_env *env_list);

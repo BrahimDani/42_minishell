@@ -85,8 +85,6 @@ t_token_type	get_type(char *word)
 		return (T_HEREDOC);
 	if (!ft_strncmp(word, "<", 2))
 		return (T_REDIR_IN);
-	if (!ft_strncmp(word, ">|", 3))
-		return (T_REDIR_OUT);
 	if (!ft_strncmp(word, ">", 2))
 		return (T_REDIR_OUT);
 	return (T_WORD);

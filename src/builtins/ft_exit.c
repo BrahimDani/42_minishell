@@ -31,21 +31,29 @@ static char	*strip_outer_quotes(const char *arg, int *was_alloc)
 
 static int	is_overflow_long(char *str)
 {
+	char	*digits;
+
 	if (!ft_is_number(str))
 		return (1);
 	if (ft_strlen(str) > 20)
 		return (1);
-	if (!ft_atoll(str))
+	digits = str;
+	if (*digits == '+' || *digits == '-')
+		digits++;
+	while (*digits == '0')
+		digits++;
+	if (ft_atoll(str) == 0 && *digits != '\0')
 		return (1);
 	return (0);
 }
 
-static int	validate_exit_code(char **args, t_shell *sh)
+static int	validate_exit_code(char **args, t_shell *sh, int *numeric_error)
 {
 	long	code;
 	char	*number;
 	int		was_alloc;
 
+	*numeric_error = 0;
 	code = 0;
 	if (sh)
 		code = sh->last_status;
@@ -57,6 +65,7 @@ static int	validate_exit_code(char **args, t_shell *sh)
 		ft_putstr_fd("minishell: exit: ", 2);
 		ft_putstr_fd(args[1], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
+		*numeric_error = 1;
 		if (was_alloc)
 			free(number);
 		return (2);
@@ -70,9 +79,12 @@ static int	validate_exit_code(char **args, t_shell *sh)
 int	parse_exit_args(char **args, int *should_exit, t_shell *sh)
 {
 	int	code;
+	int	numeric_error;
 
 	*should_exit = 1;
-	code = validate_exit_code(args, sh);
+	code = validate_exit_code(args, sh, &numeric_error);
+	if (numeric_error)
+		return (2);
 	if (args[1] && args[2])
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);

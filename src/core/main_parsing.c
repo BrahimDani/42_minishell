@@ -39,22 +39,28 @@ int	join_continuation(char **line, const char *cont)
 	char	*joined;
 	char	*tmp;
 
+	if (!cont)
+		return (0);
 	joined = ft_strjoin(*line, "\n");
-	free(*line);
-	if (joined)
+	if (!joined)
 	{
-		tmp = ft_strjoin(joined, cont);
-		free(joined);
-		free((char *)cont);
-		*line = tmp;
-		return (1);
-	}
-	else
-	{
+		free(*line);
 		free((char *)cont);
 		*line = NULL;
 		return (0);
 	}
+	tmp = ft_strjoin(joined, cont);
+	free(joined);
+	free((char *)cont);
+	if (!tmp)
+	{
+		free(*line);
+		*line = NULL;
+		return (0);
+	}
+	free(*line);
+	*line = tmp;
+	return (1);
 }
 
 int	extend_line(char **line)
