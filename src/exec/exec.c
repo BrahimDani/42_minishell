@@ -42,9 +42,11 @@ static void	exec_absolute_path_child(char **argv, t_env *env_list)
 static void	exec_from_path_child(char **argv, t_env *env_list)
 {
 	char	*full_path;
+	int		special_status;
 
-	if (check_special_dirs(argv[0]))
-		ms_exit(127, env_list);
+	special_status = check_special_dirs(argv[0]);
+	if (special_status)
+		ms_exit(special_status, env_list);
 	full_path = find_command_path(argv[0], env_list);
 	if (!full_path)
 	{

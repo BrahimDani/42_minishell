@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 11:23:06 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/14 06:11:40 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,13 @@ char	*find_command_path(char *cmd, t_env *env_list)
 
 int	check_special_dirs(char *cmd)
 {
-	if (ft_strcmp(cmd, ".") == 0 || ft_strcmp(cmd, "..") == 0)
+	if (ft_strcmp(cmd, ".") == 0)
 	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": command not found\n", 2);
-		return (1);
+		ft_putstr_fd("minishell: .: filename argument required\n", 2);
+		return (2);
 	}
+	if (ft_strcmp(cmd, "..") == 0)
+		return (print_cmd_error(cmd, "command not found"), 127);
 	return (0);
 }
 
@@ -85,9 +85,11 @@ int	exec_from_path(char **argv, char **envp, t_env *env_list)
 {
 	char	*full_path;
 	int		ret;
+	int		special_status;
 
-	if (check_special_dirs(argv[0]))
-		return (127);
+	special_status = check_special_dirs(argv[0]);
+	if (special_status)
+		return (special_status);
 	full_path = find_command_path(argv[0], env_list);
 	if (!full_path)
 	{
