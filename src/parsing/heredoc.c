@@ -14,7 +14,7 @@
 
 static int	handle_heredoc_sigint(char *line, t_heredoc_ctx *ctx)
 {
-	if (consume_sigint_flag())
+	if (consume_sigint_flag() == SIGINT)
 	{
 		if (line)
 			free(line);

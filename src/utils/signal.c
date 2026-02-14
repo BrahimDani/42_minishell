@@ -6,18 +6,17 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 12:52:57 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/14 03:29:12 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/14 04:15:20 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static volatile sig_atomic_t	g_sigint_flag = 0;
+static volatile sig_atomic_t	g_last_signal = 0;
 
 void	sigint_handler(int signum)
 {
-	(void)signum;
-	g_sigint_flag = 1;
+	g_last_signal = signum;
 	rl_done = 1;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
@@ -27,8 +26,7 @@ void	sigint_handler(int signum)
 
 void	sigint_heredoc_handler(int signum)
 {
-	(void)signum;
-	g_sigint_flag = 1;
+	g_last_signal = signum;
 	close(STDIN_FILENO);
 }
 
@@ -36,8 +34,8 @@ int	consume_sigint_flag(void)
 {
 	int	flag;
 
-	flag = g_sigint_flag;
-	g_sigint_flag = 0;
+	flag = g_last_signal;
+	g_last_signal = 0;
 	return (flag);
 }
 

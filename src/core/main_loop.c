@@ -68,7 +68,7 @@ void	main_loop(int is_interactive, t_env **env_list, t_shell *sh)
 
 	while (1)
 	{
-		if (consume_sigint_flag())
+		if (consume_sigint_flag() == SIGINT)
 			ms_status_set(sh, 130);
 		if (is_interactive)
 			line = read_interactive_line();

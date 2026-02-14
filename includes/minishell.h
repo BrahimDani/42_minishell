@@ -62,7 +62,7 @@ char	*read_interactive_line(void);
 char	*read_non_interactive_line(void);
 void	init_shell(int argc, char **argv, t_env **env_list, t_shell *sh);
 void	main_loop(int is_interactive, t_env **env_list, t_shell *sh);
-int		parse_exit_args(char **args, int *should_exit, int last_status);
+int		parse_exit_args(char **args, int *should_exit, t_shell *sh);
 int		ft_is_number(char *str);
 
 #endif

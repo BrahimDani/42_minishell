@@ -40,13 +40,15 @@ static int	is_overflow_long(char *str)
 	return (0);
 }
 
-static int	validate_exit_code(char **args, int last_status)
+static int	validate_exit_code(char **args, t_shell *sh)
 {
 	long	code;
 	char	*number;
 	int		was_alloc;
 
-	code = last_status;
+	code = 0;
+	if (sh)
+		code = sh->last_status;
 	if (!args[1])
 		return ((unsigned char)code);
 	number = strip_outer_quotes(args[1], &was_alloc);
@@ -65,27 +67,28 @@ static int	validate_exit_code(char **args, int last_status)
 	return ((unsigned char)code);
 }
 
-int	parse_exit_args(char **args, int *should_exit, int last_status)
+int	parse_exit_args(char **args, int *should_exit, t_shell *sh)
 {
 	int	code;
 
 	*should_exit = 1;
-	code = validate_exit_code(args, last_status);
+	code = validate_exit_code(args, sh);
 	if (args[1] && args[2])
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-		*should_exit = 0;
+		if (!sh || !sh->cmd_mode)
+			*should_exit = 0;
 		return (1);
 	}
 	return (code);
 }
 
-int	ft_exit(char **args, t_env *env_list, t_cmd *cmd_list, int last_status)
+int	ft_exit(char **args, t_env *env_list, t_cmd *cmd_list, t_shell *sh)
 {
 	int	should_exit;
 	int	code;
 
-	code = parse_exit_args(args, &should_exit, last_status);
+	code = parse_exit_args(args, &should_exit, sh);
 	if (!should_exit)
 		return (code);
 	if (isatty(STDIN_FILENO))

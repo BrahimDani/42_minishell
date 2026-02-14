@@ -23,6 +23,7 @@ typedef struct s_env
 typedef struct s_shell
 {
 	int				last_status;
+	int				cmd_mode;
 	char			**envp;
 }					t_shell;
 

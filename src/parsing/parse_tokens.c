@@ -17,8 +17,6 @@ int	process_token(t_token **tokens, t_cmd **current,
 {
 	if ((*tokens)->type == T_WORD)
 	{
-		if (is_stderr_redirect(*tokens, *current, tokens))
-			return (1);
 		handle_word_token(tokens, *current);
 	}
 	else if ((*tokens)->type == T_REDIR_IN || (*tokens)->type == T_REDIR_OUT

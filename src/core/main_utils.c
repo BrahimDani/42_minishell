@@ -21,6 +21,7 @@ void	handle_cmd_mode(int argc, char **argv, t_env *env_list, t_shell *sh)
 
 	if (argc >= 3 && ft_strcmp(argv[1], "-c") == 0)
 	{
+		sh->cmd_mode = 1;
 		env_copy = env_list;
 		line = argv[2];
 		tokens = parse_line(line, sh);

@@ -141,7 +141,6 @@ void			handle_normal_word(char *line, int *i, t_token **token,
 					int space);
 int				handle_double_redir(char *line, int *i, t_token **token,
 					int space);
-int				handle_fd_redir(char *line, int *i, t_token **token, int space);
 int				handle_simple_operator(char *line, int *i, t_token **token,
 					int space);
 int				handle_quotes(char *line, int *i, t_token **token, int space);
@@ -195,9 +194,6 @@ void			handle_redir_out(t_cmd *cmd, char *joined, t_token_type type);
 void			handle_stderr_redir(t_cmd *cmd, char *joined, int is_append);
 void			handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted);
 int				handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh);
-int				is_all_digits(char *str);
-int				is_stderr_redirect(t_token *token, t_cmd *current,
-					t_token **next);
 void			handle_word_token(t_token **tokens, t_cmd *current);
 int				handle_redir_token(t_token **tokens, t_cmd *current,
 					t_cmd *head, t_shell *sh);

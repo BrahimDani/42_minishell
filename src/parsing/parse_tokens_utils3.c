@@ -29,20 +29,6 @@ void	handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted)
 	cmd->heredoc_quoted = quoted;
 }
 
-int	is_all_digits(char *str)
-{
-	int	j;
-
-	j = 0;
-	while (str[j])
-	{
-		if (!ft_isdigit((unsigned char)str[j]))
-			return (0);
-		j++;
-	}
-	return (1);
-}
-
 void	handle_word_token(t_token **tokens, t_cmd *current)
 {
 	char	*joined_value;

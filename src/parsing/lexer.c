@@ -40,8 +40,6 @@ t_token	*tokenize_line(char *line)
 			break ;
 		if (line[i] == '$' && (line[i + 1] == '"' || line[i + 1] == '\''))
 			i++;
-		if (handle_fd_redir(line, &i, &token, had_space))
-			continue ;
 		if (handle_double_redir(line, &i, &token, had_space))
 			continue ;
 		if (handle_simple_operator(line, &i, &token, had_space))
