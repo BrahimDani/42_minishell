@@ -51,16 +51,17 @@ char	*format_env_entry(t_env *node);
 void	convert_env(t_env *env_list, char ***envp);
 // MAIN_UTILS
 int		quotes_balanced(const char *s);
-void	handle_cmd_mode(int argc, char **argv, t_env *env_list, char **envp);
+void	handle_cmd_mode(int argc, char **argv, t_env *env_list,
+			t_shell *sh);
 int		join_continuation(char **line, const char *cont);
 int		extend_line(char **line);
 void	strip_newline(char *line);
 void	ms_exit(int status, t_env *env_list);
 char	*read_interactive_line(void);
 char	*read_non_interactive_line(void);
-void	init_shell(int argc, char **argv, char **envp, t_env **env_list);
-void	main_loop(int is_interactive, t_env **env_list, char **envp);
-int		parse_exit_args(char **args, int *should_exit);
+void	init_shell(int argc, char **argv, t_env **env_list, t_shell *sh);
+void	main_loop(int is_interactive, t_env **env_list, t_shell *sh);
+int		parse_exit_args(char **args, int *should_exit, int last_status);
 int		ft_is_number(char *str);
 
 #endif

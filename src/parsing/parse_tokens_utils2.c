@@ -31,7 +31,7 @@ char	*join_adjacent_words(t_token **token)
 	return (result);
 }
 
-int	check_redir_syntax(t_token *t)
+int	check_redir_syntax(t_token *t, t_shell *sh)
 {
 	if (!t->next || t->next->type != T_WORD)
 	{
@@ -46,7 +46,7 @@ int	check_redir_syntax(t_token *t)
 		}
 		else
 			ft_putendl_fd("minishell: syntax error near unexpected token`'", 2);
-		g_last_status = 2;
+		ms_status_set(sh, 2);
 		return (0);
 	}
 	return (1);

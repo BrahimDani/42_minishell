@@ -38,7 +38,7 @@ static int	handle_child_error(t_cmd *cmd)
 	return (0);
 }
 
-int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
+int	handle_child_redirs(t_cmd *cmd, t_env **env_list, t_shell *sh)
 {
 	int	saved_in;
 	int	saved_out;
@@ -46,13 +46,13 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 
 	if (handle_child_error(cmd) == -1)
 		return (-1);
-	saved_in = handle_input_redir(cmd, env_list);
+	saved_in = handle_input_redir(cmd, env_list, sh);
 	if (saved_in == -2)
 		return (-1);
-	saved_out = handle_output_redir(cmd);
+	saved_out = handle_output_redir(cmd, sh);
 	if (saved_out == -2)
 		return (close_saved_fds(saved_in, -1, -1), -1);
-	saved_err = setup_stderr_redir(cmd);
+	saved_err = setup_stderr_redir(cmd, sh);
 	if (saved_err == -2)
 		return (close_saved_fds(saved_in, saved_out, -1), -1);
 	close_saved_fds(saved_in, saved_out, saved_err);
@@ -60,29 +60,29 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list)
 }
 
 int	process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,
-		pid_t *pid_slot, int idx)
+	pid_t *pid_slot, int idx)
 {
-	*pid_slot = fork_and_check(ctx->pipes, ctx->n_cmds);
+	*pid_slot = fork_and_check(ctx->pipes, ctx->n_cmds, ctx->sh);
 	if (*pid_slot < 0)
 		return (-1);
 	if (*pid_slot == 0)
 	{
 		setup_child_pipes(ctx->pipes, idx, ctx->n_cmds);
 		free(ctx->pipes);
-		exec_pipeline_child_cmd(cmd, ctx->head, ctx->env_list);
+		exec_pipeline_child_cmd(cmd, ctx->head, ctx->env_list, ctx->sh);
 	}
 	return (0);
 }
 
 void	execute_pipeline(t_cmd *cmd_list,
-	t_env **env_list, char **envp, int n_cmds)
+	t_env **env_list, int n_cmds, t_shell *sh)
 {
 	int			(*pipes)[2];
 	t_pipe_ctx	ctx;
 
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	ctx = (t_pipe_ctx){NULL, env_list, envp, cmd_list, n_cmds};
+	ctx = (t_pipe_ctx){NULL, env_list, cmd_list, n_cmds, sh};
 	if (!init_pipeline(n_cmds, &pipes, &ctx))
 	{
 		signal(SIGINT, sigint_handler);

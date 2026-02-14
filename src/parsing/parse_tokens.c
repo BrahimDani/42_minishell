@@ -12,7 +12,8 @@
 
 #include "../../includes/minishell.h"
 
-int	process_token(t_token **tokens, t_cmd **current, t_cmd *head)
+int	process_token(t_token **tokens, t_cmd **current,
+	t_cmd *head, t_shell *sh)
 {
 	if ((*tokens)->type == T_WORD)
 	{
@@ -23,7 +24,7 @@ int	process_token(t_token **tokens, t_cmd **current, t_cmd *head)
 	else if ((*tokens)->type == T_REDIR_IN || (*tokens)->type == T_REDIR_OUT
 		|| (*tokens)->type == T_APPEND || (*tokens)->type == T_HEREDOC)
 	{
-		if (!handle_redir_token(tokens, *current, head))
+		if (!handle_redir_token(tokens, *current, head, sh))
 			return (-1);
 	}
 	else if ((*tokens)->type == T_PIPE)
@@ -31,7 +32,7 @@ int	process_token(t_token **tokens, t_cmd **current, t_cmd *head)
 	return (1);
 }
 
-t_cmd	*parse_tokens(t_token *tokens)
+t_cmd	*parse_tokens(t_token *tokens, t_shell *sh)
 {
 	t_cmd	*head;
 	t_cmd	*current;
@@ -43,7 +44,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 	{
 		if (!current)
 			current = create_new_cmd(&head);
-		status = process_token(&tokens, &current, head);
+		status = process_token(&tokens, &current, head, sh);
 		if (status == -1)
 			return (NULL);
 		tokens = tokens->next;

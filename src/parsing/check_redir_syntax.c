@@ -27,14 +27,14 @@ static int	is_redir_token(t_token_type type)
 		|| type == T_APPEND || type == T_HEREDOC);
 }
 
-static int	validate_redir_token(t_token *t)
+static int	validate_redir_token(t_token *t, t_shell *sh)
 {
 	if (!t->next)
 	{
 		ft_putendl_fd(
 			"minishell: syntax error near unexpected token `newline'",
 			STDERR_FILENO);
-		g_last_status = 2;
+		ms_status_set(sh, 2);
 		return (0);
 	}
 	if (t->next->type != T_WORD)
@@ -45,13 +45,13 @@ static int	validate_redir_token(t_token *t)
 			ft_putendl_fd(
 				"minishell: syntax error near unexpected token `newline'",
 				STDERR_FILENO);
-		g_last_status = 2;
+		ms_status_set(sh, 2);
 		return (0);
 	}
 	return (1);
 }
 
-int	validate_tokens_syntax(t_token *tokens)
+int	validate_tokens_syntax(t_token *tokens, t_shell *sh)
 {
 	t_token	*t;
 
@@ -60,7 +60,7 @@ int	validate_tokens_syntax(t_token *tokens)
 	{
 		if (is_redir_token(t->type))
 		{
-			if (!validate_redir_token(t))
+			if (!validate_redir_token(t, sh))
 				return (0);
 		}
 		t = t->next;

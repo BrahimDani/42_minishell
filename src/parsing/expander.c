@@ -41,7 +41,7 @@ static void	expand_tilde(t_token *token, t_env *env_list)
 	}
 }
 
-static void	expand_token_value(t_token *token, t_env *env_list)
+static void	expand_token_value(t_token *token, t_env *env_list, t_shell *sh)
 {
 	char			*expanded;
 	t_quote_mode	mode;
@@ -55,7 +55,7 @@ static void	expand_token_value(t_token *token, t_env *env_list)
 		mode = QM_DOUBLE;
 	else
 		mode = QM_NONE;
-	expanded = expand_variable_mode(token->value, env_list, mode);
+	expanded = expand_variable_mode(token->value, env_list, mode, sh);
 	if (expanded)
 	{
 		free(token->value);
@@ -77,7 +77,7 @@ static t_token	*handle_empty_value(t_token **tokens, t_token *current,
 	return (next);
 }
 
-t_token	*expand_tokens(t_token *tokens, t_env *env_list)
+t_token	*expand_tokens(t_token *tokens, t_env *env_list, t_shell *sh)
 {
 	t_token	*current;
 	t_token	*next;
@@ -91,7 +91,7 @@ t_token	*expand_tokens(t_token *tokens, t_env *env_list)
 		next = current->next;
 		if (current->type == T_WORD)
 		{
-			expand_token_value(current, env_list);
+			expand_token_value(current, env_list, sh);
 			if (!current->was_quoted && current->value
 				&& current->value[0] == '\0')
 				current = handle_empty_value(&tokens, current, prev, next);
@@ -107,7 +107,7 @@ t_token	*expand_tokens(t_token *tokens, t_env *env_list)
 }
 
 char	*expand_variable_mode(const char *str, t_env *env_list,
-		t_quote_mode mode)
+		t_quote_mode mode, t_shell *sh)
 {
 	char		*result;
 	const char	*p;
@@ -123,7 +123,7 @@ char	*expand_variable_mode(const char *str, t_env *env_list,
 		else if (*p == '\\' && mode == QM_NONE)
 			result = handle_escape_none(result, &p);
 		else if (*p == '$')
-			result = append_var_value(result, &p, env_list);
+			result = append_var_value(result, &p, env_list, sh);
 		else
 		{
 			result = ft_strncat_free(result, *p, 1);

@@ -43,7 +43,7 @@ void	close_parent_pipe_ends(int pipes[][2], int idx, int n_cmds)
 
 int	init_pipeline(int n_cmds, int (**pipes)[2], t_pipe_ctx *ctx)
 {
-	*pipes = init_pipes_array(n_cmds);
+	*pipes = init_pipes_array(n_cmds, ctx->sh);
 	if (!*pipes && n_cmds > 1)
 		return (0);
 	ctx->pipes = *pipes;
@@ -66,6 +66,6 @@ void	exec_pipeline_loop(t_cmd *cmd_list, t_pipe_ctx *ctx)
 		i++;
 	}
 	close_parent_heredocs(ctx->head);
-	wait_all_children(pids, i);
+	wait_all_children(pids, i, ctx->sh);
 	free(ctx->pipes);
 }

@@ -32,14 +32,14 @@ int	(*alloc_pipes(int n_cmds))[2]
 	return (pipes);
 }
 
-int	(*init_pipes_array(int n_cmds))[2]
+int	(*init_pipes_array(int n_cmds, t_shell *sh))[2]
 {
 	int	(*pipes)[2];
 
 	pipes = alloc_pipes(n_cmds);
 	if (!pipes && n_cmds > 1)
 		return (NULL);
-	if (n_cmds - 1 > 0 && create_pipes(pipes, n_cmds) == -1)
+	if (n_cmds - 1 > 0 && create_pipes(pipes, n_cmds, sh) == -1)
 	{
 		free(pipes);
 		return (NULL);
@@ -47,7 +47,8 @@ int	(*init_pipes_array(int n_cmds))[2]
 	return (pipes);
 }
 
-void	exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head, t_env **env_list)
+void	exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head,
+	t_env **env_list, t_shell *sh)
 {
 	int		status;
 	t_cmd	*cur;
@@ -64,7 +65,7 @@ void	exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head, t_env **env_list)
 		}
 		cur = cur->next;
 	}
-	if (handle_child_redirs(cmd, env_list) == -1)
+	if (handle_child_redirs(cmd, env_list, sh) == -1)
 		status = 1;
 	else if (cmd->argv && cmd->argv[0])
 		status = run_command_child(cmd, env_list);
@@ -74,7 +75,7 @@ void	exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head, t_env **env_list)
 	ms_exit(status, *env_list);
 }
 
-void	wait_all_children(pid_t *pids, int n_cmds)
+void	wait_all_children(pid_t *pids, int n_cmds, t_shell *sh)
 {
 	int	i;
 	int	status;
@@ -85,7 +86,7 @@ void	wait_all_children(pid_t *pids, int n_cmds)
 	{
 		waitpid(pids[i], &status, 0);
 		if (i == n_cmds - 1 && WIFEXITED(status))
-			g_last_status = WEXITSTATUS(status);
+			ms_status_set(sh, WEXITSTATUS(status));
 		else if (i == n_cmds - 1 && WIFSIGNALED(status))
 		{
 			sig = WTERMSIG(status);
@@ -93,13 +94,13 @@ void	wait_all_children(pid_t *pids, int n_cmds)
 				write(STDOUT_FILENO, "\n", 1);
 			else if (sig == SIGQUIT)
 				ft_putstr_fd("Quit (core dumped)\n", 2);
-			g_last_status = 128 + sig;
+			ms_status_set(sh, 128 + sig);
 		}
 		i++;
 	}
 }
 
-int	fork_and_check(int pipes[][2], int n_cmds)
+int	fork_and_check(int pipes[][2], int n_cmds, t_shell *sh)
 {
 	pid_t	pid;
 
@@ -107,7 +108,7 @@ int	fork_and_check(int pipes[][2], int n_cmds)
 	if (pid < 0)
 	{
 		ft_putstr_fd("minishell: fork failed\n", 2);
-		g_last_status = 1;
+		ms_status_set(sh, 1);
 		close_pipes(pipes, n_cmds - 1);
 	}
 	return (pid);

@@ -45,7 +45,7 @@ int	check_redir(char *line)
 	return (1);
 }
 
-static int	ampersand_error(int is_double)
+static int	ampersand_error(int is_double, t_shell *sh)
 {
 	if (is_double)
 		ft_putendl_fd("minishell: syntax error near unexpected token `&&'",
@@ -53,11 +53,11 @@ static int	ampersand_error(int is_double)
 	else
 		ft_putendl_fd("minishell: syntax error near unexpected token `&'",
 			STDERR_FILENO);
-	g_last_status = 2;
+	ms_status_set(sh, 2);
 	return (0);
 }
 
-int	check_ampersand(char *line)
+int	check_ampersand(char *line, t_shell *sh)
 {
 	int	i;
 	int	in_squote;
@@ -73,7 +73,7 @@ int	check_ampersand(char *line)
 		else if (!in_squote && line[i] == '"')
 			in_dquote = !in_dquote;
 		else if (!in_squote && !in_dquote && line[i] == '&')
-			return (ampersand_error(line[i + 1] == '&'));
+			return (ampersand_error(line[i + 1] == '&', sh));
 		i++;
 	}
 	return (1);

@@ -33,5 +33,5 @@ int	ft_exit_status(char **args)
 {
 	int	should_exit;
 
-	return (parse_exit_args(args, &should_exit));
+	return (parse_exit_args(args, &should_exit, 0));
 }

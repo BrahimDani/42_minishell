@@ -26,7 +26,7 @@ static void	handle_redir_type(t_cmd *cmd, t_token **token,
 	}
 }
 
-int	handle_redirection(t_cmd *cmd, t_token **token)
+int	handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh)
 {
 	t_token	*t;
 	char	*joined;
@@ -39,7 +39,7 @@ int	handle_redirection(t_cmd *cmd, t_token **token)
 		is_stderr = 1;
 	t = *token;
 	heredoc_quoted_any = 0;
-	if (!check_redir_syntax(t))
+	if (!check_redir_syntax(t, sh))
 		return (0);
 	t = t->next;
 	if ((*token)->type == T_HEREDOC)

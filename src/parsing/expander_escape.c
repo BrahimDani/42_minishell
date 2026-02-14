@@ -47,7 +47,7 @@ char	*handle_escape_none(char *result, const char **p)
 	return (result);
 }
 
-char	*expand_variable(const char *str, t_env *env_list)
+char	*expand_variable(const char *str, t_env *env_list, t_shell *sh)
 {
-	return (expand_variable_mode(str, env_list, QM_NONE));
+	return (expand_variable_mode(str, env_list, QM_NONE, sh));
 }

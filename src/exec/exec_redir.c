@@ -13,23 +13,23 @@
 #include "../includes/minishell.h"
 #include <fcntl.h>
 
-int	handle_heredoc_input(t_cmd *cmd, t_env *env_list)
+int	handle_heredoc_input(t_cmd *cmd, t_env *env_list, t_shell *sh)
 {
 	int	fd_in;
 
 	if (cmd->heredoc_fd >= 0)
 		fd_in = cmd->heredoc_fd;
 	else
-		fd_in = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted);
+		fd_in = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted, sh);
 	if (fd_in < 0)
 	{
-		g_last_status = 1;
+		ms_status_set(sh, 1);
 		return (-2);
 	}
 	return (fd_in);
 }
 
-int	handle_file_input(char *infile)
+int	handle_file_input(char *infile, t_shell *sh)
 {
 	int	fd_in;
 
@@ -38,13 +38,13 @@ int	handle_file_input(char *infile)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		perror(infile);
-		g_last_status = 1;
+		ms_status_set(sh, 1);
 		return (-2);
 	}
 	return (fd_in);
 }
 
-int	handle_input_redir(t_cmd *cmd, t_env **env_list)
+int	handle_input_redir(t_cmd *cmd, t_env **env_list, t_shell *sh)
 {
 	int	fd_in;
 	int	saved_stdin;
@@ -52,12 +52,12 @@ int	handle_input_redir(t_cmd *cmd, t_env **env_list)
 	if (!cmd->infile && !cmd->heredoc)
 		return (-1);
 	if (cmd->heredoc)
-		fd_in = handle_heredoc_input(cmd, *env_list);
+		fd_in = handle_heredoc_input(cmd, *env_list, sh);
 	else
-		fd_in = handle_file_input(cmd->infile);
+		fd_in = handle_file_input(cmd->infile, sh);
 	if (fd_in < 0)
 		return (fd_in);
-	saved_stdin = save_and_redirect(fd_in, STDIN_FILENO);
+	saved_stdin = save_and_redirect(fd_in, STDIN_FILENO, sh);
 	close(fd_in);
 	if (cmd->heredoc && cmd->heredoc_fd == fd_in)
 		cmd->heredoc_fd = -1;
@@ -66,7 +66,7 @@ int	handle_input_redir(t_cmd *cmd, t_env **env_list)
 	return (saved_stdin);
 }
 
-int	handle_output_redir(t_cmd *cmd)
+int	handle_output_redir(t_cmd *cmd, t_shell *sh)
 {
 	int	fd_out;
 	int	saved_stdout;
@@ -81,10 +81,10 @@ int	handle_output_redir(t_cmd *cmd)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		perror(cmd->outfile);
-		g_last_status = 1;
+		ms_status_set(sh, 1);
 		return (-2);
 	}
-	saved_stdout = save_and_redirect(fd_out, STDOUT_FILENO);
+	saved_stdout = save_and_redirect(fd_out, STDOUT_FILENO, sh);
 	close(fd_out);
 	if (saved_stdout < 0)
 		return (-2);

@@ -33,7 +33,7 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	exec_builtin(char **tokens, t_env **env_list)
+int	exec_builtin(char **tokens, t_env **env_list, int last_status)
 {
 	if (ft_strcmp(tokens[0], "echo") == 0)
 		return (ft_echo(tokens));
@@ -48,6 +48,6 @@ int	exec_builtin(char **tokens, t_env **env_list)
 	else if (ft_strcmp(tokens[0], "unset") == 0)
 		return (ft_unset(tokens, env_list));
 	else if (ft_strcmp(tokens[0], "exit") == 0)
-		return (ft_exit(tokens, *env_list, NULL));
+		return (ft_exit(tokens, *env_list, NULL, last_status));
 	return (1);
 }

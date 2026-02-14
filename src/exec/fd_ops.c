@@ -12,34 +12,34 @@
 
 #include "../includes/minishell.h"
 
-int	fd_redir_op_error(char *op)
+int	fd_redir_op_error(char *op, t_shell *sh)
 {
 	ft_putstr_fd("minishell: ", 2);
 	perror(op);
-	g_last_status = 1;
+	ms_status_set(sh, 1);
 	return (-2);
 }
 
-int	fd_errfile_open_error(int saved_stderr, char *errfile)
+int	fd_errfile_open_error(int saved_stderr, char *errfile, t_shell *sh)
 {
 	close(saved_stderr);
 	ft_putstr_fd("minishell: ", 2);
 	perror(errfile);
-	g_last_status = 1;
+	ms_status_set(sh, 1);
 	return (-2);
 }
 
-int	save_and_redirect(int fd, int std_fd)
+int	save_and_redirect(int fd, int std_fd, t_shell *sh)
 {
 	int	saved_fd;
 
 	saved_fd = dup(std_fd);
 	if (saved_fd < 0)
-		return (fd_redir_op_error("dup"));
+		return (fd_redir_op_error("dup", sh));
 	if (dup2(fd, std_fd) < 0)
 	{
 		close(saved_fd);
-		return (fd_redir_op_error("dup2"));
+		return (fd_redir_op_error("dup2", sh));
 	}
 	return (saved_fd);
 }

@@ -38,16 +38,16 @@ char	**tokens_to_array(t_token *list)
 	return (arr);
 }
 
-static int	parse_line_end(t_token *tokens)
+static int	parse_line_end(t_token *tokens, t_shell *sh)
 {
 	if (!tokens)
 		return (0);
-	if (!check_pipe_tokens(tokens))
+	if (!check_pipe_tokens(tokens, sh))
 	{
 		free_tokens(tokens);
 		return (0);
 	}
-	if (!validate_tokens_syntax(tokens))
+	if (!validate_tokens_syntax(tokens, sh))
 	{
 		free_tokens(tokens);
 		return (0);
@@ -55,7 +55,7 @@ static int	parse_line_end(t_token *tokens)
 	return (1);
 }
 
-t_token	*parse_line(char *line)
+t_token	*parse_line(char *line, t_shell *sh)
 {
 	t_token	*tokens;
 
@@ -64,18 +64,18 @@ t_token	*parse_line(char *line)
 	if (empty_line(line))
 		return (NULL);
 	if (!check_quote(line) || !check_redir(line)
-		|| !check_ampersand(line))
+		|| !check_ampersand(line, sh))
 	{
-		g_last_status = 2;
+		ms_status_set(sh, 2);
 		return (NULL);
 	}
 	tokens = tokenize_line(line);
-	if (!parse_line_end(tokens))
+	if (!parse_line_end(tokens, sh))
 		return (NULL);
 	return (tokens);
 }
 
-void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
+void	exec_from_tokens(t_token *tokens, t_env **env_list, t_shell *sh)
 {
 	t_token	*current_block;
 	t_cmd	*cmd_list;
@@ -85,25 +85,25 @@ void	exec_from_tokens(t_token *tokens, t_env **env_list, char **envp)
 		current_block = extract_until_semicolon(&tokens);
 		if (!current_block)
 			continue ;
-		current_block = expand_tokens(current_block, *env_list);
-		cmd_list = parse_tokens(current_block);
+		current_block = expand_tokens(current_block, *env_list, sh);
+		cmd_list = parse_tokens(current_block, sh);
 		free_tokens(current_block);
 		if (!cmd_list)
 			continue ;
-		pre_read_heredocs(cmd_list, *env_list);
-		exec_cmd_list(cmd_list, env_list, envp);
+		pre_read_heredocs(cmd_list, *env_list, sh);
+		exec_cmd_list(cmd_list, env_list, sh);
 		free_cmds(cmd_list);
 	}
 }
 
-void	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list)
+void	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list, t_shell *sh)
 {
 	t_cmd	*c;
 
 	c = cmd_list;
 	while (c)
 	{
-		pre_read_one(c, env_list);
+		pre_read_one(c, env_list, sh);
 		c = c->next;
 	}
 }

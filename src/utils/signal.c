@@ -12,14 +12,25 @@
 
 #include "../includes/minishell.h"
 
+static volatile sig_atomic_t	g_sigint_flag = 0;
+
 void	sigint_handler(int signum)
 {
 	(void)signum;
-	g_last_status = 130;
+	g_sigint_flag = 1;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+}
+
+int	consume_sigint_flag(void)
+{
+	int	flag;
+
+	flag = g_sigint_flag;
+	g_sigint_flag = 0;
+	return (flag);
 }
 
 void	call_eof_handler(void)

@@ -52,9 +52,10 @@ void	handle_word_token(t_token **tokens, t_cmd *current)
 	free(joined_value);
 }
 
-int	handle_redir_token(t_token **tokens, t_cmd *current, t_cmd *head)
+int	handle_redir_token(t_token **tokens, t_cmd *current,
+	t_cmd *head, t_shell *sh)
 {
-	if (!handle_redirection(current, tokens))
+	if (!handle_redirection(current, tokens, sh))
 	{
 		if (head)
 			free_cmds(head);

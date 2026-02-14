@@ -32,7 +32,7 @@ static char	*heredoc_escape(char *result, const char **p)
 	return (result);
 }
 
-char	*expand_heredoc(const char *str, t_env *env_list)
+char	*expand_heredoc(const char *str, t_env *env_list, t_shell *sh)
 {
 	char		*result;
 	const char	*p;
@@ -44,7 +44,7 @@ char	*expand_heredoc(const char *str, t_env *env_list)
 		if (*p == '\\')
 			result = heredoc_escape(result, &p);
 		else if (*p == '$')
-			result = append_var_value(result, &p, env_list);
+			result = append_var_value(result, &p, env_list, sh);
 		else
 		{
 			result = ft_strncat_free(result, *p, 1);

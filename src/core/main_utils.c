@@ -13,8 +13,7 @@
 #include "../includes/minishell.h"
 #include "../includes/parsing.h"
 
-void	handle_cmd_mode(int argc, char **argv, t_env *env_list,
-	char **envp)
+void	handle_cmd_mode(int argc, char **argv, t_env *env_list, t_shell *sh)
 {
 	t_env		*env_copy;
 	t_token		*tokens;
@@ -24,11 +23,11 @@ void	handle_cmd_mode(int argc, char **argv, t_env *env_list,
 	{
 		env_copy = env_list;
 		line = argv[2];
-		tokens = parse_line(line);
+		tokens = parse_line(line, sh);
 		if (tokens)
 		{
-			exec_from_tokens(tokens, &env_copy, envp);
+			exec_from_tokens(tokens, &env_copy, sh);
 		}
-		ms_exit(g_last_status, env_copy);
+		ms_exit(ms_status_get(sh), env_copy);
 	}
 }

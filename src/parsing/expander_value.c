@@ -18,11 +18,11 @@ static int	is_var_char(char c)
 	return (ft_isalnum(c) || c == '_');
 }
 
-static char	*expand_status_var(char *result, const char **p)
+static char	*expand_status_var(char *result, const char **p, t_shell *sh)
 {
 	char	*value;
 
-	value = ft_itoa(g_last_status);
+	value = ft_itoa(ms_status_get(sh));
 	if (value)
 	{
 		result = ft_strjoin_free(result, value, 1);
@@ -58,9 +58,10 @@ static char	*expand_regular_var(char *result, const char **p, t_env *env_list)
 	return (result);
 }
 
-char	*append_var_value(char *result, const char **p, t_env *env_list)
+char	*append_var_value(char *result, const char **p,
+	t_env *env_list, t_shell *sh)
 {
 	if (*(*p + 1) == '?')
-		return (expand_status_var(result, p));
+		return (expand_status_var(result, p, sh));
 	return (expand_regular_var(result, p, env_list));
 }

@@ -32,7 +32,7 @@ int	run_command_child(t_cmd *cmd, t_env **env_list)
 	{
 		if (ft_strcmp(cmd->argv[0], "exit") == 0)
 			return (ft_exit_status(cmd->argv));
-		return (exec_builtin(cmd->argv, env_list));
+		return (exec_builtin(cmd->argv, env_list, 0));
 	}
 	exec_external_child(cmd->argv, env_list);
 	return (127);
@@ -61,41 +61,40 @@ static void	close_cmd_heredoc_fd(t_cmd *cmd)
 	}
 }
 
-static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
+static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, t_shell *sh)
 {
-	int	saved_stdin;
-	int	saved_stdout;
-	int	saved_stderr;
+	t_saved_fds	saved;
+	int			saved_stderr;
 
-	if (check_redir_errors(cmd))
+	if (check_redir_errors(cmd, sh))
 		return (close_cmd_heredoc_fd(cmd));
-	if (setup_redirections(cmd, env_list, &saved_stdin, &saved_stdout) == -1)
+	if (setup_redirections(cmd, env_list, &saved, sh) == -1)
 		return (close_cmd_heredoc_fd(cmd));
-	saved_stderr = setup_stderr_redir(cmd);
+	saved_stderr = setup_stderr_redir(cmd, sh);
 	if (saved_stderr == -2)
-		return (restore_fds(saved_stdin, saved_stdout));
+		return (restore_fds(saved.in, saved.out));
 	if (cmd->argv && cmd->argv[0])
 	{
-		g_last_status = run_command(cmd, env_list, envp);
+		ms_status_set(sh, run_command(cmd, env_list, sh));
 		update_underscore_var(cmd, env_list);
 	}
 	else
-		g_last_status = 0;
+		ms_status_set(sh, 0);
 	restore_saved_stderr(saved_stderr);
-	restore_fds(saved_stdin, saved_stdout);
+	restore_fds(saved.in, saved.out);
 }
 
-void	exec_cmd_list(t_cmd *cmd_list, t_env **env_list, char **envp)
+void	exec_cmd_list(t_cmd *cmd_list, t_env **env_list, t_shell *sh)
 {
 	t_cmd	*current;
 
 	current = cmd_list;
 	if (count_cmds(cmd_list) == 1)
 	{
-		execute_single_cmd(current, env_list, envp);
+		execute_single_cmd(current, env_list, sh);
 		close_parent_heredocs(cmd_list);
 		return ;
 	}
-	execute_pipeline(cmd_list, env_list, envp, count_cmds(cmd_list));
+	execute_pipeline(cmd_list, env_list, count_cmds(cmd_list), sh);
 	return ;
 }

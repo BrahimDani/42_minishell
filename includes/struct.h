@@ -20,6 +20,12 @@ typedef struct s_env
 	struct s_env	*next;
 }					t_env;
 
+typedef struct s_shell
+{
+	int				last_status;
+	char			**envp;
+}					t_shell;
+
 // Forward declaration to allow exec.h to reference t_cmd
 typedef struct s_cmd	t_cmd;
 

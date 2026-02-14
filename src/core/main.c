@@ -13,8 +13,6 @@
 #include "../includes/minishell.h"
 #include "../includes/parsing.h"
 
-int	g_last_status = 0;
-
 void	ms_exit(int status, t_env *env_list)
 {
 	if (env_list)
@@ -27,14 +25,17 @@ void	ms_exit(int status, t_env *env_list)
 int	main(int argc, char **argv, char **envp)
 {
 	t_env	*env_list;
+	t_shell	sh;
 	int		is_interactive;
 
 	env_list = NULL;
+	sh.last_status = 0;
+	sh.envp = envp;
 	is_interactive = isatty(STDIN_FILENO);
-	init_shell(argc, argv, envp, &env_list);
-	main_loop(is_interactive, &env_list, envp);
+	init_shell(argc, argv, &env_list, &sh);
+	main_loop(is_interactive, &env_list, &sh);
 	free_env_list(env_list);
 	rl_clear_history();
 	get_next_line(-1);
-	return (g_last_status);
+	return (sh.last_status);
 }

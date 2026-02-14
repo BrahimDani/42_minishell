@@ -17,7 +17,7 @@
 
 // BUILTINS UTILS
 int		is_builtin(char *cmd);
-int		exec_builtin(char **tokens, t_env **env_list);
+int		exec_builtin(char **tokens, t_env **env_list, int last_status);
 // PWD
 int		ft_pwd(void);
 // CD
@@ -30,7 +30,8 @@ char	*handle_oldpwd_path(t_env *env_list, char *oldpwd, int *print);
 char	*expand_tilde_home(char *token, t_env *env_list, char *oldpwd);
 void	update_pwd_vars(t_env **env_list, char *oldpwd, int print_new_path);
 int		change_directory(char *path, char *oldpwd);
-int		ft_exit(char **args, t_env *env_list, t_cmd *cmd_list);
+int		ft_exit(char **args, t_env *env_list, t_cmd *cmd_list,
+			int last_status);
 int		ft_exit_status(char **args);
 int		ft_echo(char **tokens);
 // EXPORT

@@ -6,13 +6,14 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 18:18:50 by vboxuser          #+#    #+#             */
-/*   Updated: 2026/02/09 14:12:05 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/14 15:45:00 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	read_heredoc_content(int fd, char *delim, int expand, t_env *env)
+void	read_heredoc_content(int fd, char *delim, int expand,
+	t_heredoc_ctx *ctx)
 {
 	char	*line;
 
@@ -27,7 +28,7 @@ void	read_heredoc_content(int fd, char *delim, int expand, t_env *env)
 		}
 		if (expand)
 		{
-			if (!process_line_expanded(line, fd, delim, env))
+			if (!process_line_expanded(line, fd, delim, ctx))
 				break ;
 		}
 		else
@@ -38,15 +39,17 @@ void	read_heredoc_content(int fd, char *delim, int expand, t_env *env)
 	}
 }
 
-int	read_heredoc(char *delimiter, t_env *env_list, int quoted)
+int	read_heredoc(char *delimiter, t_env *env_list, int quoted, t_shell *sh)
 {
-	int		fd;
-	char	*clean_delim;
-	int		should_expand;
-	char	path[50];
+	t_heredoc_ctx	ctx;
+	int				fd;
+	char			*clean_delim;
+	int				should_expand;
+	char			path[50];
 
-	clean_delim = process_delimiter(delimiter, &should_expand,
-			quoted);
+	clean_delim = process_delimiter(delimiter, &should_expand, quoted);
+	ctx.env = env_list;
+	ctx.sh = sh;
 	fd = create_tmpfile(path, 50);
 	if (fd == -1)
 	{
@@ -54,7 +57,7 @@ int	read_heredoc(char *delimiter, t_env *env_list, int quoted)
 		free(clean_delim);
 		return (-1);
 	}
-	read_heredoc_content(fd, clean_delim, should_expand, env_list);
+	read_heredoc_content(fd, clean_delim, should_expand, &ctx);
 	close(fd);
 	fd = open(path, O_RDONLY);
 	unlink(path);

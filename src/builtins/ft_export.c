@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 02:09:22 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 18:45:02 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/14 02:07:01 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ int	is_valid_identifier(const char *str)
 	int	i;
 
 	i = 0;
-	if (!str || (!isalpha(str[0]) && str[0] != '_'))
+	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
 		return (0);
 	i = 1;
 	while (str[i] && str[i] != '=' && !(str[i] == '+' && str[i + 1] == '='))
 	{
-		if (!isalnum(str[i]) && str[i] != '_')
+		if (!ft_isalnum(str[i]) && str[i] != '_')
 			return (0);
 		i++;
 	}
@@ -46,7 +46,7 @@ void	set_env_value(t_env **env_list, char *key, char *value)
 	current = *env_list;
 	while (current)
 	{
-		if (strcmp(current->key, key) == 0)
+		if (ft_strcmp(current->key, key) == 0)
 		{
 			set_existing_env_value(current, value);
 			return ;

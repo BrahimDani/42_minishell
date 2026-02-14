@@ -74,6 +74,12 @@ typedef struct s_word_split
 	int		len;
 	int		i;
 }	t_word_split;
+
+typedef struct s_heredoc_ctx
+{
+	t_env	*env;
+	t_shell	*sh;
+}	t_heredoc_ctx;
 typedef struct s_cmd
 {
 	char			**argv;
@@ -92,18 +98,20 @@ typedef struct s_cmd
 	char			*out_redir_first_error;
 	struct s_cmd	*next;
 }	t_cmd;
-void			pre_read_heredocs(t_cmd *cmd_list, t_env *env_list);
-int				read_heredoc(char *delimiter, t_env *env_list, int quoted);
+void			pre_read_heredocs(t_cmd *cmd_list, t_env *env_list,
+					t_shell *sh);
+int				read_heredoc(char *delimiter, t_env *env_list, int quoted,
+					t_shell *sh);
 char			*process_delimiter(char *delimiter, int *should_expand,
 					int quoted);
 char			*read_heredoc_line(void);
 int				create_tmpfile(char *path, int size);
 int				process_line_expanded(char *line, int fd, char *delim,
-					t_env *env);
+					t_heredoc_ctx *ctx);
 int				process_line_raw(char *line, int fd, char *delim);
 void			read_heredoc_content(int fd, char *delim, int expand,
-					t_env *env);
-void			pre_read_one(t_cmd *cmd, t_env *env_list);
+					t_heredoc_ctx *ctx);
+void			pre_read_one(t_cmd *cmd, t_env *env_list, t_shell *sh);
 
 int				is_ifs_char(char c);
 int				count_ifs_words(char *str);
@@ -131,23 +139,23 @@ int				handle_simple_operator(char *line, int *i, t_token **token,
 					int space);
 int				handle_quotes(char *line, int *i, t_token **token, int space);
 void			free_tokens(t_token *tokens);
-t_token			*parse_line(char *line);
+t_token			*parse_line(char *line, t_shell *sh);
 int				empty_line(char *line);
 int				valid_line(char *line);
-int				check_ampersand(char *line);
+int				check_ampersand(char *line, t_shell *sh);
 int				check_redir(char *line);
 int				check_quote(char *line);
-int				check_pipe_tokens(t_token *tokens);
+int				check_pipe_tokens(t_token *tokens, t_shell *sh);
 t_token			*tokenize_line(char *line);
-int				validate_tokens_syntax(t_token *tokens);
+int				validate_tokens_syntax(t_token *tokens, t_shell *sh);
 char			**tokens_to_array(t_token *list);
-t_token			*expand_tokens(t_token *tokens, t_env *env_list);
-char			*expand_variable(const char *str, t_env *env_list);
+t_token			*expand_tokens(t_token *tokens, t_env *env_list, t_shell *sh);
+char			*expand_variable(const char *str, t_env *env_list, t_shell *sh);
 char			*expand_variable_mode(const char *str, t_env *env_list,
-					t_quote_mode mode);
+					t_quote_mode mode, t_shell *sh);
 char			*append_var_value(char *result, const char **p,
-					t_env *env_list);
-char			*expand_heredoc(const char *str, t_env *env_list);
+					t_env *env_list, t_shell *sh);
+char			*expand_heredoc(const char *str, t_env *env_list, t_shell *sh);
 char			*handle_escape_double(char *result, const char **p);
 char			*handle_escape_none(char *result, const char **p);
 int				count_fields(char **split);
@@ -173,25 +181,26 @@ t_cmd			*create_new_cmd(t_cmd **head);
 void			add_argument(t_cmd *cmd, char *value);
 int				aggregate_quoted(t_token *start);
 char			*join_adjacent_words(t_token **token);
-int				check_redir_syntax(t_token *t);
+int				check_redir_syntax(t_token *t, t_shell *sh);
 void			handle_redir_in(t_cmd *cmd, char *joined);
 void			handle_prev_outfile(t_cmd *cmd);
 void			handle_redir_out(t_cmd *cmd, char *joined, t_token_type type);
 void			handle_stderr_redir(t_cmd *cmd, char *joined, int is_append);
 void			handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted);
-int				handle_redirection(t_cmd *cmd, t_token **token);
+int				handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh);
 int				is_all_digits(char *str);
 int				is_stderr_redirect(t_token *token, t_cmd *current,
 					t_token **next);
 void			handle_word_token(t_token **tokens, t_cmd *current);
 int				handle_redir_token(t_token **tokens, t_cmd *current,
-					t_cmd *head);
-int				process_token(t_token **tokens, t_cmd **current, t_cmd *head);
+					t_cmd *head, t_shell *sh);
+int				process_token(t_token **tokens, t_cmd **current, t_cmd *head,
+					t_shell *sh);
 
 void			exec_from_tokens(t_token *tokens, t_env **env_list,
-					char **envp);
+					t_shell *sh);
 void			print_cmds(t_cmd *cmd);
-t_cmd			*parse_tokens(t_token *tokens);
+t_cmd			*parse_tokens(t_token *tokens, t_shell *sh);
 void			free_cmds(t_cmd *cmd);
 void			close_parent_pipe_ends(int pipes[][2], int idx, int n_cmds);
 void			close_parent_heredocs(t_cmd *cmd_list);

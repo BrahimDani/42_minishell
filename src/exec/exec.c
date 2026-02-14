@@ -72,7 +72,7 @@ void	exec_external_child(char **argv, t_env **env_list)
  * run_command - dispatch a parsed command (builtin or external)
  * Uses the same behavior as the previous main.c implementation.
  */
-int	run_command(t_cmd *cmd, t_env **env_list, char **envp)
+int	run_command(t_cmd *cmd, t_env **env_list, t_shell *sh)
 {
 	if (!cmd || !cmd->argv)
 		return (0);
@@ -85,13 +85,13 @@ int	run_command(t_cmd *cmd, t_env **env_list, char **envp)
 	}
 	if (ft_strcmp(cmd->argv[0], "env") == 0 && cmd->argv[1] != NULL)
 	{
-		return (exec_external(cmd->argv, envp, env_list));
+		return (exec_external(cmd->argv, sh->envp, env_list));
 	}
 	if (is_builtin(cmd->argv[0]))
 	{
 		if (ft_strcmp(cmd->argv[0], "exit") == 0)
-			return (ft_exit(cmd->argv, *env_list, cmd));
-		return (exec_builtin(cmd->argv, env_list));
+			return (ft_exit(cmd->argv, *env_list, cmd, sh->last_status));
+		return (exec_builtin(cmd->argv, env_list, sh->last_status));
 	}
-	return (exec_external(cmd->argv, envp, env_list));
+	return (exec_external(cmd->argv, sh->envp, env_list));
 }

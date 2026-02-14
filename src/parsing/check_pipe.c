@@ -13,19 +13,19 @@
 #include "../../includes/minishell.h"
 #include "../../includes/parsing.h"
 
-static int	check_first_pipe(t_token *tokens)
+static int	check_first_pipe(t_token *tokens, t_shell *sh)
 {
 	if (tokens->type == T_PIPE)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `|'",
 			STDERR_FILENO);
-		g_last_status = 2;
+		ms_status_set(sh, 2);
 		return (0);
 	}
 	return (1);
 }
 
-static int	check_last_pipe(t_token *tokens)
+static int	check_last_pipe(t_token *tokens, t_shell *sh)
 {
 	t_token	*current;
 	t_token	*last;
@@ -41,13 +41,13 @@ static int	check_last_pipe(t_token *tokens)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `|'",
 			STDERR_FILENO);
-		g_last_status = 2;
+		ms_status_set(sh, 2);
 		return (0);
 	}
 	return (1);
 }
 
-static int	check_consecutive_pipes(t_token *tokens)
+static int	check_consecutive_pipes(t_token *tokens, t_shell *sh)
 {
 	t_token	*current;
 
@@ -59,7 +59,7 @@ static int	check_consecutive_pipes(t_token *tokens)
 		{
 			ft_putendl_fd("minishell: syntax error near unexpected token `|'",
 				STDERR_FILENO);
-			g_last_status = 2;
+			ms_status_set(sh, 2);
 			return (0);
 		}
 		current = current->next;
@@ -67,15 +67,15 @@ static int	check_consecutive_pipes(t_token *tokens)
 	return (1);
 }
 
-int	check_pipe_tokens(t_token *tokens)
+int	check_pipe_tokens(t_token *tokens, t_shell *sh)
 {
 	if (!tokens)
 		return (1);
-	if (!check_first_pipe(tokens))
+	if (!check_first_pipe(tokens, sh))
 		return (0);
-	if (!check_last_pipe(tokens))
+	if (!check_last_pipe(tokens, sh))
 		return (0);
-	if (!check_consecutive_pipes(tokens))
+	if (!check_consecutive_pipes(tokens, sh))
 		return (0);
 	return (1);
 }

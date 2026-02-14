@@ -33,7 +33,7 @@ void	close_pipes(int pipes[][2], int count)
 	}
 }
 
-int	create_pipes(int pipes[][2], int n_cmds)
+int	create_pipes(int pipes[][2], int n_cmds, t_shell *sh)
 {
 	int	i;
 
@@ -44,7 +44,7 @@ int	create_pipes(int pipes[][2], int n_cmds)
 		{
 			perror("minishell: pipe");
 			close_pipes(pipes, i);
-			g_last_status = 1;
+			ms_status_set(sh, 1);
 			return (-1);
 		}
 		i++;

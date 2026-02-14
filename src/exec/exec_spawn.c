@@ -35,6 +35,7 @@ void	child_process(char *full_path, char **argv, t_env *env_list)
 	new_envp = build_envp_from_list(env_list);
 	if (!new_envp)
 		ms_exit(1, env_list);
+	close_extra_fds();
 	execve(full_path, argv, new_envp);
 	exec_error_exit(full_path, new_envp, env_list);
 }

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	process_line_expanded(char *line, int fd, char *delim, t_env *env)
+int	process_line_expanded(char *line, int fd, char *delim, t_heredoc_ctx *ctx)
 {
 	char	*expanded_line;
 
@@ -21,7 +21,7 @@ int	process_line_expanded(char *line, int fd, char *delim, t_env *env)
 		free(line);
 		return (0);
 	}
-	expanded_line = expand_heredoc(line, env);
+	expanded_line = expand_heredoc(line, ctx->env, ctx->sh);
 	write(fd, expanded_line, ft_strlen(expanded_line));
 	write(fd, "\n", 1);
 	free(expanded_line);
@@ -42,13 +42,13 @@ int	process_line_raw(char *line, int fd, char *delim)
 	return (1);
 }
 
-void	pre_read_one(t_cmd *cmd, t_env *env_list)
+void	pre_read_one(t_cmd *cmd, t_env *env_list, t_shell *sh)
 {
 	int	fd;
 
 	if (cmd->heredoc && cmd->heredoc_fd < 0)
 	{
-		fd = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted);
+		fd = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted, sh);
 		if (fd >= 0)
 			cmd->heredoc_fd = fd;
 	}
