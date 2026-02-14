@@ -38,23 +38,6 @@ void	read_heredoc_content(int fd, char *delim, int expand, t_env *env)
 	}
 }
 
-static void	build_heredoc_path(char *path, int size)
-{
-	static int	counter = 0;
-	char		*num;
-	char		*pid;
-
-	num = ft_itoa(counter++);
-	pid = ft_itoa(getpid());
-	path[0] = '\0';
-	ft_strlcpy(path, "/tmp/.minishell_heredoc_", size);
-	ft_strlcat(path, pid, size);
-	ft_strlcat(path, "_", size);
-	ft_strlcat(path, num, size);
-	free(pid);
-	free(num);
-}
-
 int	read_heredoc(char *delimiter, t_env *env_list, int quoted)
 {
 	int		fd;
@@ -64,10 +47,10 @@ int	read_heredoc(char *delimiter, t_env *env_list, int quoted)
 
 	clean_delim = process_delimiter(delimiter, &should_expand,
 			quoted);
-	build_heredoc_path(path, 50);
-	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0600);
+	fd = create_tmpfile(path, 50);
 	if (fd == -1)
 	{
+		perror("minishell: heredoc");
 		free(clean_delim);
 		return (-1);
 	}

@@ -67,22 +67,3 @@ void	free_env_list(t_env *env_list)
 		current = next;
 	}
 }
-
-void	close_extra_fds(void)
-{
-	DIR			*dir;
-	int			fds[4096];
-	int			count;
-	int			dir_fd;
-
-	dir = opendir("/proc/self/fd");
-	if (!dir)
-	{
-		close_range_fallback();
-		return ;
-	}
-	dir_fd = dirfd(dir);
-	count = collect_fds(dir, dir_fd, fds, 4096);
-	closedir(dir);
-	close_fds_list(fds, count);
-}

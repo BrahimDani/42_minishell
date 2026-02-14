@@ -12,6 +12,22 @@
 
 #include "../../includes/minishell.h"
 
+static void	build_tmp_path(char *path, int size, int idx)
+{
+	char	*num;
+
+	num = ft_itoa(idx);
+	if (!num)
+	{
+		path[0] = '\0';
+		return ;
+	}
+	path[0] = '\0';
+	ft_strlcpy(path, "/tmp/.minishell_heredoc_", size);
+	ft_strlcat(path, num, size);
+	free(num);
+}
+
 char	*process_delimiter(char *delimiter, int *should_expand,
 		int quoted)
 {
@@ -44,28 +60,25 @@ char	*read_heredoc_line(void)
 	return (buf);
 }
 
-int	create_tmpfile(void)
+int	create_tmpfile(char *path, int size)
 {
 	static int	counter = 0;
-	char		path[50];
-	char		*num;
-	char		*pid;
 	int			fd;
+	int			tries;
 
-	num = ft_itoa(counter++);
-	pid = ft_itoa(getpid());
-	path[0] = '\0';
-	ft_strlcpy(path, "/tmp/.minishell_heredoc_", 50);
-	ft_strlcat(path, pid, 50);
-	ft_strlcat(path, "_", 50);
-	ft_strlcat(path, num, 50);
-	free(pid);
-	free(num);
-	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0600);
-	if (fd == -1)
+	tries = 0;
+	while (tries < 1000)
 	{
-		perror("minishell: heredoc");
-		return (-1);
+		build_tmp_path(path, size, counter++);
+		if (path[0] == '\0')
+			return (-1);
+		fd = open(path, O_CREAT | O_EXCL | O_RDWR, 0600);
+		if (fd >= 0)
+			return (fd);
+		if (errno != EEXIST)
+			return (-1);
+		tries++;
 	}
-	return (fd);
+	errno = EEXIST;
+	return (-1);
 }

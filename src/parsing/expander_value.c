@@ -18,20 +18,6 @@ static int	is_var_char(char c)
 	return (ft_isalnum(c) || c == '_');
 }
 
-static char	*expand_pid_var(char *result, const char **p)
-{
-	char	*value;
-
-	value = ft_itoa(getpid());
-	if (value)
-	{
-		result = ft_strjoin_free(result, value, 1);
-		free(value);
-	}
-	*p += 2;
-	return (result);
-}
-
 static char	*expand_status_var(char *result, const char **p)
 {
 	char	*value;
@@ -74,8 +60,6 @@ static char	*expand_regular_var(char *result, const char **p, t_env *env_list)
 
 char	*append_var_value(char *result, const char **p, t_env *env_list)
 {
-	if (*(*p + 1) == '$')
-		return (expand_pid_var(result, p));
 	if (*(*p + 1) == '?')
 		return (expand_status_var(result, p));
 	return (expand_regular_var(result, p, env_list));

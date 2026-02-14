@@ -32,6 +32,11 @@ char			**build_envp_from_list(t_env *env_list);
 void			free_envp_array(char **envp);
 void			exec_error_exit(char *full_path, char **new_envp,
 					t_env *env_list);
+int				fd_redir_op_error(char *op);
+int				fd_errfile_open_error(int saved_stderr, char *errfile);
+int				save_and_redirect(int fd, int std_fd);
+void			close_saved_fds(int saved_in, int saved_out, int saved_err);
+void			restore_saved_stderr(int saved_stderr);
 void			child_process(char *full_path, char **argv, t_env *env_list);
 int				spawn_external(char *full_path, char **argv, char **envp,
 					t_env *env_list);

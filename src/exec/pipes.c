@@ -19,8 +19,16 @@ void	close_pipes(int pipes[][2], int count)
 	i = 0;
 	while (i < count)
 	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
+		if (pipes[i][0] >= 0)
+		{
+			close(pipes[i][0]);
+			pipes[i][0] = -1;
+		}
+		if (pipes[i][1] >= 0)
+		{
+			close(pipes[i][1]);
+			pipes[i][1] = -1;
+		}
 		i++;
 	}
 }

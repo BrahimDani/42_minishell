@@ -70,11 +70,10 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 	if (check_redir_errors(cmd))
 		return (close_cmd_heredoc_fd(cmd));
 	if (setup_redirections(cmd, env_list, &saved_stdin, &saved_stdout) == -1)
-	{
-		close_cmd_heredoc_fd(cmd);
-		return ;
-	}
+		return (close_cmd_heredoc_fd(cmd));
 	saved_stderr = setup_stderr_redir(cmd);
+	if (saved_stderr == -2)
+		return (restore_fds(saved_stdin, saved_stdout));
 	if (cmd->argv && cmd->argv[0])
 	{
 		g_last_status = run_command(cmd, env_list, envp);
@@ -82,11 +81,7 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, char **envp)
 	}
 	else
 		g_last_status = 0;
-	if (saved_stderr >= 0)
-	{
-		dup2(saved_stderr, STDERR_FILENO);
-		close(saved_stderr);
-	}
+	restore_saved_stderr(saved_stderr);
 	restore_fds(saved_stdin, saved_stdout);
 }
 

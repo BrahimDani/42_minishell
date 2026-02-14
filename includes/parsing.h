@@ -97,15 +97,7 @@ int				read_heredoc(char *delimiter, t_env *env_list, int quoted);
 char			*process_delimiter(char *delimiter, int *should_expand,
 					int quoted);
 char			*read_heredoc_line(void);
-int				create_tmpfile(void);
-int				process_line_expanded(char *line, int fd, char *delim,
-					t_env *env);
-int				process_line_raw(char *line, int fd, char *delim);
-void			read_heredoc_content(int fd, char *delim, int expand,
-					t_env *env);
-void			pre_read_one(t_cmd *cmd, t_env *env_list);
-
-int				create_tmpfile(void);
+int				create_tmpfile(char *path, int size);
 int				process_line_expanded(char *line, int fd, char *delim,
 					t_env *env);
 int				process_line_raw(char *line, int fd, char *delim);

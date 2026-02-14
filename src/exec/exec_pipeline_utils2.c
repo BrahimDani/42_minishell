@@ -29,10 +29,16 @@ void	close_parent_pipe_ends(int pipes[][2], int idx, int n_cmds)
 {
 	if (!pipes)
 		return ;
-	if (idx > 0)
+	if (idx > 0 && pipes[idx - 1][0] >= 0)
+	{
 		close(pipes[idx - 1][0]);
-	if (idx < n_cmds - 1)
+		pipes[idx - 1][0] = -1;
+	}
+	if (idx < n_cmds - 1 && pipes[idx][1] >= 0)
+	{
 		close(pipes[idx][1]);
+		pipes[idx][1] = -1;
+	}
 }
 
 int	init_pipeline(int n_cmds, int (**pipes)[2], t_pipe_ctx *ctx)

@@ -64,18 +64,18 @@ static int	handle_errfile(t_cmd *cmd)
 	int	err_fd;
 
 	saved_stderr = dup(STDERR_FILENO);
+	if (saved_stderr < 0)
+		return (fd_redir_op_error("dup"));
 	err_fd = open_err_fd(cmd);
-	if (err_fd >= 0)
+	if (err_fd < 0)
+		return (fd_errfile_open_error(saved_stderr, cmd->errfile));
+	if (dup2(err_fd, STDERR_FILENO) < 0)
 	{
-		dup2(err_fd, STDERR_FILENO);
 		close(err_fd);
-	}
-	else
-	{
-		dup2(saved_stderr, STDERR_FILENO);
 		close(saved_stderr);
-		saved_stderr = -1;
+		return (fd_redir_op_error("dup2"));
 	}
+	close(err_fd);
 	return (saved_stderr);
 }
 
@@ -85,11 +85,17 @@ int	setup_stderr_redir(t_cmd *cmd)
 
 	saved_stderr = -1;
 	if (cmd->errfile)
-		saved_stderr = handle_errfile(cmd);
+		return (handle_errfile(cmd));
 	else if (cmd->redirect_stderr_to_out)
 	{
 		saved_stderr = dup(STDERR_FILENO);
-		dup2(STDOUT_FILENO, STDERR_FILENO);
+		if (saved_stderr < 0)
+			return (fd_redir_op_error("dup"));
+		if (dup2(STDOUT_FILENO, STDERR_FILENO) < 0)
+		{
+			close(saved_stderr);
+			return (fd_redir_op_error("dup2"));
+		}
 	}
 	return (saved_stderr);
 }

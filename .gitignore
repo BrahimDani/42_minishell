@@ -1,0 +1,36 @@
+# Build artifacts
+minishell
+obj/
+
+# libft build artifacts
+libft/*.o
+libft/*.a
+
+# Test / local runtime outputs
+file_out
+trash/
+
+# Local tester clones
+minishell_tester/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Debug / profiling outputs
+vgcore.*
+core
+core.*
+*.out
+
+# Coverage
+*.gcda
+*.gcno
+*.gcov

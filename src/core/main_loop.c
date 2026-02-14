@@ -51,7 +51,6 @@ char	*read_non_interactive_line(void)
 void	init_shell(int argc, char **argv, char **envp,
 	t_env **env_list)
 {
-	close_extra_fds();
 	disable_ctrl_echo();
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);

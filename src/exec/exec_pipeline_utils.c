@@ -15,10 +15,20 @@
 int	(*alloc_pipes(int n_cmds))[2]
 {
 	int	(*pipes)[2];
+	int	i;
 
 	if (n_cmds < 2)
 		return (NULL);
 	pipes = malloc(sizeof(int [2]) * (n_cmds - 1));
+	if (!pipes)
+		return (NULL);
+	i = 0;
+	while (i < n_cmds - 1)
+	{
+		pipes[i][0] = -1;
+		pipes[i][1] = -1;
+		i++;
+	}
 	return (pipes);
 }
 

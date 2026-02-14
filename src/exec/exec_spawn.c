@@ -31,7 +31,6 @@ void	child_process(char *full_path, char **argv, t_env *env_list)
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	close_extra_fds();
 	set_env_value(&env_list, "_", full_path);
 	new_envp = build_envp_from_list(env_list);
 	if (!new_envp)

@@ -57,11 +57,12 @@ int	handle_input_redir(t_cmd *cmd, t_env **env_list)
 		fd_in = handle_file_input(cmd->infile);
 	if (fd_in < 0)
 		return (fd_in);
-	saved_stdin = dup(STDIN_FILENO);
-	dup2(fd_in, STDIN_FILENO);
+	saved_stdin = save_and_redirect(fd_in, STDIN_FILENO);
 	close(fd_in);
 	if (cmd->heredoc && cmd->heredoc_fd == fd_in)
 		cmd->heredoc_fd = -1;
+	if (saved_stdin < 0)
+		return (-2);
 	return (saved_stdin);
 }
 
@@ -83,9 +84,10 @@ int	handle_output_redir(t_cmd *cmd)
 		g_last_status = 1;
 		return (-2);
 	}
-	saved_stdout = dup(STDOUT_FILENO);
-	dup2(fd_out, STDOUT_FILENO);
+	saved_stdout = save_and_redirect(fd_out, STDOUT_FILENO);
 	close(fd_out);
+	if (saved_stdout < 0)
+		return (-2);
 	return (saved_stdout);
 }
 
