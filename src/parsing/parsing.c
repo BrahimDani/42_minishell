@@ -90,20 +90,27 @@ void	exec_from_tokens(t_token *tokens, t_env **env_list, t_shell *sh)
 		free_tokens(current_block);
 		if (!cmd_list)
 			continue ;
-		pre_read_heredocs(cmd_list, *env_list, sh);
+		if (!pre_read_heredocs(cmd_list, *env_list, sh))
+		{
+			free_cmds(cmd_list);
+			free_tokens(tokens);
+			return ;
+		}
 		exec_cmd_list(cmd_list, env_list, sh);
 		free_cmds(cmd_list);
 	}
 }
 
-void	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list, t_shell *sh)
+int	pre_read_heredocs(t_cmd *cmd_list, t_env *env_list, t_shell *sh)
 {
 	t_cmd	*c;
 
 	c = cmd_list;
 	while (c)
 	{
-		pre_read_one(c, env_list, sh);
+		if (!pre_read_one(c, env_list, sh))
+			return (0);
 		c = c->next;
 	}
+	return (1);
 }

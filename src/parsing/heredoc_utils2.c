@@ -42,14 +42,17 @@ int	process_line_raw(char *line, int fd, char *delim)
 	return (1);
 }
 
-void	pre_read_one(t_cmd *cmd, t_env *env_list, t_shell *sh)
+int	pre_read_one(t_cmd *cmd, t_env *env_list, t_shell *sh)
 {
 	int	fd;
 
 	if (cmd->heredoc && cmd->heredoc_fd < 0)
 	{
 		fd = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted, sh);
+		if (fd == -2)
+			return (0);
 		if (fd >= 0)
 			cmd->heredoc_fd = fd;
 	}
+	return (1);
 }

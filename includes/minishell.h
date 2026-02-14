@@ -38,6 +38,7 @@
 
 // GENERAL
 void	sigint_handler(int signum);
+void	sigint_heredoc_handler(int signum);
 void	init_env(t_env **env_list, char **envp);
 void	call_eof_handler(void);
 void	disable_ctrl_echo(void);

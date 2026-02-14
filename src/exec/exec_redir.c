@@ -23,7 +23,8 @@ int	handle_heredoc_input(t_cmd *cmd, t_env *env_list, t_shell *sh)
 		fd_in = read_heredoc(cmd->infile, env_list, cmd->heredoc_quoted, sh);
 	if (fd_in < 0)
 	{
-		ms_status_set(sh, 1);
+		if (!(fd_in == -2 && ms_status_get(sh) == 130))
+			ms_status_set(sh, 1);
 		return (-2);
 	}
 	return (fd_in);

@@ -17,6 +17,7 @@ char	*read_interactive_line(void)
 {
 	char	*line;
 
+	rl_done = 0;
 	line = readline("minishell> ");
 	if (!line)
 	{
@@ -51,6 +52,7 @@ char	*read_non_interactive_line(void)
 void	init_shell(int argc, char **argv, t_env **env_list, t_shell *sh)
 {
 	disable_ctrl_echo();
+	rl_catch_signals = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 	init_env(env_list, sh->envp);

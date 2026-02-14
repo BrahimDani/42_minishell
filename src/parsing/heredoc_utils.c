@@ -48,6 +48,7 @@ char	*read_heredoc_line(void)
 
 	if (isatty(STDIN_FILENO))
 	{
+		rl_done = 0;
 		line = readline("");
 		return (line);
 	}

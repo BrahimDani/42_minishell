@@ -6,13 +6,44 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 18:18:50 by vboxuser          #+#    #+#             */
-/*   Updated: 2026/02/14 15:45:00 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/14 17:05:00 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	read_heredoc_content(int fd, char *delim, int expand,
+static int	handle_heredoc_sigint(char *line, t_heredoc_ctx *ctx)
+{
+	if (consume_sigint_flag())
+	{
+		if (line)
+			free(line);
+		ms_status_set(ctx->sh, 130);
+		return (1);
+	}
+	return (0);
+}
+
+static void	restore_stdin_and_signal(int saved_stdin)
+{
+	if (saved_stdin >= 0)
+	{
+		dup2(saved_stdin, STDIN_FILENO);
+		close(saved_stdin);
+	}
+	signal(SIGINT, sigint_handler);
+}
+
+static int	cancel_heredoc(t_heredoc_run *run, char *clean_delim)
+{
+	close(run->fd);
+	unlink(run->path);
+	free(clean_delim);
+	restore_stdin_and_signal(run->saved_stdin);
+	return (-2);
+}
+
+int	read_heredoc_content(int fd, char *delim, int expand,
 	t_heredoc_ctx *ctx)
 {
 	char	*line;
@@ -20,47 +51,42 @@ void	read_heredoc_content(int fd, char *delim, int expand,
 	while (1)
 	{
 		line = read_heredoc_line();
+		if (handle_heredoc_sigint(line, ctx))
+			return (0);
 		if (!line)
-		{
-			ft_putendl_fd(
-				"minishell: warning here-doc delimited by endfile", 2);
-			break ;
-		}
-		if (expand)
-		{
-			if (!process_line_expanded(line, fd, delim, ctx))
-				break ;
-		}
-		else
-		{
-			if (!process_line_raw(line, fd, delim))
-				break ;
-		}
+			return (1);
+		if (expand && !process_line_expanded(line, fd, delim, ctx))
+			return (1);
+		if (!expand && !process_line_raw(line, fd, delim))
+			return (1);
 	}
+	return (1);
 }
 
 int	read_heredoc(char *delimiter, t_env *env_list, int quoted, t_shell *sh)
 {
-	t_heredoc_ctx	ctx;
-	int				fd;
+	t_heredoc_run	run;
 	char			*clean_delim;
-	int				should_expand;
-	char			path[50];
 
-	clean_delim = process_delimiter(delimiter, &should_expand, quoted);
-	ctx.env = env_list;
-	ctx.sh = sh;
-	fd = create_tmpfile(path, 50);
-	if (fd == -1)
+	clean_delim = process_delimiter(delimiter, &run.should_expand, quoted);
+	run.ctx.env = env_list;
+	run.ctx.sh = sh;
+	run.fd = create_tmpfile(run.path, 50);
+	if (run.fd == -1)
 	{
 		perror("minishell: heredoc");
 		free(clean_delim);
 		return (-1);
 	}
-	read_heredoc_content(fd, clean_delim, should_expand, &ctx);
-	close(fd);
-	fd = open(path, O_RDONLY);
-	unlink(path);
+	consume_sigint_flag();
+	run.saved_stdin = dup(STDIN_FILENO);
+	signal(SIGINT, sigint_heredoc_handler);
+	if (!read_heredoc_content(run.fd, clean_delim, run.should_expand, &run.ctx))
+		return (cancel_heredoc(&run, clean_delim));
+	close(run.fd);
+	run.fd = open(run.path, O_RDONLY);
+	unlink(run.path);
 	free(clean_delim);
-	return (fd);
+	restore_stdin_and_signal(run.saved_stdin);
+	return (run.fd);
 }

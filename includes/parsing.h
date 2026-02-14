@@ -80,6 +80,15 @@ typedef struct s_heredoc_ctx
 	t_env	*env;
 	t_shell	*sh;
 }	t_heredoc_ctx;
+
+typedef struct s_heredoc_run
+{
+	t_heredoc_ctx	ctx;
+	int				fd;
+	int				saved_stdin;
+	int				should_expand;
+	char			path[50];
+}	t_heredoc_run;
 typedef struct s_cmd
 {
 	char			**argv;
@@ -98,7 +107,7 @@ typedef struct s_cmd
 	char			*out_redir_first_error;
 	struct s_cmd	*next;
 }	t_cmd;
-void			pre_read_heredocs(t_cmd *cmd_list, t_env *env_list,
+int				pre_read_heredocs(t_cmd *cmd_list, t_env *env_list,
 					t_shell *sh);
 int				read_heredoc(char *delimiter, t_env *env_list, int quoted,
 					t_shell *sh);
@@ -109,9 +118,9 @@ int				create_tmpfile(char *path, int size);
 int				process_line_expanded(char *line, int fd, char *delim,
 					t_heredoc_ctx *ctx);
 int				process_line_raw(char *line, int fd, char *delim);
-void			read_heredoc_content(int fd, char *delim, int expand,
+int				read_heredoc_content(int fd, char *delim, int expand,
 					t_heredoc_ctx *ctx);
-void			pre_read_one(t_cmd *cmd, t_env *env_list, t_shell *sh);
+int				pre_read_one(t_cmd *cmd, t_env *env_list, t_shell *sh);
 
 int				is_ifs_char(char c);
 int				count_ifs_words(char *str);
