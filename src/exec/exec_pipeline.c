@@ -80,16 +80,13 @@ void	execute_pipeline(t_cmd *cmd_list,
 	int			(*pipes)[2];
 	t_pipe_ctx	ctx;
 
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	setup_parent_exec_signals();
 	ctx = (t_pipe_ctx){NULL, env_list, cmd_list, n_cmds, sh};
 	if (!init_pipeline(n_cmds, &pipes, &ctx))
 	{
-		signal(SIGINT, sigint_handler);
-		signal(SIGQUIT, SIG_IGN);
+		setup_prompt_signals();
 		return ;
 	}
 	exec_pipeline_loop(cmd_list, &ctx);
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
+	setup_prompt_signals();
 }

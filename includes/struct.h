@@ -13,6 +13,14 @@
 #ifndef STRUCT_H
 # define STRUCT_H
 
+typedef enum e_signal_state
+{
+	SIG_DEFAULT = 0,
+	SIG_IGNORE,
+	SIG_STANDARD,
+	SIG_RECORD
+}				t_sig;
+
 typedef struct s_env
 {
 	char			*key;
@@ -24,6 +32,7 @@ typedef struct s_shell
 {
 	int				last_status;
 	int				cmd_mode;
+	int				signal_record;
 	char			**envp;
 }					t_shell;
 

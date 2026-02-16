@@ -29,8 +29,7 @@ void	child_process(char *full_path, char **argv, t_env *env_list)
 {
 	char	**new_envp;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	setup_child_exec_signals();
 	set_env_value(&env_list, "_", full_path);
 	new_envp = build_envp_from_list(env_list);
 	if (!new_envp)
@@ -42,8 +41,7 @@ void	child_process(char *full_path, char **argv, t_env *env_list)
 
 static void	restore_parent_signals(void)
 {
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
+	setup_prompt_signals();
 }
 
 static int	handle_signaled_status(int status)
@@ -56,7 +54,7 @@ static int	handle_signaled_status(int status)
 	if (sig == SIGINT)
 		write(STDOUT_FILENO, "\n", 1);
 	else if (sig == SIGQUIT)
-		ft_putstr_fd("Quit\n", 2);
+		print_sigquit_message();
 	return (128 + sig);
 }
 
@@ -67,8 +65,7 @@ int	spawn_external(char *full_path, char **argv, char **envp, t_env *env_list)
 	int		exit_status;
 
 	(void)envp;
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	setup_parent_exec_signals();
 	pid = fork();
 	if (pid < 0)
 	{

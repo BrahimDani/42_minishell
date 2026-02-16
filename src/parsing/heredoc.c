@@ -31,7 +31,7 @@ static void	restore_stdin_and_signal(int saved_stdin)
 		dup2(saved_stdin, STDIN_FILENO);
 		close(saved_stdin);
 	}
-	signal(SIGINT, sigint_handler);
+	setup_prompt_signals();
 }
 
 static int	cancel_heredoc(t_heredoc_run *run, char *clean_delim)
@@ -80,7 +80,7 @@ int	read_heredoc(char *delimiter, t_env *env_list, int quoted, t_shell *sh)
 	}
 	consume_sigint_flag();
 	run.saved_stdin = dup(STDIN_FILENO);
-	signal(SIGINT, sigint_heredoc_handler);
+	setup_heredoc_signals();
 	if (!read_heredoc_content(run.fd, clean_delim, run.should_expand, &run.ctx))
 		return (cancel_heredoc(&run, clean_delim));
 	close(run.fd);

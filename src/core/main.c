@@ -31,6 +31,7 @@ int	main(int argc, char **argv, char **envp)
 	env_list = NULL;
 	sh.last_status = 0;
 	sh.cmd_mode = 0;
+	sh.signal_record = 0;
 	sh.envp = envp;
 	is_interactive = isatty(STDIN_FILENO);
 	init_shell(argc, argv, &env_list, &sh);

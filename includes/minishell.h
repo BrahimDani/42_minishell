@@ -37,12 +37,16 @@
 # include <errno.h>
 
 // GENERAL
-void	sigint_handler(int signum);
-void	sigint_heredoc_handler(int signum);
+void	handle_signal_std(int signo, siginfo_t *info, void *context);
+void	handle_signal_record(int signo, siginfo_t *info, void *context);
+void	setup_signal(int signo, t_sig state);
+void	init_signal_context(t_shell *sh);
+void	setup_prompt_signals(void);
+void	setup_parent_exec_signals(void);
+void	setup_child_exec_signals(void);
+void	setup_heredoc_signals(void);
+void	print_sigquit_message(void);
 void	init_env(t_env **env_list, char **envp);
-void	call_eof_handler(void);
-void	disable_ctrl_echo(void);
-void	enable_ctrl_echo(void);
 // INIT_ENV_UTILS
 t_env	*create_env_node(char *env_str, t_env *env_list);
 void	add_env_node(t_env **env_list, t_env **current, t_env *new_node);

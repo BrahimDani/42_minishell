@@ -53,8 +53,7 @@ void	exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head,
 	int		status;
 	t_cmd	*cur;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	setup_child_exec_signals();
 	cur = head;
 	while (cur)
 	{
@@ -93,7 +92,7 @@ void	wait_all_children(pid_t *pids, int n_cmds, t_shell *sh)
 			if (sig == SIGINT)
 				write(STDOUT_FILENO, "\n", 1);
 			else if (sig == SIGQUIT)
-				ft_putstr_fd("Quit\n", 2);
+				print_sigquit_message();
 			ms_status_set(sh, 128 + sig);
 		}
 		i++;
