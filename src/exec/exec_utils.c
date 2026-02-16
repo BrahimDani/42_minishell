@@ -60,15 +60,11 @@ static void	close_cmd_heredoc_fd(t_cmd *cmd)
 static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, t_shell *sh)
 {
 	t_saved_fds	saved;
-	int			saved_stderr;
 
 	if (check_redir_errors(cmd, sh))
 		return (close_cmd_heredoc_fd(cmd));
 	if (setup_redirections(cmd, env_list, &saved, sh) == -1)
 		return (close_cmd_heredoc_fd(cmd));
-	saved_stderr = setup_stderr_redir(cmd, sh);
-	if (saved_stderr == -2)
-		return (restore_fds(saved.in, saved.out));
 	if (cmd->argv && cmd->argv[0])
 	{
 		ms_status_set(sh, run_command(cmd, env_list, sh));
@@ -76,7 +72,6 @@ static void	execute_single_cmd(t_cmd *cmd, t_env **env_list, t_shell *sh)
 	}
 	else
 		ms_status_set(sh, 0);
-	restore_saved_stderr(saved_stderr);
 	restore_fds(saved.in, saved.out);
 }
 

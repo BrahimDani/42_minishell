@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 12:52:57 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/16 02:12:17 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 04:17:21 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void	setup_signal(int signo, t_sig state)
 void	handle_signal_std(int signo, siginfo_t *info, void *context)
 {
 	static t_shell	*sh;
-	char			newline;
 
 	(void)info;
 	if (!sh)
@@ -54,9 +53,7 @@ void	handle_signal_std(int signo, siginfo_t *info, void *context)
 	ms_status_set(sh, 128 + signo);
 	if (signo == SIGINT)
 	{
-		newline = '\n';
-		if (ioctl (STDIN_FILENO, TIOCSTI, &newline) == -1)
-			write(1, "\n", 1);
+		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();

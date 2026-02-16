@@ -12,18 +12,12 @@
 
 #include "../../includes/minishell.h"
 
-static void	handle_redir_type(t_cmd *cmd, t_token **token,
-		char *joined, int is_stderr)
+static void	handle_redir_type(t_cmd *cmd, t_token **token, char *joined)
 {
 	if ((*token)->type == T_REDIR_IN)
 		handle_redir_in(cmd, joined);
 	else if ((*token)->type == T_REDIR_OUT || (*token)->type == T_APPEND)
-	{
-		if (is_stderr)
-			handle_stderr_redir(cmd, joined, (*token)->type == T_APPEND);
-		else
-			handle_redir_out(cmd, joined, (*token)->type);
-	}
+		handle_redir_out(cmd, joined, (*token)->type);
 }
 
 int	handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh)
@@ -31,12 +25,7 @@ int	handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh)
 	t_token	*t;
 	char	*joined;
 	int		heredoc_quoted_any;
-	int		is_stderr;
 
-	is_stderr = 0;
-	if ((*token)->value && (*token)->value[0] == '2'
-		&& ((*token)->type == T_REDIR_OUT || (*token)->type == T_APPEND))
-		is_stderr = 1;
 	t = *token;
 	heredoc_quoted_any = 0;
 	if (!check_redir_syntax(t, sh))
@@ -48,7 +37,7 @@ int	handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh)
 	if ((*token)->type == T_HEREDOC)
 		handle_heredoc_redir(cmd, joined, heredoc_quoted_any);
 	else
-		handle_redir_type(cmd, token, joined, is_stderr);
+		handle_redir_type(cmd, token, joined);
 	free(joined);
 	*token = t;
 	return (1);

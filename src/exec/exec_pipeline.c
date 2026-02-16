@@ -42,7 +42,6 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list, t_shell *sh)
 {
 	int	saved_in;
 	int	saved_out;
-	int	saved_err;
 
 	if (handle_child_error(cmd) == -1)
 		return (-1);
@@ -51,11 +50,8 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list, t_shell *sh)
 		return (-1);
 	saved_out = handle_output_redir(cmd, sh);
 	if (saved_out == -2)
-		return (close_saved_fds(saved_in, -1, -1), -1);
-	saved_err = setup_stderr_redir(cmd, sh);
-	if (saved_err == -2)
-		return (close_saved_fds(saved_in, saved_out, -1), -1);
-	close_saved_fds(saved_in, saved_out, saved_err);
+		return (close_saved_fds(saved_in, -1), -1);
+	close_saved_fds(saved_in, saved_out);
 	return (0);
 }
 

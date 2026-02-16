@@ -74,41 +74,45 @@ void	exec_pipeline_child_cmd(t_cmd *cmd, t_cmd *head,
 	ms_exit(status, *env_list);
 }
 
+static int	handle_last_child_status(int status, t_shell *sh)
+{
+	int	sig;
+
+	if (WIFEXITED(status))
+	{
+		ms_status_set(sh, WEXITSTATUS(status));
+		return (0);
+	}
+	if (!WIFSIGNALED(status))
+		return (0);
+	sig = WTERMSIG(status);
+	if (sig == SIGINT)
+		write(STDOUT_FILENO, "\n", 1);
+	else if (sig == SIGQUIT)
+		print_sigquit_message();
+	ms_status_set(sh, 128 + sig);
+	if (sig == SIGINT)
+		return (1);
+	return (0);
+}
+
 void	wait_all_children(pid_t *pids, int n_cmds, t_shell *sh)
 {
 	int	i;
 	int	status;
-	int	sig;
+	int	printed_sigint;
 
 	i = 0;
+	printed_sigint = 0;
 	while (i < n_cmds)
 	{
 		waitpid(pids[i], &status, 0);
-		if (i == n_cmds - 1 && WIFEXITED(status))
-			ms_status_set(sh, WEXITSTATUS(status));
-		else if (i == n_cmds - 1 && WIFSIGNALED(status))
-		{
-			sig = WTERMSIG(status);
-			if (sig == SIGINT)
-				write(STDOUT_FILENO, "\n", 1);
-			else if (sig == SIGQUIT)
-				print_sigquit_message();
-			ms_status_set(sh, 128 + sig);
-		}
+		if (i == n_cmds - 1)
+			printed_sigint = handle_last_child_status(status, sh);
 		i++;
 	}
-}
-
-int	fork_and_check(int pipes[][2], int n_cmds, t_shell *sh)
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid < 0)
-	{
-		ft_putstr_fd("minishell: fork failed\n", 2);
-		ms_status_set(sh, 1);
-		close_pipes(pipes, n_cmds - 1);
-	}
-	return (pid);
+	if (sh->signal_record == SIGINT && !printed_sigint)
+		write(STDOUT_FILENO, "\n", 1);
+	if (sh->signal_record == SIGINT)
+		ms_status_set(sh, 128 + SIGINT);
 }

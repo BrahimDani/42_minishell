@@ -59,6 +59,11 @@ void	exec_pipeline_loop(t_cmd *cmd_list, t_pipe_ctx *ctx)
 	i = 0;
 	while (cmd_list && i < ctx->n_cmds)
 	{
+		if (ctx->sh->signal_record == SIGINT)
+		{
+			close_pipes(ctx->pipes, ctx->n_cmds - 1);
+			break ;
+		}
 		if (process_pipeline_cmd(cmd_list, ctx, &pids[i], i) == -1)
 			break ;
 		close_parent_pipe_ends(ctx->pipes, i, ctx->n_cmds);
@@ -66,6 +71,21 @@ void	exec_pipeline_loop(t_cmd *cmd_list, t_pipe_ctx *ctx)
 		i++;
 	}
 	close_parent_heredocs(ctx->head);
+	close_pipes(ctx->pipes, ctx->n_cmds - 1);
 	wait_all_children(pids, i, ctx->sh);
 	free(ctx->pipes);
+}
+
+int	fork_and_check(int pipes[][2], int n_cmds, t_shell *sh)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		ft_putstr_fd("minishell: fork failed\n", 2);
+		ms_status_set(sh, 1);
+		close_pipes(pipes, n_cmds - 1);
+	}
+	return (pid);
 }

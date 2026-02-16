@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:07:23 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 14:29:18 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 03:35:02 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,24 +88,23 @@ typedef struct s_heredoc_run
 	int				should_expand;
 	char			path[50];
 }	t_heredoc_run;
+
 typedef struct s_cmd
 {
 	char			**argv;
 	char			*infile;
 	char			*outfile;
-	char			*errfile;
 	int				append;
-	int				err_append;
 	int				heredoc;
 	int				heredoc_quoted;
 	int				heredoc_fd;
-	int				redirect_stderr_to_out;
 	int				has_in_redir_error;
 	char			*in_redir_first_error;
 	int				has_out_redir_error;
 	char			*out_redir_first_error;
 	struct s_cmd	*next;
 }	t_cmd;
+
 int				pre_read_heredocs(t_cmd *cmd_list, t_env *env_list,
 					t_shell *sh);
 int				read_heredoc(char *delimiter, t_env *env_list, int quoted,
@@ -191,7 +190,6 @@ int				check_redir_syntax(t_token *t, t_shell *sh);
 void			handle_redir_in(t_cmd *cmd, char *joined);
 void			handle_prev_outfile(t_cmd *cmd);
 void			handle_redir_out(t_cmd *cmd, char *joined, t_token_type type);
-void			handle_stderr_redir(t_cmd *cmd, char *joined, int is_append);
 void			handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted);
 int				handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh);
 void			handle_word_token(t_token **tokens, t_cmd *current);

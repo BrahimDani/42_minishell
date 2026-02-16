@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:30:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 14:12:25 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 04:03:55 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ char	*read_heredoc_line(void)
 
 	if (isatty(STDIN_FILENO))
 	{
-		rl_done = 0;
 		line = readline("> ");
 		return (line);
 	}

@@ -12,14 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-void	handle_stderr_redir(t_cmd *cmd, char *joined, int is_append)
-{
-	if (cmd->errfile)
-		free(cmd->errfile);
-	cmd->errfile = ft_strdup(joined);
-	cmd->err_append = is_append;
-}
-
 void	handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted)
 {
 	if (cmd->infile)

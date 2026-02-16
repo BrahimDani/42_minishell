@@ -20,15 +20,6 @@ int	fd_redir_op_error(char *op, t_shell *sh)
 	return (-2);
 }
 
-int	fd_errfile_open_error(int saved_stderr, char *errfile, t_shell *sh)
-{
-	close(saved_stderr);
-	ft_putstr_fd("minishell: ", 2);
-	perror(errfile);
-	ms_status_set(sh, 1);
-	return (-2);
-}
-
 int	save_and_redirect(int fd, int std_fd, t_shell *sh)
 {
 	int	saved_fd;
@@ -44,21 +35,10 @@ int	save_and_redirect(int fd, int std_fd, t_shell *sh)
 	return (saved_fd);
 }
 
-void	close_saved_fds(int saved_in, int saved_out, int saved_err)
+void	close_saved_fds(int saved_in, int saved_out)
 {
 	if (saved_in >= 0)
 		close(saved_in);
 	if (saved_out >= 0)
 		close(saved_out);
-	if (saved_err >= 0)
-		close(saved_err);
-}
-
-void	restore_saved_stderr(int saved_stderr)
-{
-	if (saved_stderr >= 0)
-	{
-		dup2(saved_stderr, STDERR_FILENO);
-		close(saved_stderr);
-	}
 }

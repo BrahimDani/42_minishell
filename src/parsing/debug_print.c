@@ -30,7 +30,6 @@ static void	free_cmd_files(t_cmd *cmd)
 {
 	free(cmd->infile);
 	free(cmd->outfile);
-	free(cmd->errfile);
 	if (cmd->heredoc_fd >= 0)
 		close(cmd->heredoc_fd);
 }

@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 19:20:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/16 02:00:34 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 04:16:52 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ char	*read_interactive_line(void)
 	char	*line;
 	char	*cont;
 
-	rl_done = 0;
 	line = readline("minishell> ");
 	if (!line)
 	{
