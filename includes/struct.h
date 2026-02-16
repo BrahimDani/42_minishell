@@ -18,7 +18,8 @@ typedef enum e_signal_state
 	SIG_DEFAULT = 0,
 	SIG_IGNORE,
 	SIG_STANDARD,
-	SIG_RECORD
+	SIG_RECORD,
+	SIG_HEREDOC
 }				t_sig;
 
 typedef struct s_env

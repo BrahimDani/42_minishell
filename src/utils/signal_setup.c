@@ -32,7 +32,7 @@ void	setup_child_exec_signals(void)
 
 void	setup_heredoc_signals(void)
 {
-	setup_signal(SIGINT, SIG_STANDARD);
+	setup_signal(SIGINT, SIG_HEREDOC);
 	setup_signal(SIGQUIT, SIG_IGNORE);
 }
 

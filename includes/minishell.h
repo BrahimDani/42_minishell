@@ -38,6 +38,7 @@
 // GENERAL
 void	handle_signal_std(int signo, siginfo_t *info, void *context);
 void	handle_signal_record(int signo, siginfo_t *info, void *context);
+void	handle_signal_heredoc(int signo, siginfo_t *info, void *context);
 void	setup_signal(int signo, t_sig state);
 void	init_signal_context(t_shell *sh);
 void	setup_prompt_signals(void);
