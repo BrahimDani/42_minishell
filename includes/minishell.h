@@ -51,9 +51,6 @@ void	init_env(t_env **env_list, char **envp);
 t_env	*create_env_node(char *env_str, t_env *env_list);
 void	add_env_node(t_env **env_list, t_env **current, t_env *new_node);
 void	adjust_shlvl(t_env **env_list);
-int		count_env_nodes(t_env *env_list);
-char	*format_env_entry(t_env *node);
-void	convert_env(t_env *env_list, char ***envp);
 // MAIN_UTILS
 int		quotes_balanced(const char *s);
 void	handle_cmd_mode(int argc, char **argv, t_env *env_list,

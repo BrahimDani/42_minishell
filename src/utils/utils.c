@@ -12,18 +12,6 @@
 
 #include "../includes/utils.h"
 
-char	**get_path_env(char *name)
-{
-	char	*value;
-	char	**paths;
-
-	value = getenv(name);
-	if (!value)
-		return (NULL);
-	paths = ft_split(value, ':');
-	return (paths);
-}
-
 void	free_split(char **split)
 {
 	int	i;

@@ -54,8 +54,3 @@ void	free_cmds(t_cmd *cmd)
 		cmd = next;
 	}
 }
-
-void	print_cmds(t_cmd *cmd)
-{
-	(void)cmd;
-}

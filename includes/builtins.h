@@ -22,7 +22,6 @@ int		exec_builtin(char **tokens, t_env **env_list, int last_status);
 int		ft_pwd(void);
 // CD
 char	*get_env_value(t_env *env_list, char *key);
-void	set_end_value(t_env *env_list, char *key, char *value);
 int		ft_cd(char **tokens, t_env **env_list);
 // CD UTILS
 char	*handle_home_path(t_env *env_list, char *oldpwd);

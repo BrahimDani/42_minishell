@@ -28,27 +28,3 @@ void	init_env(t_env **env_list, char **envp)
 	}
 	adjust_shlvl(env_list);
 }
-
-void	convert_env(t_env *env_list, char ***envp)
-{
-	t_env	*current;
-	int		count;
-	int		i;
-
-	count = count_env_nodes(env_list);
-	*envp = malloc((count + 1) * sizeof(char *));
-	if (!*envp)
-	{
-		perror("Failed to allocate memory for envp");
-		ms_exit(EXIT_FAILURE, env_list);
-	}
-	current = env_list;
-	i = 0;
-	while (i < count)
-	{
-		(*envp)[i] = format_env_entry(current);
-		current = current->next;
-		i++;
-	}
-	(*envp)[count] = NULL;
-}

@@ -73,34 +73,3 @@ void	adjust_shlvl(t_env **env_list)
 		free(new_val);
 	}
 }
-
-int	count_env_nodes(t_env *env_list)
-{
-	t_env	*current;
-	int		count;
-
-	current = env_list;
-	count = 0;
-	while (current)
-	{
-		count++;
-		current = current->next;
-	}
-	return (count);
-}
-
-char	*format_env_entry(t_env *node)
-{
-	char	*tmp;
-	char	*result;
-
-	if (node->value)
-	{
-		tmp = ft_strjoin(node->key, "=");
-		result = ft_strjoin(tmp, node->value);
-		free(tmp);
-		return (result);
-	}
-	else
-		return (ft_strdup(node->key));
-}

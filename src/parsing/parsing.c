@@ -12,32 +12,6 @@
 
 #include "../../includes/parsing.h"
 
-char	**tokens_to_array(t_token *list)
-{
-	int		count;
-	t_token	*tmp;
-	char	**arr;
-
-	tmp = list;
-	count = 0;
-	while (tmp)
-	{
-		count++;
-		tmp = tmp->next;
-	}
-	arr = malloc(sizeof(char *) * (count + 1));
-	if (!arr)
-		return (NULL);
-	count = 0;
-	while (list)
-	{
-		arr[count++] = ft_strdup(list->value);
-		list = list->next;
-	}
-	arr[count] = NULL;
-	return (arr);
-}
-
 static int	parse_line_end(t_token *tokens, t_shell *sh)
 {
 	if (!tokens)

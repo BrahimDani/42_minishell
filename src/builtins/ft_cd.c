@@ -23,20 +23,6 @@ char	*get_env_value(t_env *env_list, char *key)
 	return (NULL);
 }
 
-void	set_end_value(t_env *env_list, char *key, char *value)
-{
-	while (env_list)
-	{
-		if (ft_strcmp(env_list->key, key) == 0)
-		{
-			free(env_list->value);
-			env_list->value = ft_strdup(value);
-			return ;
-		}
-		env_list = env_list->next;
-	}
-}
-
 int	arg_count(char **tokens)
 {
 	int	count;
