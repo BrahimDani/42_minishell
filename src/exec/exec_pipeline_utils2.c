@@ -51,11 +51,32 @@ int	init_pipeline(int n_cmds, int (**pipes)[2], t_pipe_ctx *ctx)
 	return (1);
 }
 
+static pid_t	*alloc_pipeline_pids(t_pipe_ctx *ctx)
+{
+	pid_t	*pids;
+
+	if (ctx->n_cmds <= 0)
+		return (NULL);
+	pids = malloc(sizeof(pid_t) * ctx->n_cmds);
+	if (!pids)
+	{
+		perror("minishell: malloc");
+		ms_status_set(ctx->sh, 1);
+		close_parent_heredocs(ctx->head);
+		close_pipes(ctx->pipes, ctx->n_cmds - 1);
+		free(ctx->pipes);
+	}
+	return (pids);
+}
+
 void	exec_pipeline_loop(t_cmd *cmd_list, t_pipe_ctx *ctx)
 {
-	pid_t	pids[1024];
+	pid_t	*pids;
 	int		i;
 
+	pids = alloc_pipeline_pids(ctx);
+	if (!pids && ctx->n_cmds > 0)
+		return ;
 	i = 0;
 	while (cmd_list && i < ctx->n_cmds)
 	{
@@ -73,19 +94,6 @@ void	exec_pipeline_loop(t_cmd *cmd_list, t_pipe_ctx *ctx)
 	close_parent_heredocs(ctx->head);
 	close_pipes(ctx->pipes, ctx->n_cmds - 1);
 	wait_all_children(pids, i, ctx->sh);
+	free(pids);
 	free(ctx->pipes);
-}
-
-int	fork_and_check(int pipes[][2], int n_cmds, t_shell *sh)
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid < 0)
-	{
-		ft_putstr_fd("minishell: fork failed\n", 2);
-		ms_status_set(sh, 1);
-		close_pipes(pipes, n_cmds - 1);
-	}
-	return (pid);
 }

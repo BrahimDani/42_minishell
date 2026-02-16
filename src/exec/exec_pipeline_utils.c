@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/14 05:20:02 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 05:19:15 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	(*init_pipes_array(int n_cmds, t_shell *sh))[2]
 	pipes = alloc_pipes(n_cmds);
 	if (!pipes && n_cmds > 1)
 		return (NULL);
-	if (n_cmds - 1 > 0 && create_pipes(pipes, n_cmds, sh) == -1)
+	if (n_cmds - 1 > 0 && (create_pipes(pipes, n_cmds, sh) == -1))
 	{
 		free(pipes);
 		return (NULL);
