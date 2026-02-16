@@ -15,7 +15,10 @@
 static int	parse_line_end(t_token *tokens, t_shell *sh)
 {
 	if (!tokens)
+	{
+		ms_status_set(sh, 1);
 		return (0);
+	}
 	if (!check_pipe_tokens(tokens, sh))
 	{
 		free_tokens(tokens);

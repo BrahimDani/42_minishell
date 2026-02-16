@@ -12,20 +12,52 @@
 
 #include "../../includes/minishell.h"
 
+static int	add_operator_token(char *token_value, t_token **token, int space)
+{
+	t_token	*new_tok;
+
+	if (!token_value)
+		return (-1);
+	new_tok = new_token(token_value, get_type(token_value));
+	free(token_value);
+	if (!new_tok)
+		return (-1);
+	new_tok->space_before = space;
+	add_token_back(token, new_tok);
+	return (1);
+}
+
+static int	add_quoted_token(char *token_value, t_token **token, int space,
+		int no_expand)
+{
+	t_token	*new_tok;
+
+	if (!token_value)
+		return (-1);
+	if (no_expand)
+		new_tok = new_token_no_expand(token_value, T_WORD);
+	else
+		new_tok = new_token_quoted(token_value, T_WORD);
+	free(token_value);
+	if (!new_tok)
+		return (-1);
+	new_tok->space_before = space;
+	add_token_back(token, new_tok);
+	return (1);
+}
+
 int	handle_double_redir(char *line, int *i, t_token **token, int space)
 {
 	char	*token_value;
-	t_token	*new_tok;
+	int		status;
 
 	if ((line[*i] == '>' || line[*i] == '<') && line[*i + 1] == line[*i])
 	{
 		token_value = ft_substr(line, *i, 2);
-		new_tok = new_token(token_value, get_type(token_value));
-		new_tok->space_before = space;
-		add_token_back(token, new_tok);
-		free(token_value);
-		*i += 2;
-		return (1);
+		status = add_operator_token(token_value, token, space);
+		if (status == 1)
+			*i += 2;
+		return (status);
 	}
 	return (0);
 }
@@ -33,43 +65,26 @@ int	handle_double_redir(char *line, int *i, t_token **token, int space)
 int	handle_simple_operator(char *line, int *i, t_token **token, int space)
 {
 	char	*token_value;
-	t_token	*new_tok;
+	int		status;
 
 	if (ft_strchr("|<>", line[*i]))
 	{
 		token_value = ft_substr(line, *i, 1);
-		new_tok = new_token(token_value, get_type(token_value));
-		new_tok->space_before = space;
-		add_token_back(token, new_tok);
-		free(token_value);
-		(*i)++;
-		return (1);
+		status = add_operator_token(token_value, token, space);
+		if (status == 1)
+			*i += 1;
+		return (status);
 	}
 	return (0);
 }
 
 int	handle_quotes(char *line, int *i, t_token **token, int space)
 {
-	char	*token_value;
-	t_token	*new_tok;
-
 	if (line[*i] == '\'')
-	{
-		token_value = handle_quoted_word(line, i, '\'');
-		new_tok = new_token_no_expand(token_value, T_WORD);
-		new_tok->space_before = space;
-		add_token_back(token, new_tok);
-		free(token_value);
-		return (1);
-	}
+		return (add_quoted_token(handle_quoted_word(line, i, '\''),
+				token, space, 1));
 	if (line[*i] == '"')
-	{
-		token_value = handle_quoted_word(line, i, '"');
-		new_tok = new_token_quoted(token_value, T_WORD);
-		new_tok->space_before = space;
-		add_token_back(token, new_tok);
-		free(token_value);
-		return (1);
-	}
+		return (add_quoted_token(handle_quoted_word(line, i, '"'),
+				token, space, 0));
 	return (0);
 }

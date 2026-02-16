@@ -122,7 +122,7 @@ t_token_type	get_type(char *word);
 char			*handle_quoted_word(char *line, int *i, char quote_char);
 char			*handle_word(char *line, int *i);
 int				skip_spaces(char *line, int *i);
-void			handle_normal_word(char *line, int *i, t_token **token,
+int				handle_normal_word(char *line, int *i, t_token **token,
 					int space);
 int				handle_double_redir(char *line, int *i, t_token **token,
 					int space);

@@ -53,14 +53,19 @@ int	skip_spaces(char *line, int *i)
 	return (had_space);
 }
 
-void	handle_normal_word(char *line, int *i, t_token **token, int space)
+int	handle_normal_word(char *line, int *i, t_token **token, int space)
 {
 	char	*token_value;
 	t_token	*new_tok;
 
 	token_value = handle_word(line, i);
+	if (!token_value)
+		return (-1);
 	new_tok = new_token(token_value, T_WORD);
+	free(token_value);
+	if (!new_tok)
+		return (-1);
 	new_tok->space_before = space;
 	add_token_back(token, new_tok);
-	free(token_value);
+	return (1);
 }

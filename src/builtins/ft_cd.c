@@ -60,7 +60,12 @@ int	ft_cd(char **tokens, t_env **env_list)
 	if (!path)
 		return (1);
 	if (change_directory(path, oldpwd))
+	{
+		if (tokens[1] && tokens[1][0] == '~' && tokens[1][1] == '/'
+			&& path != tokens[1])
+			free(path);
 		return (1);
+	}
 	update_pwd_vars(env_list, oldpwd, print_new_path);
 	free(oldpwd);
 	if (tokens[1] && tokens[1][0] == '~' && tokens[1][1] == '/'

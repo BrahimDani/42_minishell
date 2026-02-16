@@ -19,7 +19,17 @@ t_token	*new_token(char *value, t_token_type type)
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return (NULL);
+	if (!value)
+	{
+		free(new);
+		return (NULL);
+	}
 	new->value = ft_strdup(value);
+	if (!new->value)
+	{
+		free(new);
+		return (NULL);
+	}
 	new->type = type;
 	new->no_expand = 0;
 	new->was_quoted = 0;
@@ -35,7 +45,17 @@ t_token	*new_token_no_expand(char *value, t_token_type type)
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return (NULL);
+	if (!value)
+	{
+		free(new);
+		return (NULL);
+	}
 	new->value = ft_strdup(value);
+	if (!new->value)
+	{
+		free(new);
+		return (NULL);
+	}
 	new->type = type;
 	new->no_expand = 1;
 	new->was_quoted = 1;
@@ -51,7 +71,17 @@ t_token	*new_token_quoted(char *value, t_token_type type)
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return (NULL);
+	if (!value)
+	{
+		free(new);
+		return (NULL);
+	}
 	new->value = ft_strdup(value);
+	if (!new->value)
+	{
+		free(new);
+		return (NULL);
+	}
 	new->type = type;
 	new->no_expand = 0;
 	new->was_quoted = 1;
