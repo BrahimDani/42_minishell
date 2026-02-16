@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 10:19:35 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 22:14:05 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 02:12:23 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
-# include <termios.h>
+# include <sys/ioctl.h>
 # include <unistd.h>
 # include <limits.h>
 # include <stdbool.h>

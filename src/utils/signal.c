@@ -6,12 +6,11 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 12:52:57 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/16 01:37:05 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 02:12:17 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <sys/ioctl.h>
 
 static volatile sig_atomic_t	g_last_signal = 0;
 
