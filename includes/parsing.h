@@ -102,6 +102,8 @@ int				create_tmpfile(char *path, int size);
 int				process_line_expanded(char *line, int fd, char *delim,
 					t_heredoc_ctx *ctx);
 int				process_line_raw(char *line, int fd, char *delim);
+char			*init_heredoc_run(t_heredoc_run *run, char *delimiter,
+					int quoted, t_shell *sh);
 int				read_heredoc_content(int fd, char *delim, int expand,
 					t_heredoc_ctx *ctx);
 int				pre_read_one(t_cmd *cmd, t_env *env_list, t_shell *sh);

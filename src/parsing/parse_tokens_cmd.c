@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:50:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/16 10:12:43 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 06:46:22 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,28 +55,41 @@ t_cmd	*create_new_cmd(t_cmd **head)
 	return (new);
 }
 
+static void	copy_argv_ptrs(char **new_argv, char **old_argv, int len)
+{
+	int	i;
+
+	i = 0;
+	while (i < len)
+	{
+		new_argv[i] = old_argv[i];
+		i++;
+	}
+}
+
 int	add_argument(t_cmd *cmd, char *value)
 {
-	int		i;
+	int		len;
 	char	**new_argv;
 	char	*new_value;
 
 	if (!value)
 		return (0);
-	i = 0;
-	while (cmd->argv && cmd->argv[i])
-		i++;
-	new_argv = malloc(sizeof(char *) * (i + 2));
+	len = 0;
+	while (cmd->argv && cmd->argv[len])
+		len++;
+	new_argv = malloc(sizeof(char *) * (len + 2));
 	if (!new_argv)
 		return (0);
-	i = -1;
-	while (cmd->argv && cmd->argv[++i])
-		new_argv[i] = cmd->argv[i];
+	copy_argv_ptrs(new_argv, cmd->argv, len);
 	new_value = ft_strdup(value);
 	if (!new_value)
-		return (free(new_argv), 0);
-	new_argv[i] = new_value;
-	new_argv[i + 1] = NULL;
+	{
+		free(new_argv);
+		return (0);
+	}
+	new_argv[len] = new_value;
+	new_argv[len + 1] = NULL;
 	free(cmd->argv);
 	cmd->argv = new_argv;
 	return (1);

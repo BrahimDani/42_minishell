@@ -36,6 +36,8 @@ char	*process_delimiter(char *delimiter, int *should_expand,
 	*should_expand = 0;
 	if (!quoted)
 		*should_expand = 1;
+	if (!delimiter)
+		return (NULL);
 	clean_delim = ft_strdup(delimiter);
 	return (clean_delim);
 }
