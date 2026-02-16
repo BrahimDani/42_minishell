@@ -24,18 +24,14 @@ int	run_command_child(t_cmd *cmd, t_env **env_list)
 		return (127);
 	}
 	if (ft_strcmp(cmd->argv[0], "env") == 0 && cmd->argv[1] != NULL)
-	{
-		exec_external_child(cmd->argv, env_list);
-		return (127);
-	}
+		return (exec_external_child(cmd->argv, env_list));
 	if (is_builtin(cmd->argv[0]))
 	{
 		if (ft_strcmp(cmd->argv[0], "exit") == 0)
 			return (ft_exit_status(cmd->argv));
 		return (exec_builtin(cmd->argv, env_list, 0));
 	}
-	exec_external_child(cmd->argv, env_list);
-	return (127);
+	return (exec_external_child(cmd->argv, env_list));
 }
 
 static void	update_underscore_var(t_cmd *cmd, t_env **env_list)

@@ -20,54 +20,56 @@ int	exec_external(char **argv, char **envp, t_env **env_list)
 		return (exec_from_path(argv, envp, *env_list));
 }
 
-static void	exec_absolute_path_child(char **argv, t_env *env_list)
+static int	exec_absolute_path_child(char **argv, t_env *env_list)
 {
 	if (access(argv[0], F_OK) != 0)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(argv[0], 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
-		ms_exit(127, env_list);
+		return (127);
 	}
 	if (access(argv[0], X_OK) != 0)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(argv[0], 2);
 		ft_putstr_fd(": Permission denied\n", 2);
-		ms_exit(126, env_list);
+		return (126);
 	}
-	child_process(argv[0], argv, env_list);
+	return (child_process(argv[0], argv, env_list));
 }
 
-static void	exec_from_path_child(char **argv, t_env *env_list)
+static int	exec_from_path_child(char **argv, t_env *env_list)
 {
 	char	*full_path;
 	int		special_status;
+	int		status;
 
 	special_status = check_special_dirs(argv[0]);
 	if (special_status)
-		ms_exit(special_status, env_list);
+		return (special_status);
 	full_path = find_command_path(argv[0], env_list);
 	if (!full_path)
 	{
 		print_cmd_error(argv[0], "command not found");
-		ms_exit(127, env_list);
+		return (127);
 	}
 	if (access(full_path, X_OK) != 0)
 	{
 		print_cmd_error(argv[0], "Permission denied");
 		free(full_path);
-		ms_exit(126, env_list);
+		return (126);
 	}
-	child_process(full_path, argv, env_list);
+	status = child_process(full_path, argv, env_list);
+	free(full_path);
+	return (status);
 }
 
-void	exec_external_child(char **argv, t_env **env_list)
+int	exec_external_child(char **argv, t_env **env_list)
 {
 	if (ft_strchr(argv[0], '/'))
-		exec_absolute_path_child(argv, *env_list);
-	else
-		exec_from_path_child(argv, *env_list);
+		return (exec_absolute_path_child(argv, *env_list));
+	return (exec_from_path_child(argv, *env_list));
 }
 
 /**

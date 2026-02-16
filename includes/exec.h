@@ -36,15 +36,14 @@ typedef struct s_saved_fds
 char			*make_env_string(t_env *node);
 char			**build_envp_from_list(t_env *env_list);
 void			free_envp_array(char **envp);
-void			exec_error_exit(char *full_path, char **new_envp,
-					t_env *env_list);
+int				exec_error_exit(char *full_path, char **new_envp);
 int				fd_redir_op_error(char *op, t_shell *sh);
 int				fd_errfile_open_error(int saved_stderr, char *errfile,
 					t_shell *sh);
 int				save_and_redirect(int fd, int std_fd, t_shell *sh);
 void			close_saved_fds(int saved_in, int saved_out, int saved_err);
 void			restore_saved_stderr(int saved_stderr);
-void			child_process(char *full_path, char **argv, t_env *env_list);
+int				child_process(char *full_path, char **argv, t_env *env_list);
 int				spawn_external(char *full_path, char **argv, char **envp,
 					t_env *env_list);
 char			**split_path_from_env(t_env *env_list);
@@ -83,7 +82,7 @@ int				create_pipes(int pipes[][2], int n_cmds, t_shell *sh);
 void			close_pipes(int pipes[][2], int count);
 void			close_extra_fds(void);
 char			**split_pwd_from_env(t_env *env_list);
-void			exec_external_child(char **argv, t_env **env_list);
+int				exec_external_child(char **argv, t_env **env_list);
 int				init_pipeline(int n_cmds, int (**pipes)[2], t_pipe_ctx *ctx);
 void			exec_pipeline_loop(t_cmd *cmd_list, t_pipe_ctx *ctx);
 int				process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,

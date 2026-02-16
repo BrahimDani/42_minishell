@@ -14,7 +14,7 @@
 #include <errno.h>
 #include <string.h>
 
-void	exec_error_exit(char *full_path, char **new_envp, t_env *env_list)
+int	exec_error_exit(char *full_path, char **new_envp)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(full_path, 2);
@@ -22,10 +22,10 @@ void	exec_error_exit(char *full_path, char **new_envp, t_env *env_list)
 	ft_putstr_fd(strerror(errno), 2);
 	ft_putstr_fd("\n", 2);
 	free_envp_array(new_envp);
-	ms_exit(126, env_list);
+	return (126);
 }
 
-void	child_process(char *full_path, char **argv, t_env *env_list)
+int	child_process(char *full_path, char **argv, t_env *env_list)
 {
 	char	**new_envp;
 
@@ -33,10 +33,10 @@ void	child_process(char *full_path, char **argv, t_env *env_list)
 	set_env_value(&env_list, "_", full_path);
 	new_envp = build_envp_from_list(env_list);
 	if (!new_envp)
-		ms_exit(1, env_list);
+		return (1);
 	close_extra_fds();
 	execve(full_path, argv, new_envp);
-	exec_error_exit(full_path, new_envp, env_list);
+	return (exec_error_exit(full_path, new_envp));
 }
 
 static void	restore_parent_signals(void)
@@ -74,7 +74,7 @@ int	spawn_external(char *full_path, char **argv, char **envp, t_env *env_list)
 		return (-1);
 	}
 	if (pid == 0)
-		child_process(full_path, argv, env_list);
+		ms_exit(child_process(full_path, argv, env_list), env_list);
 	waitpid(pid, &status, 0);
 	restore_parent_signals();
 	if (WIFEXITED(status))
