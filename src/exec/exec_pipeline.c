@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipeline.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 22:17:51 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 11:54:14 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ int	handle_child_redirs(t_cmd *cmd, t_env **env_list, t_shell *sh)
 		return (-1);
 	saved_out = handle_output_redir(cmd, sh);
 	if (saved_out == -2)
-		return (close_saved_fds(saved_in, -1), -1);
+	{
+		restore_fds(saved_in, saved_out);
+		return (-1);
+	}
 	close_saved_fds(saved_in, saved_out);
 	return (0);
 }
@@ -65,6 +68,7 @@ int	process_pipeline_cmd(t_cmd *cmd, t_pipe_ctx *ctx,
 	{
 		setup_child_pipes(ctx->pipes, idx, ctx->n_cmds);
 		free(ctx->pipes);
+		free(ctx->pids);
 		exec_pipeline_child_cmd(cmd, ctx->head, ctx->env_list, ctx->sh);
 	}
 	return (0);
@@ -77,7 +81,7 @@ void	execute_pipeline(t_cmd *cmd_list,
 	t_pipe_ctx	ctx;
 
 	setup_parent_exec_signals();
-	ctx = (t_pipe_ctx){NULL, env_list, cmd_list, n_cmds, sh};
+	ctx = (t_pipe_ctx){NULL, NULL, env_list, cmd_list, n_cmds, sh};
 	if (!init_pipeline(n_cmds, &pipes, &ctx))
 	{
 		setup_prompt_signals();

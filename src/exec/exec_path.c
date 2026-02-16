@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:11:54 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/14 06:11:40 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 11:55:26 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ int	check_special_dirs(char *cmd)
 		return (2);
 	}
 	if (ft_strcmp(cmd, "..") == 0)
-		return (print_cmd_error(cmd, "command not found"), 127);
+	{
+		print_cmd_error(cmd, "command not found");
+		return (127);
+	}
 	return (0);
 }
 

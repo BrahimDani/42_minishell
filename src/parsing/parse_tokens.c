@@ -21,6 +21,17 @@ static int	parse_alloc_error(t_cmd *head, t_shell *sh)
 	return (-1);
 }
 
+static void	apply_redirection(t_token **tokens, t_cmd *current,
+	char *joined, int heredoc_quoted_any)
+{
+	if ((*tokens)->type == T_HEREDOC)
+		handle_heredoc_redir(current, joined, heredoc_quoted_any);
+	else if ((*tokens)->type == T_REDIR_IN)
+		handle_redir_in(current, joined);
+	else
+		handle_redir_out(current, joined, (*tokens)->type);
+}
+
 static int	handle_redirection_token(t_token **tokens, t_cmd *current,
 	t_shell *sh)
 {
@@ -41,28 +52,9 @@ static int	handle_redirection_token(t_token **tokens, t_cmd *current,
 		ms_status_set(sh, 1);
 		return (0);
 	}
-	if ((*tokens)->type == T_HEREDOC)
-		handle_heredoc_redir(current, joined, heredoc_quoted_any);
-	else if ((*tokens)->type == T_REDIR_IN)
-		handle_redir_in(current, joined);
-	else
-		handle_redir_out(current, joined, (*tokens)->type);
-	return (free(joined), *tokens = t, 1);
-}
-
-static int	handle_word_token(t_token **tokens, t_cmd *current)
-{
-	char	*joined_value;
-
-	joined_value = join_adjacent_words(tokens);
-	if (!joined_value)
-		return (0);
-	if (!add_argument(current, joined_value))
-	{
-		free(joined_value);
-		return (0);
-	}
-	free(joined_value);
+	apply_redirection(tokens, current, joined, heredoc_quoted_any);
+	free(joined);
+	*tokens = t;
 	return (1);
 }
 

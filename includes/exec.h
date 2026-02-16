@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kadrouin <kadrouin@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 14:25:39 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/10 22:17:51 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 07:26:14 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef int	(*t_pipe_array)[2];
 typedef struct s_pipe_ctx
 {
 	int			(*pipes)[2];
+	pid_t		*pids;
 	t_env		**env_list;
 	t_cmd		*head;
 	int			n_cmds;

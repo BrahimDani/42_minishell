@@ -6,7 +6,7 @@
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 05:11:34 by brdany            #+#    #+#             */
-/*   Updated: 2026/01/03 18:43:57 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 11:57:32 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,13 @@ static char	*get_cd_path(char **tokens, t_env *env_list, char *oldpwd,
 		return (tokens[1]);
 }
 
+static void	free_cd_expanded_path(char **tokens, char *path)
+{
+	if (tokens[1] && tokens[1][0] == '~' && tokens[1][1] == '/'
+		&& path != tokens[1])
+		free(path);
+}
+
 int	ft_cd(char **tokens, t_env **env_list)
 {
 	char	*path;
@@ -55,7 +62,10 @@ int	ft_cd(char **tokens, t_env **env_list)
 	int		print_new_path;
 
 	if (arg_count(tokens) > 2)
-		return (write(2, "cd: too many arguments\n", 23), 1);
+	{
+		ft_putstr_fd("cd: too many arguments\n", 2);
+		return (1);
+	}
 	oldpwd = getcwd(NULL, 0);
 	print_new_path = 0;
 	path = get_cd_path(tokens, *env_list, oldpwd, &print_new_path);
@@ -63,15 +73,11 @@ int	ft_cd(char **tokens, t_env **env_list)
 		return (1);
 	if (change_directory(path, oldpwd))
 	{
-		if (tokens[1] && tokens[1][0] == '~' && tokens[1][1] == '/'
-			&& path != tokens[1])
-			free(path);
+		free_cd_expanded_path(tokens, path);
 		return (1);
 	}
 	update_pwd_vars(env_list, oldpwd, print_new_path);
 	free(oldpwd);
-	if (tokens[1] && tokens[1][0] == '~' && tokens[1][1] == '/'
-		&& path != tokens[1])
-		free(path);
+	free_cd_expanded_path(tokens, path);
 	return (0);
 }

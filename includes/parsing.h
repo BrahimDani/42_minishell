@@ -155,6 +155,7 @@ t_cmd			*create_new_cmd(t_cmd **head);
 int				add_argument(t_cmd *cmd, char *value);
 int				aggregate_quoted(t_token *start);
 char			*join_adjacent_words(t_token **token);
+int				handle_word_token(t_token **tokens, t_cmd *current);
 int				check_redir_syntax(t_token *t, t_shell *sh);
 void			handle_redir_in(t_cmd *cmd, char *joined);
 void			handle_prev_outfile(t_cmd *cmd);
