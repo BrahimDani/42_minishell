@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_tokens_utils.c                               :+:      :+:    :+:   */
+/*   parse_tokens_cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:50:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/02/09 12:03:12 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 10:12:43 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,53 +55,29 @@ t_cmd	*create_new_cmd(t_cmd **head)
 	return (new);
 }
 
-void	add_argument(t_cmd *cmd, char *value)
+int	add_argument(t_cmd *cmd, char *value)
 {
 	int		i;
 	char	**new_argv;
+	char	*new_value;
 
+	if (!value)
+		return (0);
 	i = 0;
-	if (cmd->argv)
-	{
-		while (cmd->argv[i])
-			i++;
-	}
+	while (cmd->argv && cmd->argv[i])
+		i++;
 	new_argv = malloc(sizeof(char *) * (i + 2));
 	if (!new_argv)
-		return ;
-	i = 0;
-	if (cmd->argv)
-	{
-		while (cmd->argv[i])
-		{
-			new_argv[i] = cmd->argv[i];
-			i++;
-		}
-		free(cmd->argv);
-	}
-	new_argv[i++] = ft_strdup(value);
-	new_argv[i] = NULL;
-	cmd->argv = new_argv;
-}
-
-int	aggregate_quoted(t_token *start)
-{
-	int		quoted;
-	t_token	*cur;
-
-	quoted = 0;
-	cur = start;
-	if (!cur)
 		return (0);
-	while (cur && cur->type == T_WORD)
-	{
-		if (cur->was_quoted)
-		{
-			quoted = 1;
-		}
-		if (!cur->next || cur->next->space_before)
-			break ;
-		cur = cur->next;
-	}
-	return (quoted);
+	i = -1;
+	while (cmd->argv && cmd->argv[++i])
+		new_argv[i] = cmd->argv[i];
+	new_value = ft_strdup(value);
+	if (!new_value)
+		return (free(new_argv), 0);
+	new_argv[i] = new_value;
+	new_argv[i + 1] = NULL;
+	free(cmd->argv);
+	cmd->argv = new_argv;
+	return (1);
 }

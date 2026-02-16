@@ -1,35 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_tokens_utils2.c                              :+:      :+:    :+:   */
+/*   parse_tokens_redir.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kadrouin <kadrouin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 04:50:00 by kadrouin          #+#    #+#             */
-/*   Updated: 2026/01/05 04:42:06 by kadrouin         ###   ########.fr       */
+/*   Updated: 2026/02/16 10:16:17 by kadrouin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-char	*join_adjacent_words(t_token **token)
-{
-	char	*result;
-	char	*tmp;
-	t_token	*current;
-
-	result = ft_strdup((*token)->value);
-	current = (*token)->next;
-	while (current && current->type == T_WORD && !current->space_before)
-	{
-		tmp = result;
-		result = ft_strjoin(tmp, current->value);
-		free(tmp);
-		*token = current;
-		current = current->next;
-	}
-	return (result);
-}
 
 int	check_redir_syntax(t_token *t, t_shell *sh)
 {
@@ -98,4 +79,13 @@ void	handle_redir_out(t_cmd *cmd, char *joined, t_token_type type)
 	}
 	cmd->outfile = ft_strdup(joined);
 	cmd->append = (type == T_APPEND);
+}
+
+void	handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted)
+{
+	if (cmd->infile)
+		free(cmd->infile);
+	cmd->infile = ft_strdup(joined);
+	cmd->heredoc = 1;
+	cmd->heredoc_quoted = quoted;
 }

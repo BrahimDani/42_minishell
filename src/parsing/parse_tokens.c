@@ -12,21 +12,84 @@
 
 #include "../../includes/minishell.h"
 
-int	process_token(t_token **tokens, t_cmd **current,
+static int	parse_alloc_error(t_cmd *head, t_shell *sh)
+{
+	if (head)
+		free_cmds(head);
+	perror("minishell: malloc");
+	ms_status_set(sh, 1);
+	return (-1);
+}
+
+static int	handle_redirection_token(t_token **tokens, t_cmd *current,
+	t_shell *sh)
+{
+	t_token	*t;
+	char	*joined;
+	int		heredoc_quoted_any;
+
+	if (!check_redir_syntax(*tokens, sh))
+		return (0);
+	t = (*tokens)->next;
+	heredoc_quoted_any = 0;
+	if ((*tokens)->type == T_HEREDOC)
+		heredoc_quoted_any = aggregate_quoted(t);
+	joined = join_adjacent_words(&t);
+	if (!joined)
+	{
+		perror("minishell: malloc");
+		ms_status_set(sh, 1);
+		return (0);
+	}
+	if ((*tokens)->type == T_HEREDOC)
+		handle_heredoc_redir(current, joined, heredoc_quoted_any);
+	else if ((*tokens)->type == T_REDIR_IN)
+		handle_redir_in(current, joined);
+	else
+		handle_redir_out(current, joined, (*tokens)->type);
+	return (free(joined), *tokens = t, 1);
+}
+
+static int	handle_word_token(t_token **tokens, t_cmd *current)
+{
+	char	*joined_value;
+
+	joined_value = join_adjacent_words(tokens);
+	if (!joined_value)
+		return (0);
+	if (!add_argument(current, joined_value))
+	{
+		free(joined_value);
+		return (0);
+	}
+	free(joined_value);
+	return (1);
+}
+
+static int	process_token(t_token **tokens, t_cmd **current,
 	t_cmd *head, t_shell *sh)
 {
 	if ((*tokens)->type == T_WORD)
 	{
-		handle_word_token(tokens, *current);
+		if (!handle_word_token(tokens, *current))
+			return (parse_alloc_error(head, sh));
 	}
 	else if ((*tokens)->type == T_REDIR_IN || (*tokens)->type == T_REDIR_OUT
 		|| (*tokens)->type == T_APPEND || (*tokens)->type == T_HEREDOC)
 	{
-		if (!handle_redir_token(tokens, *current, head, sh))
+		if (!handle_redirection_token(tokens, *current, sh))
+		{
+			if (head)
+				free_cmds(head);
 			return (-1);
+		}
 	}
 	else if ((*tokens)->type == T_PIPE)
+	{
 		*current = create_new_cmd(&head);
+		if (!*current)
+			return (parse_alloc_error(head, sh));
+	}
 	return (1);
 }
 
@@ -41,7 +104,14 @@ t_cmd	*parse_tokens(t_token *tokens, t_shell *sh)
 	while (tokens)
 	{
 		if (!current)
+		{
 			current = create_new_cmd(&head);
+			if (!current)
+			{
+				parse_alloc_error(head, sh);
+				return (NULL);
+			}
+		}
 		status = process_token(&tokens, &current, head, sh);
 		if (status == -1)
 			return (NULL);

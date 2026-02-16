@@ -150,7 +150,7 @@ void			mark_heredoc_tokens(t_token *tokens);
 void			init_cmd_fields(t_cmd *cmd);
 void			add_cmd_to_list(t_cmd **head, t_cmd *new);
 t_cmd			*create_new_cmd(t_cmd **head);
-void			add_argument(t_cmd *cmd, char *value);
+int				add_argument(t_cmd *cmd, char *value);
 int				aggregate_quoted(t_token *start);
 char			*join_adjacent_words(t_token **token);
 int				check_redir_syntax(t_token *t, t_shell *sh);
@@ -158,12 +158,6 @@ void			handle_redir_in(t_cmd *cmd, char *joined);
 void			handle_prev_outfile(t_cmd *cmd);
 void			handle_redir_out(t_cmd *cmd, char *joined, t_token_type type);
 void			handle_heredoc_redir(t_cmd *cmd, char *joined, int quoted);
-int				handle_redirection(t_cmd *cmd, t_token **token, t_shell *sh);
-void			handle_word_token(t_token **tokens, t_cmd *current);
-int				handle_redir_token(t_token **tokens, t_cmd *current,
-					t_cmd *head, t_shell *sh);
-int				process_token(t_token **tokens, t_cmd **current, t_cmd *head,
-					t_shell *sh);
 
 void			exec_from_tokens(t_token *tokens, t_env **env_list,
 					t_shell *sh);
